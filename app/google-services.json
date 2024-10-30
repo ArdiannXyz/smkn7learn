@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "291853478537",
+    "firebase_url": "https://smk7-ac42d-default-rtdb.firebaseio.com",
+    "project_id": "smk7-ac42d",
+    "storage_bucket": "smk7-ac42d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:291853478537:android:e3bb701c7bcde1cdd6b458",
+        "android_client_info": {
+          "package_name": "com.example.smk7"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNs0USCbvbciwSCzBCkN172JUnC-fM-WU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

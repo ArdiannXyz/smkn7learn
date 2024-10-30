@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?><androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/birulivin"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/schoolName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="16dp"
+            android:text="SMK Negeri 7 Jember"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/ic_smk7_foreground" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/loginFormLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/white_background"
+        android:elevation="8dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:text="Tambah Data Siswa"
+            android:textColor="@color/birulivin"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextUsername"
+            android:layout_width="260dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edittext_white"
+            android:hint="Nama"
+            android:inputType="textPersonName"
+            android:paddingStart="16dp"
+            android:textColor="#000000"
+            android:textColorHint="#000000"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="260dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edittext_white"
+            android:hint="NIS"
+            android:inputType="textPassword"
+            android:paddingStart="16dp"
+            android:textColor="#000000"
+            android:textColorHint="#181818"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editTextPassword4"
+            android:layout_width="260dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edittext_white"
+            android:hint="Kelas"
+            android:inputType="textPassword"
+            android:paddingStart="16dp"
+            android:textColor="#000000"
+            android:textColorHint="#181818"
+            android:textSize="15sp" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="263dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edittext_white"
+            android:entries="@array/jenis_kelamin"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="260dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edittext_white"
+            android:hint="Alamat"
+            android:inputType="textEmailAddress"
+            android:paddingStart="16dp"
+            android:textColor="#000000"
+            android:textColorHint="#181818"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/birulivin"
+            android:text="Tambah"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/buttonLogin2"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/birulivin"
+            android:text="Kembali"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
