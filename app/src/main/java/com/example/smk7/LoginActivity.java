@@ -1,5 +1,6 @@
 package com.example.smk7;
 
+// Mengimpor kelas-kelas yang dibutuhkan
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,76 +21,91 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity {
+// Kelas LoginActivity, merupakan Activity untuk login pengguna
+public class LoginActivity extends AppCompatActivity{
 
-    private EditText loginEmail, loginPassword;
-    private TextView signupRedirectText;
-    private Button loginButton;
-    private FirebaseAuth auth;
+    // Deklarasi variabel untuk elemen UI
+    private EditText loginEmail, loginPassword; // EditText untuk input email dan password
+    private TextView signupRedirectText; // TextView untuk mengarahkan ke halaman registrasi
+    private Button loginButton; // Button untuk tombol login
+    private FirebaseAuth auth; // Objek FirebaseAuth untuk autentikasi Firebase
 
+    // Method onCreate() dipanggil saat Activity dibuat
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login); // Menampilkan layout activity_login.xml
 
+        // Mencari elemen UI berdasarkan ID dan menyimpannya ke variabel
         loginEmail = findViewById(R.id.email_login);
         loginPassword = findViewById(R.id.pw_login);
         loginButton = findViewById(R.id.btn_login);
 
+        // Mendapatkan instance FirebaseAuth
         auth = FirebaseAuth.getInstance();
 
+        // Menambahkan listener untuk event klik pada tombol login
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Mengambil email dan password dari EditText
                 String email = loginEmail.getText().toString();
                 String pass = loginPassword.getText().toString();
-                if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    if (!pass.isEmpty()) {
+
+                // Validasi input
+                if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) { // Jika email tidak kosong dan format email benar
+                    if (!pass.isEmpty()) { // Jika password tidak kosong
+                        // Login dengan email dan password menggunakan Firebase Authentication
                         auth.signInWithEmailAndPassword(email, pass)
                                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                     @Override
                                     public void onSuccess(AuthResult authResult) {
-                                        Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                                        finish();
+                                        // Login berhasil
+                                        Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show(); // Menampilkan pesan "Login Successful"
+                                        startActivity(new Intent(LoginActivity.this, HomeActivity.class)); // Pindah ke HomeActivity
+                                        finish(); // Menutup LoginActivity
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                                        // Login gagal
+                                        Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show(); // Menampilkan pesan "Login Failed"
                                     }
                                 });
                     } else {
-                        loginPassword.setError("Empty fields are not allowed");
+                        // Password kosong
+                        loginPassword.setError("Empty fields are not allowed"); // Menampilkan pesan error pada EditText password
                     }
                 } else if (email.isEmpty()) {
-                    loginEmail.setError("Empty fields are not allowed");
+                    // Email kosong
+                    loginEmail.setError("Empty fields are not allowed"); // Menampilkan pesan error pada EditText email
                 } else {
-                    loginEmail.setError("Please enter correct email");
+                    // Format email salah
+                    loginEmail.setError("Please enter correct email"); // Menampilkan pesan error pada EditText email
                 }
             }
         });
 
-        // Get references to TextViews and set click listeners
+        // Mencari TextView untuk registrasi dan menambahkan listener untuk event klik
         TextView registerTextView = findViewById(R.id.txt_registertext);
         registerTextView.setOnClickListener(v -> {
-            // Intent to navigate to RegisterActivity
+            // Membuat Intent untuk pindah ke RegisterActivity
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
+            startActivity(intent); // Memulai RegisterActivity
         });
 
+        // Mencari TextView untuk lupa password dan menambahkan listener untuk event klik
         TextView lupaPasswordTextView = findViewById(R.id.txt_lupapass);
-        lupaPasswordTextView.setOnClickListener(v -> {
-            try {
-                Intent intent = new Intent(LoginActivity.this, LupaPasswordActivity.class);
-                startActivity(intent);
-            } catch (Exception e) {
-                // Tangani error, misalnya tampilkan pesan error ke pengguna
-                Log.e("LoginActivity", "Error navigating to LupaPasswordActivity", e);
-                Toast.makeText(LoginActivity.this, "Terjadi error", Toast.LENGTH_SHORT).show();
-            }
+        lupaPasswordTextView.setOnClickListener(v -> {try {
+            // Membuat Intent untuk pindah ke LupaPasswordActivity
+            Intent intent = new Intent(LoginActivity.this, LupaPasswordActivity.class);
+            startActivity(intent); // Memulai LupaPasswordActivity
+        } catch (Exception e) {
+            // Menangani error, misalnya menampilkan pesan error ke pengguna
+            Log.e("LoginActivity", "Error navigating to LupaPasswordActivity", e);
+            Toast.makeText(LoginActivity.this, "Terjadi error", Toast.LENGTH_SHORT).show();
+        }
         });
-
 
         // Set padding for insets (e.g., status bar or navigation bar)
 
