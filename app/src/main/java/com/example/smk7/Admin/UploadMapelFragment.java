@@ -58,6 +58,7 @@ public class UploadMapelFragment extends Fragment {
                     + " must implement BottomNavigationHandler");
         }
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

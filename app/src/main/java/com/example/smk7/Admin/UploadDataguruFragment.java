@@ -2,9 +2,11 @@ package com.example.smk7.Admin;
 
 import static android.app.ProgressDialog.show;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.LoginActivity;
 import com.example.smk7.R;
 import com.example.smk7.RegisterActivity;
@@ -33,11 +36,24 @@ import java.util.Map;
 public class UploadDataguruFragment extends Fragment {
 
     private FirebaseAuth auth;
-    private EditText signupEmail, signupPassword, nip;
+    private EditText signupEmail, signupPassword, nip, Namaguru;
     private Button signupButton;
     private TextView loginText;
     private FirebaseFirestore db;
     private ImageView backButton;
+    private BottomNavigationHandler navigationHandler;
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            navigationHandler = (BottomNavigationHandler) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement BottomNavigationHandler");
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +67,7 @@ public class UploadDataguruFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upload_dataguru, container, false);
 
+        Namaguru = view.findViewById(R.id.namaguru);
         backButton = view.findViewById(R.id.back_Button);
         signupEmail = view.findViewById(R.id.email_register);
         signupPassword = view.findViewById(R.id.pw_register);
@@ -67,17 +84,18 @@ public class UploadDataguruFragment extends Fragment {
             String email = signupEmail.getText().toString().trim();
             String password = signupPassword.getText().toString().trim();
             String nipValue = nip.getText().toString().trim();
+            String nama = Namaguru.getText().toString().trim();
 
-            if (!validateInputs(email, password, nipValue)) {
+            if (!validateInputs(email, password, nipValue, nama)) {
                 return;
             }
-            registerGuru(email, password, nipValue);
+            registerGuru(email, password, nipValue, nama);
         });
 
         return view; // Menambahkan return view
     }
 
-    private boolean validateInputs(String email, String password, String nipValue) {
+    private boolean validateInputs(String email, String password, String nipValue, String nama) {
         if (email.isEmpty()) {
             signupEmail.setError("Email tidak boleh kosong");
             signupEmail.requestFocus();
@@ -103,10 +121,16 @@ public class UploadDataguruFragment extends Fragment {
             return false;
         }
 
+        if (nama.isEmpty()) {
+            Namaguru.setError("nama tidak boleh kosong");
+            Namaguru.requestFocus();
+            return false;
+        }
+
         return true;
     }
 
-    private void registerGuru(String email, String password, String nipValue) {
+    private void registerGuru(String email, String password, String nipValue,String nama) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -125,6 +149,7 @@ public class UploadDataguruFragment extends Fragment {
                             // Data untuk collection teachers
                             Map<String, Object> teacherData = new HashMap<>();
                             teacherData.put("uid", uid);
+                            teacherData.put("nama", nama);
                             teacherData.put("nip", nipValue);
                             teacherData.put("email", email);
 
@@ -164,6 +189,30 @@ public class UploadDataguruFragment extends Fragment {
                     }
                 });
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (navigationHandler != null) {
+            navigationHandler.showBottomNav();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        navigationHandler = null;
+    }
+
 
     private void clearInputs() {
         signupEmail.setText("");

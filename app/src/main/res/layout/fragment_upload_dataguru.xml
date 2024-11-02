@@ -75,7 +75,7 @@
             android:textSize="15sp" />
         <!-- Username Input -->
         <EditText
-            android:id="@+id/username_login"
+            android:id="@+id/namaguru"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
