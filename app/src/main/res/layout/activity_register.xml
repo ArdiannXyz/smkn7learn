@@ -116,7 +116,7 @@
         <!-- Spinner for Guru/Murid -->
         <Spinner
             android:id="@+id/spinner"
-            android:layout_width="263dp"
+            android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/edittext_white"
