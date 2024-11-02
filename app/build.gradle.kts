@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.storage)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
     annotationProcessor(libs.glideCompiler) // untuk Java, gunakan annotationProcessor
     implementation(libs.fab)
 
