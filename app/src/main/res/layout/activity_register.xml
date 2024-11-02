@@ -114,16 +114,6 @@
             android:textSize="15sp" />
 
         <!-- Spinner for Guru/Murid -->
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/edittext_white"
-            android:entries="@array/user_type"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textAlignment="center" />
 
 
         <!-- Email Input -->
