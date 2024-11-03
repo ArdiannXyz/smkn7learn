@@ -51,6 +51,8 @@ dependencies {
     annotationProcessor(libs.glideCompiler) // untuk Java, gunakan annotationProcessor
     implementation(libs.fab)
 
+
+
     // Dependency pengujian
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
