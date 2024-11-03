@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.smk7.Admin.Dashboard;
+import com.example.smk7.Admin.HomeActivity;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.RegisterActivity;
 import com.example.smk7.LupaPasswordActivity;
@@ -90,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                         String role = documentSnapshot.getString("role");
 
                         if ("admin".equals(role)) {
-                            startActivity(new Intent(LoginActivity.this, Dashboard.class));
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             finish();
                         } else if ("guru".equals(role)) {
                             startActivity(new Intent(LoginActivity.this, DashboardGuru.class));

@@ -38,6 +38,8 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             return new UploadMapelFragment();
         } else if (position == 10) {
             return new UploadDataguruFragment();
+        } else if (position == 11) {
+            return new editdataguru();
         } else {
             return new Dashboard();  // Default case
         }
@@ -45,6 +47,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 11;
+        return 12;
     }
 }

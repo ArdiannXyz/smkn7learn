@@ -14,15 +14,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.Adapterguru;
-import com.example.smk7.MyAdapter;
 import com.example.smk7.R;
-import com.example.smk7.User;
 import com.example.smk7.classdataguru;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,7 +36,7 @@ public class DataGuru extends Fragment {
 
     private FloatingActionButton fab;
     private BottomNavigationHandler navigationHandler;
-    private ImageView backbutton;
+    private ImageView backbutton, imageedit;
     private AlertDialog loadingDialog;
     private RecyclerView RecyclerView;
     private Adapterguru adapterguru;
@@ -60,6 +58,7 @@ public class DataGuru extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dataguru, container, false);
+
 
         initializeViews(view);
         setupRecyclerView();
@@ -86,6 +85,10 @@ public class DataGuru extends Fragment {
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Loading");
         progressDialog.setMessage("Mengambil data...");
+        imageedit = view.findViewById(R.id.Editimage);
+        List<classdataguru> dataList = new ArrayList<>();
+
+
 
     }
 
@@ -120,8 +123,14 @@ public class DataGuru extends Fragment {
                     layoutManager.getOrientation()
             );
             RecyclerView.addItemDecoration(dividerItemDecoration);
+
+            ViewPager2 viewPager2 = null;
+            if (getActivity() instanceof HomeActivity) {
+                viewPager2 = ((HomeActivity) getActivity()).viewPager2;
+            }
+            Adapterguru adapter = new Adapterguru(getContext(), datalist, viewPager2);
         datalist = new ArrayList<>();
-        adapterguru = new Adapterguru(getContext(), datalist);
+        adapterguru = new Adapterguru(getContext(), datalist, viewPager2);
         RecyclerView.setAdapter(adapterguru);
     }}
 
@@ -142,7 +151,7 @@ public class DataGuru extends Fragment {
                         datalist.clear();
                         if (task.isSuccessful()){
                             for (QueryDocumentSnapshot document : task.getResult()){
-                                classdataguru dataguru = new classdataguru(document.getString("nip"), document.getString("nama"));
+                                classdataguru dataguru = new classdataguru(document.getString("nip"), document.getString("nama"), document.getString("email"), document.getString("uid"), document.getString("role"));
                                 dataguru.setKey(document.getId());
                                 datalist.add(dataguru);
                             }
@@ -154,6 +163,7 @@ public class DataGuru extends Fragment {
                     }
                 });
     }
+
 
 
     @Override

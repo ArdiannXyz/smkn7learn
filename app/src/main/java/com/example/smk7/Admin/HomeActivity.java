@@ -9,18 +9,23 @@ import android.view.View;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.R;
+import com.example.smk7.ShareViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.FirebaseApp;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationHandler {
 
     ViewPager2 viewPager2;
     ViewPagerAdapter viewPagerAdapter;
     BottomNavigationView bottomNavigationView;
+    private ShareViewModel sharedViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +37,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationH
         viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager2.setAdapter(viewPagerAdapter);
         viewPager2.setUserInputEnabled(true);
-
+        sharedViewModel = new ViewModelProvider(this).get(ShareViewModel.class);
+        FirebaseApp.initializeApp(this);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")
@@ -67,6 +73,10 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationH
 
     }
 
+    public ShareViewModel getSharedViewModel() {
+        return sharedViewModel;
+    }
+
     @Override
     public void hideBottomNav() {
         if (bottomNavigationView != null) {
@@ -80,5 +90,6 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationH
             bottomNavigationView.setVisibility(View.VISIBLE);
         }
     }
+
 
 }

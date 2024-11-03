@@ -17,6 +17,7 @@ media3Common = "1.4.1"
 firebaseAuth = "23.1.0"
 gbutton = "v1.0.19"
 playServicesAuth = "20.4.0"
+firebaseFunctions = "21.0.0"
 
 [libraries]
 gbutton = { group = "com.github.TutorialsAndroid", name = "GButton", version.ref = "gbutton" }
@@ -36,6 +37,7 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage", v
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+firebase-functions = { group = "com.google.firebase", name = "firebase-functions", version.ref = "firebaseFunctions" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
