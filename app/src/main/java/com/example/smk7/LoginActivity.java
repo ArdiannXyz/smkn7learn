@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText loginEmail, loginPassword;
     private Button loginButton;
     private FirebaseAuth auth;
-    private FirebaseFirestore db; // Inisialisasi FirebaseFirestore
+    private FirebaseFirestore db; // deklarasikan FirebaseFirestore
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
