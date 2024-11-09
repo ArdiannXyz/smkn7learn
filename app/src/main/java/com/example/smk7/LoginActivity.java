@@ -1,13 +1,12 @@
 package com.example.smk7;
 
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -32,25 +31,45 @@ public class LoginActivity extends AppCompatActivity {
         pw_login = findViewById(R.id.pw_login);
         btn_login = findViewById(R.id.btn_login);
 
+        // Inisialisasi tombol register dan lupa password
+        TextView txt_registertext = findViewById(R.id.txt_registertext);
+        TextView txt_lupapass = findViewById(R.id.txt_lupapass);
+
+        // OnClickListener untuk tombol register
+        txt_registertext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Mulai RegisterActivity
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            }
+        });
+
+        // OnClickListener untuk tombol lupa password
+        txt_lupapass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Mulai LupaPasswordActivity
+                startActivity(new Intent(LoginActivity.this, LupaPasswordActivity.class));
+            }
+        });
+
+        // OnClickListener untuk tombol login
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String email = email_login.getText().toString();
                 String password = pw_login.getText().toString();
 
-                if (! (email.isEmpty() || password.isEmpty())){
-
+                if (!(email.isEmpty() || password.isEmpty())) {
                     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, Db_Contract.urlLogin + "?email=" + email + "&password=" + password, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            if (response.equals("Selamat Datang")){
+                            if (response.equals("Selamat Datang")) {
                                 Toast.makeText(getApplicationContext(), "Login Berhasil", Toast.LENGTH_SHORT).show();
-
                                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                            }else{
+                            } else {
                                 Toast.makeText(getApplicationContext(), "Login Gagal", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -61,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
                     requestQueue.add(stringRequest);
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "email Atau Username Salah", Toast.LENGTH_SHORT).show();
                 }
             }
