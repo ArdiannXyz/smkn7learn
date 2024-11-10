@@ -50,11 +50,12 @@ dependencies {
     implementation(libs.firebase.functions)
     annotationProcessor(libs.glideCompiler) // untuk Java, gunakan annotationProcessor
     implementation(libs.fab)
+    implementation("com.android.volley:volley:1.2.1")
 
-
-
-    // Dependency pengujian
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    //menambahkan library untuk volley
+    implementation("com.android.volley:volley:1.2.1")
 }
