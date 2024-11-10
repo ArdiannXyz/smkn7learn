@@ -6,12 +6,12 @@
         android:icon="@drawable/ic_home"/>
 
     <item
-        android:id="@+id/b_profilsiswa"
+        android:id="@+id/b_mapelsiswa"
         android:title="Mapel"
         android:icon="@drawable/ic_person"/>
     <item
-        android:id="@+id/b_datasiswa"
-        android:title="Profil"
-        android:icon="@drawable/ic_doc"/>
+        android:id="@+id/b_setting"
+        android:title="Setting"
+        android:icon="@drawable/ic_setting"/>
 
 </menu>

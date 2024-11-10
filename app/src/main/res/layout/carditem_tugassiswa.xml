@@ -24,6 +24,7 @@
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:scaleType="centerCrop"
+            android:src="@mipmap/ic_bukutumpukan"
             />
 
         <LinearLayout
@@ -36,24 +37,17 @@
 
 
             <TextView
-                android:id="@+id/Namatugas"
+                android:id="@+id/Edt_Namamateri"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tugas"
+                android:text="Pemograman Dasar"
                 android:textSize="16sp"
                 android:paddingBottom="5dp"
+                android:layout_marginLeft="20dp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/Mapel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mapel"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                />
+
 
 
 

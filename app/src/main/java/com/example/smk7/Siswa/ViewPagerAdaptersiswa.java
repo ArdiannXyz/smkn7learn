@@ -5,8 +5,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.smk7.MapelSiswa;
-
 public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
     public ViewPagerAdaptersiswa(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
@@ -18,9 +16,17 @@ public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
         if (position == 0) {
             return new DashboardSiswaFragment();
         } else if (position == 1) {
-            return new MapelSiswa();
+            return new Mapel_Siswa();
         } else if (position == 2) {
-            return new DashboardProfilSiswa();
+            return new Profil_Siswa();
+        } else if (position == 3) {
+            return new Materi_Siswa();
+        } else if (position == 4) {
+            return new Tugas_Siswa();
+        } else if (position == 5) {
+            return new ViewProfil_Siswa();
+        } else if (position == 6) {
+            return new EditProfil_Siswa();
         } else {
             return new DashboardSiswaFragment();
         }
@@ -28,6 +34,6 @@ public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 7;
     }
 }

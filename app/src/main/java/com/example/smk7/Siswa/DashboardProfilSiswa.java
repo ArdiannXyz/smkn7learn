@@ -60,6 +60,6 @@ public class DashboardProfilSiswa extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashprofilsiswa, container, false);
+        return inflater.inflate(R.layout.fragment_profil_siswa, container, false);
     }
 }

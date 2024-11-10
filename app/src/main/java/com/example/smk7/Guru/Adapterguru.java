@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.smk7.Admin.HomeActivity;
 import com.example.smk7.R;
 import com.example.smk7.classdataguru;
 import com.google.firebase.auth.FirebaseAuth;
@@ -161,7 +159,7 @@ class MyViewHolder extends RecyclerView.ViewHolder{
         Nip = itemView.findViewById(R.id.nip);
         NamaGuru = itemView.findViewById(R.id.namaguru);
         imagedit = itemView.findViewById(R.id.Editimage);
-        viewPager2 = itemView.findViewById(R.id.Viewpager);
+        viewPager2 = itemView.findViewById(R.id.Viewpagerguru);
         Email = itemView.findViewById(R.id.email);
         deleteimage = itemView.findViewById(R.id.Deleteimage);
 

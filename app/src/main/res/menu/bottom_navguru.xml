@@ -7,9 +7,15 @@
         android:icon="@drawable/ic_home"/>
 
     <item
-        android:id="@+id/b_profilguru"
-        android:title="Profil"
+        android:id="@+id/b_kelas"
+        android:title="Kelas"
         android:iconTint="@color/white"
         android:icon="@drawable/ic_person"/>
+
+    <item
+        android:id="@+id/b_pb_setting"
+        android:title="Setting"
+        android:iconTint="@color/white"
+        android:icon="@drawable/ic_setting"/>
 
 </menu>
