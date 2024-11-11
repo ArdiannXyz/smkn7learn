@@ -16,13 +16,10 @@
       <SelectionState runConfigName="DashboardSiswa">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="RegisterActivity">
+      <SelectionState runConfigName="DashboardSiswa">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="DashboardGuru">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="DashboardSiswa">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
