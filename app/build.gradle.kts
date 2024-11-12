@@ -56,6 +56,4 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    //menambahkan library untuk volley
-    implementation("com.android.volley:volley:1.2.1")
 }

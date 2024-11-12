@@ -58,6 +58,12 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_smk7_foreground"></ImageView>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,12 +75,12 @@
 
         <!-- Username Input -->
         <EditText
-            android:id="@+id/email_login"
+            android:id="@+id/edt_nama"
             android:layout_width="260dp"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/edittext_white"
-            android:hint="email siswa"
+            android:hint="Username"
             android:inputType="textEmailAddress"
             android:paddingStart="16dp"
             android:textColor="#000000"
@@ -83,7 +89,7 @@
 
         <!-- Password Input -->
         <EditText
-            android:id="@+id/pw_login"
+            android:id="@+id/edt_password"
             android:layout_width="260dp"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
@@ -115,14 +121,7 @@
             android:orientation="horizontal">
 
             <!-- Register Text -->
-            <TextView
-                android:id="@+id/txt_registertext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingEnd="75dp"
-                android:text="Register?"
-                android:textColor="@color/BiruBG"
-                android:textSize="14sp" /> <!-- Padding di kanan agar ada jarak dengan "Lupa Password" -->
+            <!-- Padding di kanan agar ada jarak dengan "Lupa Password" -->
 
             <!-- Forgot Password Text -->
             <TextView
