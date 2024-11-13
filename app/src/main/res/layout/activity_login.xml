@@ -44,7 +44,6 @@
     <LinearLayout
         android:id="@+id/login_Form_Layout"
         android:layout_width="320dp"
-        android:background="white"
         android:layout_height="wrap_content"
         android:layout_below="@+id/headerLayout"
         android:layout_alignParentStart="true"
