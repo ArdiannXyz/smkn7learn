@@ -121,6 +121,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Password Atau Email Salah", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-    }
+   });
+}
 }
