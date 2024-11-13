@@ -18,9 +18,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Siswa.DashboardSiswa;  // Tambahkan import untuk DashboardSiswa
+import com.example.smk7.Siswa.DashboardSiswa;
 
 import org.json.JSONObject;
+import org.json.JSONException;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -28,12 +29,10 @@ public class LoginActivity extends AppCompatActivity {
     private Button btn_login;
     private static final String TAG = "LoginActivity";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         txnama = findViewById(R.id.edt_nama);
         txpassword = findViewById(R.id.edt_password);
         btn_login = findViewById(R.id.btn_login);
@@ -52,50 +51,57 @@ public class LoginActivity extends AppCompatActivity {
 
                 String nama = txnama.getText().toString();
                 String password = txpassword.getText().toString();
-
                 if (!(nama.isEmpty() || password.isEmpty())) {
 
                     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                     String url = Db_Contract.urlLogin + "?nama=" + nama + "&password=" + password;
-                    Log.d("LoginActivity", "Login URL: " + url);
+                    Log.d(TAG, "Login URL: " + url);
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
                         @Override
                         public void onResponse(String response) {
                             Log.d(TAG, "Response from server: " + response);
                             try {
-                                JSONObject jsonResponse = new JSONObject(response);
+                                String cleanedResponse = response.trim();
+                                if (cleanedResponse.startsWith("{")) {
+                                    JSONObject jsonResponse = new JSONObject(cleanedResponse);
 
-                                if (jsonResponse.has("message") && jsonResponse.has("role")) {
-                                    String message = jsonResponse.getString("message");
-                                    String role = jsonResponse.getString("role");
+                                    if (jsonResponse.has("message") && jsonResponse.has("role")) {
+                                        String message = jsonResponse.getString("message");
+                                        String role = jsonResponse.getString("role");
 
-                                    if (message.trim().equalsIgnoreCase("Selamat Datang")) {
-                                        Toast.makeText(getApplicationContext(), "Login Berhasil", Toast.LENGTH_SHORT).show();
+                                        if (message.trim().equalsIgnoreCase("Selamat Datang")) {
+                                            Toast.makeText(getApplicationContext(), "Login Berhasil", Toast.LENGTH_SHORT).show();
 
-                                        if (role.equalsIgnoreCase("guru")) {
-                                            startActivity(new Intent(getApplicationContext(), DashboardGuru.class));
-                                        } else if (role.equalsIgnoreCase("siswa")) {
-                                            startActivity(new Intent(getApplicationContext(), DashboardSiswa.class));
+                                            if (role.equalsIgnoreCase("guru")) {
+                                                startActivity(new Intent(getApplicationContext(), DashboardGuru.class));
+                                            } else if (role.equalsIgnoreCase("siswa")) {
+                                                startActivity(new Intent(getApplicationContext(), DashboardSiswa.class));
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "Role tidak dikenal", Toast.LENGTH_SHORT).show();
+                                            }
                                         } else {
-                                            Toast.makeText(getApplicationContext(), "Role tidak dikenal", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), "Login Gagal", Toast.LENGTH_SHORT).show();
                                         }
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "Login Gagal", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "Format JSON tidak sesuai", Toast.LENGTH_SHORT).show();
+                                        Log.e(TAG, "Unexpected JSON format: " + response);
                                     }
+                                } else if (cleanedResponse.contains("koneksi berhasil")) {
+                                    Toast.makeText(getApplicationContext(), "Koneksi berhasil, tetapi respons tidak valid untuk login", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "Non-JSON response: " + cleanedResponse);
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Respon JSON tidak valid", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Respon server tidak dikenali", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "Unrecognized response: " + cleanedResponse);
                                 }
-                            } catch (Exception e) {
+                            } catch (JSONException e) {
                                 Log.e(TAG, "Error parsing JSON: " + e.getMessage());
                                 Toast.makeText(getApplicationContext(), "Error parsing response", Toast.LENGTH_SHORT).show();
                             }
-
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            // Tampilkan pesan error dan catat ke Logcat
                             Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                             Log.e(TAG, "VolleyError: " + error.toString());
                             if (error.getCause() != null) {

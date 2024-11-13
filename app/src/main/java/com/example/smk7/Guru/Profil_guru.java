@@ -39,7 +39,6 @@ public class Profil_guru extends Fragment {
                 ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(8);
             }
         });
-
         LogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
