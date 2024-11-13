@@ -8,6 +8,7 @@
     android:background="@color/BiruPutih"
     tools:context=".SplashActivity">
 
+
     <ImageView
         android:id="@+id/img_smk7"
         android:layout_width="325dp"

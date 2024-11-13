@@ -109,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             error.printStackTrace();
                         }
+
                     });
                     stringRequest.setRetryPolicy(new DefaultRetryPolicy(
                             5000, // timeout dalam milidetik
