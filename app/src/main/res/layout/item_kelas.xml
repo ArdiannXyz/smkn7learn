@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/id_kelas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ID Kelas"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/nama_kelas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nama Kelas"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tahun_ajaran"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tahun Ajaran"
+        android:textSize="16sp"
+        android:textColor="#888888" />
+
+    <TextView
+        android:id="@+id/wali_kelas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wali Kelas"
+        android:textSize="16sp"
+        android:textColor="#888888" />
+</LinearLayout>

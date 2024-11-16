@@ -26,6 +26,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -34,26 +35,42 @@ android {
 
 dependencies {
 
-    implementation(libs.gbutton)
-    implementation(libs.play.services.auth)
+    // Core libraries
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.gbutton)
 
-    // Menambahkan Glide dan FloatingActionButton
-    implementation(libs.glide)
+    // Firebase libraries
     implementation(libs.firebase.database)
     implementation(libs.firebase.storage)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.functions)
-    annotationProcessor(libs.glideCompiler) // untuk Java, gunakan annotationProcessor
+
+    // Glide for image loading
+    implementation(libs.glide)
+    annotationProcessor(libs.glideCompiler) // For Glide annotation processing in Java
+
+    // FloatingActionButton
     implementation(libs.fab)
+
+    // Volley for networking
     implementation("com.android.volley:volley:1.2.1")
 
+    // Retrofit and Gson for API calls
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.8.8")
+
+    // RecyclerView for lists
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
+
+    // Unit testing
     testImplementation(libs.junit)
+
+    // Android testing
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
 }
