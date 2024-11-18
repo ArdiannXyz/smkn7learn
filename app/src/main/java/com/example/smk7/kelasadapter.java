@@ -14,7 +14,6 @@ public class kelasadapter extends RecyclerView.Adapter<kelasadapter.KelasViewHol
     public kelasadapter(List<kelasmodel> kelasList) {
         this.kelasList = kelasList;
     }
-
     @Override
     public KelasViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.carditem_kelas, parent, false);
@@ -34,7 +33,6 @@ public class kelasadapter extends RecyclerView.Adapter<kelasadapter.KelasViewHol
     public int getItemCount() {
         return kelasList.size();
     }
-
     public static class KelasViewHolder extends RecyclerView.ViewHolder {
         public TextView id_Kelas;
         public TextView namaKelas;

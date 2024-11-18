@@ -57,10 +57,7 @@ public class Kelas_guru extends Fragment {
     }
 
     private void fetchKelasData() {
-
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
-
-
         Call<ApiResponse> call = apiService.getKelasData();
 
         call.enqueue(new Callback<ApiResponse>() {

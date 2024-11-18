@@ -6,8 +6,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static Retrofit retrofit = null;
-
-    // Get Retrofit instance
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
@@ -17,8 +15,6 @@ public class ApiClient {
         }
         return retrofit;
     }
-
-    // Get ApiService instance
     public static ApiService getApiService() {
         return getRetrofitInstance().create(ApiService.class);
     }
