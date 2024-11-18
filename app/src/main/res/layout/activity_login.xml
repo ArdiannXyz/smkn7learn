@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lupa_pw_FormLayout"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/splashlogin"
     tools:context=".LoginActivity">
 
@@ -14,7 +15,11 @@
         android:layout_alignParentTop="true"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/schoolName"
@@ -29,7 +34,7 @@
         <FrameLayout
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="150dp">
+            android:layout_marginLeft="130dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -48,14 +53,16 @@
         android:layout_below="@+id/headerLayout"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="163dp"
-        android:layout_marginEnd="43dp"
         android:elevation="8dp"
         android:foregroundGravity="fill_horizontal|center_vertical"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout"
+        app:layout_constraintVertical_bias="0.69">
 
         <TextView
             android:layout_width="wrap_content"
@@ -75,8 +82,8 @@
             android:hint="Username"
             android:inputType="textEmailAddress"
             android:paddingStart="16dp"
-            android:textColor="#000000"
-            android:textColorHint="#000000"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
             android:textSize="15sp" />
 
         <EditText
@@ -124,8 +131,8 @@
                 android:id="@+id/txt_lupapass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/txt_lupapw_login"
                 android:layout_marginStart="4dp"
+                android:layout_toEndOf="@id/txt_lupapw_login"
                 android:text="Klik Disini"
                 android:textColor="@color/BiruBG"
                 android:textSize="14sp" />
@@ -151,18 +158,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="69dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/customerServiceText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Customer Service"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/customerServicePhone"
@@ -170,6 +172,19 @@
             android:layout_height="wrap_content"
             android:text="+6281-8044-0000"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteX="141dp" />
+
+        <TextView
+            android:id="@+id/customerServiceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customer Service"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/customerServicePhone"
+            tools:layout_editor_absoluteX="146dp" />
+
     </LinearLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

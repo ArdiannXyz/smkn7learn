@@ -31,7 +31,7 @@
         <FrameLayout
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="150dp">
+            android:layout_marginLeft="130dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -50,7 +50,7 @@
         android:layout_weight="1">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="700dp"
+        android:layout_height="match_parent"
         android:background="@drawable/profil"
         android:gravity="center_horizontal"
         android:orientation="vertical"
@@ -58,21 +58,18 @@
         tools:layout_editor_absoluteY="-60dp"> <!-- Center content -->
 
 
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="220dp"
-            >
+            android:layout_height="230dp">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                app:cardCornerRadius="50dp"
-                app:cardElevation="0dp"
-                android:layout_marginTop="30dp"
                 android:layout_marginLeft="160dp"
-                >
+                android:layout_marginTop="30dp"
+                app:cardCornerRadius="50dp"
+                app:cardElevation="0dp">
 
                 <ImageView
                     android:id="@+id/imageView11"
@@ -202,7 +199,7 @@
                 android:layout_marginTop="8dp"
                 android:drawableLeft="@drawable/baseline_menu_book_24"
                 android:drawablePadding="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/passion_one"
                 android:gravity="center|left"
                 android:paddingStart="8dp"
                 android:text="Panduan"
@@ -216,7 +213,7 @@
                 android:layout_marginTop="8dp"
                 android:drawableLeft="@drawable/baseline_lock_reset_24"
                 android:drawablePadding="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/passion_one"
                 android:gravity="center|left"
                 android:paddingStart="8dp"
                 android:text="Ganti Password"

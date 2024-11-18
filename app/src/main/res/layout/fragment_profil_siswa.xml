@@ -31,7 +31,7 @@
         <FrameLayout
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="150dp">
+            android:layout_marginLeft="130dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -201,7 +201,7 @@
                 android:layout_marginTop="8dp"
                 android:drawableLeft="@drawable/baseline_menu_book_24"
                 android:drawablePadding="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/passion_one"
                 android:gravity="center|left"
                 android:paddingStart="8dp"
                 android:text="Panduan"
@@ -215,7 +215,7 @@
                 android:layout_marginTop="8dp"
                 android:drawableLeft="@drawable/baseline_lock_reset_24"
                 android:drawablePadding="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/passion_one"
                 android:gravity="center|left"
                 android:paddingStart="8dp"
                 android:text="Ganti Password"

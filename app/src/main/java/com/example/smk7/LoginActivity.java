@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String cleanedResponse = response.trim();
                                 if (cleanedResponse.startsWith("{")) {
                                     JSONObject jsonResponse = new JSONObject(cleanedResponse);
+                                    Log.d("json_response",jsonResponse.toString());
 
                                     if (jsonResponse.has("message") && jsonResponse.has("role")) {
                                         String message = jsonResponse.getString("message");

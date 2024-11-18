@@ -13,15 +13,16 @@
         android:id="@+id/txt_welcome"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:fontFamily="@font/abeezee"
+        android:layout_marginTop="56dp"
+        android:fontFamily="@font/passion_one"
+        android:letterSpacing="0.08"
         android:lines="2"
-        android:letterSpacing="0.05"
         android:text="Selamat Datang Di Smkn7Learn"
         android:textColor="@color/white"
         android:textSize="40sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.285"
+        app:layout_constraintHorizontal_bias="0.297"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,24 +34,28 @@
         android:text="Masuk"
         android:textSize="18dp"
         android:textStyle="bold"
+        android:textColorHint="@color/white"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_smk7"
-        app:layout_constraintVertical_bias="0.233" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/img_smk7"
         android:layout_width="280dp"
         android:layout_height="280dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="288dp"
+        android:layout_marginTop="170dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonmasuk"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_welcome"
+        app:layout_constraintVertical_bias="0.875"
         app:srcCompat="@drawable/hp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
