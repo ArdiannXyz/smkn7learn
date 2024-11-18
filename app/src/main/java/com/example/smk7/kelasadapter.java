@@ -4,11 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.smk7.kelasmodel;
-import com.example.smk7.R;
 
 import java.util.List;
 
@@ -21,7 +17,7 @@ public class kelasadapter extends RecyclerView.Adapter<kelasadapter.KelasViewHol
 
     @Override
     public KelasViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_kelas, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.carditem_kelas, parent, false);
         return new KelasViewHolder(itemView);
     }
 

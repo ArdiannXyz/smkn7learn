@@ -9,7 +9,6 @@ public class ApiResponse {
     private String message;
     private List<kelasmodel> data;
 
-    // Getter and Setter methods for the fields
     public String getStatus() {
         return status;
     }

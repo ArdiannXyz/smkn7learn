@@ -31,7 +31,6 @@ public class Kelas_guru extends Fragment {
     private List<kelasmodel> kelasList;
 
     public Kelas_guru() {
-        // Required empty public constructor
     }
 
     public static Kelas_guru newInstance(String param1, String param2) {
@@ -46,27 +45,24 @@ public class Kelas_guru extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_kelas_guru, container, false);
 
-        // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Fetch data from API
         fetchKelasData();
 
         return view;
     }
 
     private void fetchKelasData() {
-        // Access ApiService to get Retrofit instance
+
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
 
-        // Call the API to fetch kelas data
+
         Call<ApiResponse> call = apiService.getKelasData();
 
-        // Execute API request asynchronously
         call.enqueue(new Callback<ApiResponse>() {
 
             @Override
@@ -82,17 +78,25 @@ public class Kelas_guru extends Fragment {
                         Toast.makeText(getContext(), "No data found", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    // Log the full response details for debugging
-                    Log.e("API Error", "Response failed with code: " + response.code());
+                    String errorBody = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                        Log.e("API Error", "Error parsing error body: " + e.getMessage());
+                    }
+                    Log.e("API Error", "Response failed with code: " + response.code() +
+                            ", message: " + response.message() +
+                            ", errorBody: " + errorBody);
                     Toast.makeText(getContext(), "API error: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
-
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
                 Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("API Error", t.getMessage());
+                Log.e("API Error", "Request failed: " + t.getMessage(), t);
             }
         });
     }

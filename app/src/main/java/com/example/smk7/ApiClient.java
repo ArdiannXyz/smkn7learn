@@ -11,8 +11,8 @@ public class ApiClient {
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(Db_Contract.BASE_URL)  // Use the base URL from Db_Contract
-                    .addConverterFactory(GsonConverterFactory.create())  // Gson converter for JSON
+                    .baseUrl(Db_Contract.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
         return retrofit;
