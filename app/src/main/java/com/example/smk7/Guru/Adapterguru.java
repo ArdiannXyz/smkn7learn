@@ -18,7 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.smk7.R;
-import com.example.smk7.classdataguru;
+import com.example.smk7.ClassDataGuru;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,12 +30,12 @@ import java.util.List;
 
 public class Adapterguru extends RecyclerView.Adapter<MyViewHolder> {
     private Context context;
-    private List<classdataguru> dataList;
+    private List<ClassDataGuru> dataList;
     private ViewPager2 viewPager2;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
-    public Adapterguru(Context context, List<classdataguru> dataList, ViewPager2 viewPager2) {
+    public Adapterguru(Context context, List<ClassDataGuru> dataList, ViewPager2 viewPager2) {
         this.context = context;
         this.dataList = dataList;
         this.viewPager2 = viewPager2;
@@ -50,7 +50,7 @@ public class Adapterguru extends RecyclerView.Adapter<MyViewHolder> {
     }
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        classdataguru data = dataList.get(position);
+        ClassDataGuru data = dataList.get(position);
         holder.Nip.setText(dataList.get(position).getDataNip());
         holder.NamaGuru.setText(dataList.get(position).getDatanama());
         holder.Email.setText(dataList.get(position).getDataEmail());
@@ -67,7 +67,7 @@ public class Adapterguru extends RecyclerView.Adapter<MyViewHolder> {
 
     }
 
-    private void saveDataToEdit(classdataguru data) {
+    private void saveDataToEdit(ClassDataGuru data) {
         // Menggunakan SharedPreferences
         SharedPreferences prefs = context.getSharedPreferences("EditData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -86,7 +86,7 @@ public class Adapterguru extends RecyclerView.Adapter<MyViewHolder> {
     }
 
     private void deleteData(int position) {
-        classdataguru model = dataList.get(position);
+        ClassDataGuru model = dataList.get(position);
         String uid = model.getDataUid();
 
         new AlertDialog.Builder(context)
@@ -143,7 +143,7 @@ public class Adapterguru extends RecyclerView.Adapter<MyViewHolder> {
     }
 
 
-    public void searchDataList(List<classdataguru> searchList){
+    public void searchDataList(List<ClassDataGuru> searchList){
         dataList = searchList;
         notifyDataSetChanged();
     }

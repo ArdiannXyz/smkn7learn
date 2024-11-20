@@ -1,102 +1,114 @@
 package com.example.smk7;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class LupaPasswordActivity extends AppCompatActivity {private EditText edtEmail;
-    private Button btnNext;
-    private ProgressBar progressBar;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class LupaPasswordActivity extends AppCompatActivity {
+
+    private EditText edt_username_login;
+    private Button btn_masuk_dashboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lupa_password);
 
-        edtEmail = findViewById(R.id.edt_username_login);
-        btnNext = findViewById(R.id.btn_masuk_dashboard);
-        progressBar = findViewById(R.id.progressBar);
+        edt_username_login = findViewById(R.id.edt_username_login);
+        btn_masuk_dashboard = findViewById(R.id.btn_masuk_dashboard);
 
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        btn_masuk_dashboard.setOnClickListener(v -> {
+            String email = edt_username_login.getText().toString().trim();
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetPassword();
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Email tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, "Email tidak valid", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Periksa koneksi internet
+            if (isNetworkConnected()) {
+                cekEmail(email);
+            } else {
+                Toast.makeText(this, "Tidak ada koneksi internet", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void resetPassword() {
-        String email = edtEmail.getText().toString().trim();
+    // Fungsi untuk memeriksa koneksi internet
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
 
-        if (email.isEmpty()) {
-            edtEmail.setError("Email is required!");
-            edtEmail.requestFocus();
-            return;
-        }
+    // Fungsi untuk mengecek email ke server
+    private void cekEmail(String email) {
+        String url = Db_Contract.urlLupaPassword;
+        Log.d("LupaPasswordActivity", "Mengirim request ke: " + url);
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            edtEmail.setError("Please providevalid email!");
-            edtEmail.requestFocus();
-            return;
-        }
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-        progressBar.setVisibility(View.VISIBLE);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        Log.d("LupaPasswordActivity", "Response: " + response);
+                        JSONObject jsonResponse = new JSONObject(response);
+                        boolean status = jsonResponse.getBoolean("status");
+                        String message = jsonResponse.getString("message");
 
-        CollectionReference usersRef = db.collection("users"); // Ganti "users" dengan nama koleksi Anda
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 
-        usersRef.whereEqualTo("email", email).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        progressBar.setVisibility(View.GONE);
-                        if (task.isSuccessful()) {
-                            if (!task.getResult().isEmpty()) {
-                                // Email ditemukan di database Firestore
-                                // Kirim email reset password
-                                auth.sendPasswordResetEmail(email)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Toast.makeText(LupaPasswordActivity.this, "Email reset password telah dikirim!", Toast.LENGTH_SHORT).show();
-                                                    // Arahkan ke LoginActivity
-                                                    Intent intentToLogin = new Intent(LupaPasswordActivity.this, LoginActivity.class);
-                                                    startActivity(intentToLogin);
-                                                    finish(); // Tutup LupaPasswordActivity
-                                                } else {
-                                                    Toast.makeText(LupaPasswordActivity.this, "Gagal mengirim email reset password!", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                            } else {
-                                // Email tidak ditemukan di database Firestore
-                                Toast.makeText(LupaPasswordActivity.this, "Email tidak ada atau belum ditambahkan", Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Toast.makeText(LupaPasswordActivity.this, "Try again! Something wrong happened!", Toast.LENGTH_LONG).show();
+                        if (status) {
+                            // Beralih ke halaman ganti password
+                            Intent intent = new Intent(this, GantiPasswordActivity.class);
+                            intent.putExtra("email", email);
+                            startActivity(intent);
                         }
+                    } catch (JSONException e) {
+                        Log.e("LupaPasswordActivity", "JSON Error: " + e.getMessage());
+                        Toast.makeText(this, "Kesalahan dalam memproses data", Toast.LENGTH_SHORT).show();
                     }
-                });
+                },
+                error -> {
+                    Log.e("LupaPasswordActivity", "Volley Error: " + error.toString());
+                    if (error.networkResponse != null) {
+                        Log.e("LupaPasswordActivity", "HTTP Status Code: " + error.networkResponse.statusCode);
+                    }
+                    Toast.makeText(this, "Terjadi kesalahan jaringan, coba lagi", Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("email", email);
+                return params;
+            }
+        };
+
+        queue.add(stringRequest);
     }
 }

@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smk7.ApiResponse;
 import com.example.smk7.ApiService;
 import com.example.smk7.ApiServiceInterface;
-import com.example.smk7.kelasadapter;
-import com.example.smk7.kelasmodel;
+import com.example.smk7.ClassAdapter;
+import com.example.smk7.ClassModel;
 import com.example.smk7.R;
 
 import java.util.List;
@@ -27,8 +27,8 @@ import retrofit2.Response;
 public class Kelas_guru extends Fragment {
 
     private RecyclerView recyclerView;
-    private kelasadapter kelasAdapter;
-    private List<kelasmodel> kelasList;
+    private ClassAdapter kelasAdapter;
+    private List<ClassModel> kelasList;
 
     public Kelas_guru() {
     }
@@ -69,7 +69,7 @@ public class Kelas_guru extends Fragment {
                     Log.d("API Response", apiResponse != null ? apiResponse.toString() : "No response body");
                     if (apiResponse != null && "success".equals(apiResponse.getStatus())) {
                         kelasList = apiResponse.getData();
-                        kelasAdapter = new kelasadapter(kelasList);
+                        kelasAdapter = new ClassAdapter(kelasList);
                         recyclerView.setAdapter(kelasAdapter);
                     } else {
                         Toast.makeText(getContext(), "No data found", Toast.LENGTH_SHORT).show();

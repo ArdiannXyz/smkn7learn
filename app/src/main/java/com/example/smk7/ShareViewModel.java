@@ -4,16 +4,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.smk7.classdataguru;
-
 public class ShareViewModel extends ViewModel {
-    private final MutableLiveData<classdataguru> selectedData = new MutableLiveData<>();
+    private final MutableLiveData<ClassDataGuru> selectedData = new MutableLiveData<>();
 
-    public void setSelectedData(classdataguru data) {
+    public void setSelectedData(ClassDataGuru data) {
         selectedData.setValue(data);
     }
 
-    public LiveData<classdataguru> getSelectedData() {
+    public LiveData<ClassDataGuru> getSelectedData() {
         return selectedData;
     }
 }

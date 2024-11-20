@@ -1,6 +1,6 @@
 package com.example.smk7;
 
-public class classdataguru {
+public class ClassDataGuru {
 
     private String role;
     private String uid;
@@ -29,7 +29,7 @@ public class classdataguru {
     public String getDatanama() {
         return datanama;
     }
-    public classdataguru(String dataNip, String datanama, String email ,String uid, String role) {
+    public ClassDataGuru(String dataNip, String datanama, String email , String uid, String role) {
         this.dataNip = dataNip;
         this.datanama = datanama;
         this.email = email;
@@ -37,6 +37,6 @@ public class classdataguru {
         this.role = role;
 
     }
-    public classdataguru(){
+    public ClassDataGuru(){
     }
 }

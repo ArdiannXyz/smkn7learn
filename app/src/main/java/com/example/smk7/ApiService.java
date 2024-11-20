@@ -9,7 +9,7 @@ public class ApiService {
         if (retrofit == null) {
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://192.168.25.105/WebNewbieTeam/")
+                    .baseUrl("http://10.10.180.189/WebNewbieTeam/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 

@@ -1,5 +1,4 @@
 package com.example.smk7;
-import com.example.smk7.kelasmodel;
 
 import java.util.List;
 
@@ -7,7 +6,7 @@ public class ApiResponse {
 
     private String status;
     private String message;
-    private List<kelasmodel> data;
+    private List<ClassModel> data;
 
     public String getStatus() {
         return status;
@@ -21,10 +20,10 @@ public class ApiResponse {
     public void setMessage(String message) {
         this.message = message;
     }
-    public List<kelasmodel> getData() {
+    public List<ClassModel> getData() {
         return data;
     }
-    public void setData(List<kelasmodel> data) {
+    public void setData(List<ClassModel> data) {
         this.data = data;
     }
 }

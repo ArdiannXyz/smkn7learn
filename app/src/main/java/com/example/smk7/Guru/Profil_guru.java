@@ -10,13 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView; // Tambahkan import untuk TextView
 
 import com.example.smk7.LoginActivity;
+import com.example.smk7.LupaPasswordActivity; // Tambahkan import untuk LupaPasswordActivity
 import com.example.smk7.R;
 
 
 public class Profil_guru extends Fragment {
-    private Button ViewButton, EditButton, LogoutButton ;
+    private Button ViewButton, EditButton, LogoutButton;
+    private TextView textView_gantipw; // Deklarasi TextView
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -26,7 +29,7 @@ public class Profil_guru extends Fragment {
         ViewButton = view.findViewById(R.id.btn_view);
         LogoutButton = view.findViewById(R.id.btn_Logout);
         EditButton = view.findViewById(R.id.btn_edt);
-
+        textView_gantipw = view.findViewById(R.id.textView_gantipw); // Inisialisasi TextView
 
         ViewButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
@@ -39,17 +42,23 @@ public class Profil_guru extends Fragment {
                 ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(8);
             }
         });
+
         LogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
-
                 startActivity(intent);
             }
         });
+
+        textView_gantipw.setOnClickListener(new View.OnClickListener() { // Listener untuk TextView
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LupaPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return view;
-
     }
-
 }

@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class kelasadapter extends RecyclerView.Adapter<kelasadapter.KelasViewHolder> {
-    private List<kelasmodel> kelasList;
+public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.KelasViewHolder> {
+    private List<ClassModel> kelasList;
 
-    public kelasadapter(List<kelasmodel> kelasList) {
+    public ClassAdapter(List<ClassModel> kelasList) {
         this.kelasList = kelasList;
     }
     @Override
@@ -22,7 +22,7 @@ public class kelasadapter extends RecyclerView.Adapter<kelasadapter.KelasViewHol
 
     @Override
     public void onBindViewHolder(KelasViewHolder holder, int position) {
-        kelasmodel kelas = kelasList.get(position);
+        ClassModel kelas = kelasList.get(position);
         holder.id_Kelas.setText(kelas.getid_kelas());
         holder.namaKelas.setText(kelas.getnama_kelas());
         holder.tahunAjaran.setText(kelas.gettahun_ajar());

@@ -1,8 +1,6 @@
 package com.example.smk7;
 
-import java.util.List;
-
-public class kelasmodel {
+public class ClassModel {
 
     private String id_kelas;
     private String nama_kelas;
