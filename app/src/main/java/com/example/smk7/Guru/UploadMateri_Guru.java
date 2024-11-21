@@ -1,20 +1,13 @@
 package com.example.smk7.Guru;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import androidx.fragment.app.Fragment;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.example.smk7.R;
 
-
-
-public class UploadMateri_Guru extends Fragment {
-
-
-
-
+public class UploadMateri_Guru extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_upload_materi_guru);
+    }
 }
