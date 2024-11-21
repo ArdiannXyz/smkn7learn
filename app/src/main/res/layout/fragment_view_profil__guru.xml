@@ -39,22 +39,26 @@
                     android:id="@+id/imageView11"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/user"/>
 
 
             </androidx.cardview.widget.CardView>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/editprofil"
                 android:layout_width="100dp"
                 android:layout_height="35dp"
                 android:layout_marginLeft="150dp"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/white"
+                android:background="@drawable/button_click"
                 android:elevation="0dp"
-                android:text="Edit Button"
-                android:textColor="@color/birulivin"
+                app:backgroundTint="@null"
+                android:text="Edit Profil"
+                android:textColor="@drawable/buttontext_click"
+                android:textColorLink="@null"
                 android:textSize="10dp"
-                android:theme="@style/Widget.MaterialComponents.Button.TextButton" />
+                android:theme="@style/Widget.MaterialComponents.Button.TextButton"/>
 
 
         </LinearLayout>

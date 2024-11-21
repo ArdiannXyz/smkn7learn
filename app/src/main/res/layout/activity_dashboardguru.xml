@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:background="@color/birulivin"
         app:itemIconTint="@drawable/bottom_nav_colors"
-        app:itemTextColor="@drawable/bottom_nav_colors"
+        app:itemTextColor="@drawable/bottomtext_nav"
         app:menu="@menu/bottom_navguru" />
 
 

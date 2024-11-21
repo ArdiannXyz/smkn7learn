@@ -3,6 +3,15 @@
     <style name="Base.Theme.Smkn7Learnn" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:windowBackground">@color/white</item>
         <item name="colorPrimary">@color/primary</item>
+
+    </style>
+
+    <style name="CustomButtonStyle" parent="Widget.Material3.Button">
+        <item name="shapeAppearance">@style/CustomButtonShape</item>
+    </style>
+
+    <style name="CustomButtonShape" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">16dp</item>
     </style>
 
     <style name="Theme.Smkn7Learnn" parent="Base.Theme.Smkn7Learnn" />

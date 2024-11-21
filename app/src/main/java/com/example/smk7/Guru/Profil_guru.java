@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView; // Tambahkan import untuk TextView
 
+import com.example.smk7.GantiPasswordActivity;
 import com.example.smk7.LoginActivity;
 import com.example.smk7.LupaPasswordActivity; // Tambahkan import untuk LupaPasswordActivity
 import com.example.smk7.R;
@@ -54,7 +55,7 @@ public class Profil_guru extends Fragment {
         textView_gantipw.setOnClickListener(new View.OnClickListener() { // Listener untuk TextView
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LupaPasswordActivity.class);
+                Intent intent = new Intent(getActivity(), GantiPasswordActivity.class);
                 startActivity(intent);
             }
         });

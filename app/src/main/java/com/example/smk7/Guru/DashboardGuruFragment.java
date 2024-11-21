@@ -51,7 +51,7 @@ public class DashboardGuruFragment extends Fragment {
         executor.execute(() -> {
             try {
                 // Ganti URL ini dengan endpoint API Anda
-                String apiUrl = "http://192.168.25.105/WebNewbieTeam/api_dashboard.php";  // Pastikan API URL sesuai
+                String apiUrl = "http://192.168.25.111/WebNewbieTeam/api_dashboard.php";  // Pastikan API URL sesuai
 
                 // Mengirim request GET dan mengambil respons
                 String response = HttpRequest.get(apiUrl).body();

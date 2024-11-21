@@ -16,7 +16,7 @@ import com.example.smk7.R;
 
 
 public class ViewProfil_Guru extends Fragment {
-    private Button BackButton ;
+    private Button BackButton , Editprofil;
     private BottomNavigationHandler navigationHandler;
 
     @Override
@@ -37,6 +37,8 @@ public class ViewProfil_Guru extends Fragment {
         return view;
 
     }
+
+
 
     @Override
     public void onAttach(@NonNull Context context) {
