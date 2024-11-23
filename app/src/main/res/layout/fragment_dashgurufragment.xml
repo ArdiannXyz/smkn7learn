@@ -152,7 +152,7 @@
 
 
                     <TextView
-                        android:id="@+id/txttugas"
+                        android:id="@+id/txtmapel"
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"
                         android:autoSizeMaxTextSize="20dp"
@@ -170,12 +170,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tugas"
+                        android:text="Mapel"
                         android:textColor="@color/birulivin"
                         android:textSize="20dp"
-                        app:layout_constraintEnd_toEndOf="@+id/txttugas"
-                        app:layout_constraintStart_toStartOf="@+id/txttugas"
-                        app:layout_constraintTop_toBottomOf="@+id/txttugas" />
+                        app:layout_constraintEnd_toEndOf="@+id/txtmapel"
+                        app:layout_constraintStart_toStartOf="@+id/txtmapel"
+                        app:layout_constraintTop_toBottomOf="@+id/txtmapel" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

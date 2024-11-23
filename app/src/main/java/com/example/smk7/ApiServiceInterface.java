@@ -6,4 +6,6 @@ import retrofit2.http.GET;
 public interface ApiServiceInterface {
     @GET("api_kelas_guru.php")
     Call<ApiResponse> getKelasData();
+    @GET("api_mapelguru.php")
+    Call<ApiResponse> getMapelData();
 }

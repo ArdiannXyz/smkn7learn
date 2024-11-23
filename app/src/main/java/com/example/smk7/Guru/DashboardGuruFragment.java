@@ -19,78 +19,84 @@ import java.util.concurrent.Executors;
 
 public class DashboardGuruFragment extends Fragment {
 
-    private TextView txtKelas, txtMateri, txtTugas, txtSiswa;
+    private TextView txtKelas, txtMateri, txtMapel, txtSiswa;
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashgurufragment, container, false);
 
-        // Mengakses TextView dari layout fragment
         txtKelas = view.findViewById(R.id.txtkelas);
         txtMateri = view.findViewById(R.id.txtmateri);
-        txtTugas = view.findViewById(R.id.txttugas);
+        txtMapel = view.findViewById(R.id.txtmapel);
         txtSiswa = view.findViewById(R.id.txtsiswa);
 
-        // Menambahkan event listener untuk linearLayouts
-        LinearLayout linearLayoutmateriguru = view.findViewById(R.id.uploadmateriguru);
-        LinearLayout linearLayouttugasguru = view.findViewById(R.id.uploadtugasguru);
-        LinearLayout linearLayoutdatatugas = view.findViewById(R.id.datatugas);
+        LinearLayout linearLayoutMateriGuru = view.findViewById(R.id.uploadmateriguru);
+        LinearLayout linearLayoutTugasGuru = view.findViewById(R.id.uploadtugasguru);
+        LinearLayout linearLayoutDataTugas = view.findViewById(R.id.datatugas);
 
-        linearLayoutmateriguru.setOnClickListener(v -> openFragment(3));
-        linearLayouttugasguru.setOnClickListener(v -> openFragment(4));
-        linearLayoutdatatugas.setOnClickListener(v -> openFragment(5));
+        linearLayoutMateriGuru.setOnClickListener(v -> {
+            System.out.println("Upload Materi button clicked");
+            openFragment(3);
+        });
 
-        // Memanggil fungsi untuk mengambil data dari server
+        linearLayoutTugasGuru.setOnClickListener(v -> {
+            System.out.println("Upload Tugas button clicked");
+            openFragment(4);
+        });
+
+        linearLayoutDataTugas.setOnClickListener(v -> {
+            System.out.println("Bank Tugas button clicked");
+            openFragment(5);
+        });
+
         fetchDataFromServer();
 
         return view;
     }
 
     private void fetchDataFromServer() {
-        // Menjalankan pengambilan data dari API di background thread
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                // Ganti URL ini dengan endpoint API Anda
-                String apiUrl = "http://192.168.25.111/WebNewbieTeam/api_dashboard.php";  // Pastikan API URL sesuai
 
-                // Mengirim request GET dan mengambil respons
+                String apiUrl = "http://192.168.25.103/WebNewbieTeam/api_dashboard.php";
+
                 String response = HttpRequest.get(apiUrl).body();
 
-                // Parsing response JSON
                 JSONObject jsonObject = new JSONObject(response);
                 JSONObject data = jsonObject.getJSONObject("data");
 
-                // Ambil jumlah data dari setiap kategori
                 int kelasCount = data.getJSONObject("kelas").getInt("total_records");
                 int materiCount = data.getJSONObject("materi").getInt("total_records");
-                int tugasCount = data.getJSONObject("tugas").getInt("total_records");
+                int mapelCount = data.getJSONObject("mapel").getInt("total_records");
                 int siswaCount = data.getJSONObject("siswa").getInt("total_records");
 
-                getActivity().runOnUiThread(() -> {
-
-                    if (txtKelas != null) {
-                        txtKelas.setText(String.valueOf(kelasCount));  // Pastikan menggunakan String.valueOf untuk int
-                    }
-                    if (txtMateri != null) {
-                        txtMateri.setText(String.valueOf(materiCount));  // Pastikan menggunakan String.valueOf untuk int
-                    }
-                    if (txtTugas != null) {
-                        txtTugas.setText(String.valueOf(tugasCount));  // Pastikan menggunakan String.valueOf untuk int
-                    }
-                    if (txtSiswa != null) {
-                        txtSiswa.setText(String.valueOf(siswaCount));  // Pastikan menggunakan String.valueOf untuk int
-                    }
-                });
-
-
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        updateDashboardUI(kelasCount, materiCount, mapelCount, siswaCount);
+                    });
+                }
             } catch (Exception e) {
-                e.printStackTrace();  // Menangani error jika ada masalah dengan request atau parsing JSON
+                e.printStackTrace();
+
+                System.out.println("Error fetching data: " + e.getMessage());
             }
         });
     }
 
+
+    private void updateDashboardUI(int kelas, int materi, int mapel, int siswa) {
+        if (txtKelas != null) txtKelas.setText(String.valueOf(kelas));
+        if (txtMateri != null) txtMateri.setText(String.valueOf(materi));
+        if (txtMapel != null) txtMapel.setText(String.valueOf(mapel));
+        if (txtSiswa != null) txtSiswa.setText(String.valueOf(siswa));
+    }
+
     private void openFragment(int position) {
-        // Pindah ke fragment yang diinginkan di ViewPager2
-        ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(position);
+        System.out.println("Navigating to fragment at position: " + position);
+        if (getActivity() instanceof DashboardGuru) {
+            // Navigasi ke fragment dengan posisi tertentu tanpa animasi
+            ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(position, false);
+        }
     }
 }
