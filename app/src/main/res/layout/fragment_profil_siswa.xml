@@ -193,7 +193,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/textView22"
+                android:id="@+id/textView_gantipw_siswa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

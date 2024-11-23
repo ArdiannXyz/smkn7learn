@@ -18,6 +18,7 @@ firebaseAuth = "23.1.0"
 gbutton = "v1.0.19"
 playServicesAuth = "20.4.0"
 firebaseFunctions = "21.0.0"
+navigationFragment = "2.8.4"
 
 [libraries]
 gbutton = { group = "com.github.TutorialsAndroid", name = "GButton", version.ref = "gbutton" }
@@ -38,6 +39,7 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-functions = { group = "com.google.firebase", name = "firebase-functions", version.ref = "firebaseFunctions" }
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

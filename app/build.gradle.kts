@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.functions)
     implementation(libs.glide)
+    implementation(libs.navigation.fragment)
     annotationProcessor(libs.glideCompiler)
     implementation(libs.fab)
     implementation("com.android.volley:volley:1.2.1")
