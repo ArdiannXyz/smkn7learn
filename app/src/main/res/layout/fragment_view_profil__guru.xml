@@ -20,7 +20,7 @@
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="270dp"
+            android:layout_height="240dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -83,20 +83,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="Nama"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/nama"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="Muhammad Fajar Ramadhan"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -106,20 +106,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="NIP"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView19"
+                android:id="@+id/nip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="3967412951"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -129,20 +129,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="Jabatan"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/edt_kelas"
+                android:id="@+id/jabatan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="Guru Honorer"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -152,20 +152,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="Pendidikan"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/edt_jurusan"
+                android:id="@+id/pendidikan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="S1 Sabung Ayam"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -175,7 +175,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="Alamat"
                 android:textColor="@color/black"
                 android:textSize="18sp"
@@ -186,8 +186,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="10dp"
-                android:fontFamily="@font/abeezee"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/tiltwarp"
                 android:text="Jakarta"
                 android:textColor="@color/black"
                 android:textSize="16sp" />

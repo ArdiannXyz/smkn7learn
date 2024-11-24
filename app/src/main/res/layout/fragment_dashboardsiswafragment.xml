@@ -55,8 +55,9 @@
 
         <LinearLayout
             android:layout_width="385dp"
-            android:layout_height="120dp"
+            android:layout_height="110dp"
             android:layout_marginTop="5dp"
+
             android:background="@drawable/white_background">
 
             <androidx.cardview.widget.CardView
@@ -83,25 +84,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:orientation="vertical"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/tiltwarp"
                     android:text="Marshal Matters"
-                    android:textSize="25dp"
-                    android:textStyle="bold"
                     android:textColor="@color/birulivin"
+                    android:textSize="25dp"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/tiltwarp"
                     android:text="E4123999"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
                     android:textColor="@color/birulivin"
+                    android:textSize="20dp"
                     />
 
             </LinearLayout>
@@ -127,10 +129,10 @@
                 android:id="@+id/materisiswa"
                 android:layout_width="160dp"
                 android:layout_height="150dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginEnd="30dp"
                 android:background="@drawable/white_background"
                 android:orientation="vertical">
 
@@ -157,7 +159,7 @@
                 android:id="@+id/tugassiswa"
                 android:layout_width="160dp"
                 android:layout_height="150dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginRight="20dp"
