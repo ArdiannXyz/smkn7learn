@@ -88,6 +88,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/tiltwarp"
                         android:text="Kelas"
                         android:textColor="@color/birulivin"
                         android:textSize="20dp"
@@ -124,6 +125,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/tiltwarp"
                         android:text="Materi"
                         android:textColor="@color/birulivin"
                         android:textSize="20dp"
@@ -170,6 +172,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/tiltwarp"
                         android:text="Tugas"
                         android:textColor="@color/birulivin"
                         android:textSize="20dp"
@@ -206,6 +209,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/tiltwarp"
                         android:text="Murid"
                         android:textColor="@color/birulivin"
                         android:textSize="20dp"

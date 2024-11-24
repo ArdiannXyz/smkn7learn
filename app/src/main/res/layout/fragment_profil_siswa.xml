@@ -96,23 +96,23 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/nama1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="Nama"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/nama"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="Muhammad Fajar Ramadhan"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -122,18 +122,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="NISN"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView19"
+                android:id="@+id/nisn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:fontFamily="@font/abeezee"
+                android:fontFamily="@font/tiltwarp"
                 android:text="3967412951"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -185,7 +185,7 @@
                 android:layout_marginTop="8dp"
                 android:drawableLeft="@drawable/baseline_menu_book_24"
                 android:drawablePadding="8dp"
-                android:fontFamily="@font/passion_one"
+                android:fontFamily="@font/tiltwarp"
                 android:gravity="center|left"
                 android:paddingStart="8dp"
                 android:text="Panduan"
@@ -199,7 +199,7 @@
                 android:layout_marginTop="8dp"
                 android:drawableLeft="@drawable/baseline_lock_reset_24"
                 android:drawablePadding="8dp"
-                android:fontFamily="@font/passion_one"
+                android:fontFamily="@font/tiltwarp"
                 android:gravity="center|left"
                 android:paddingStart="8dp"
                 android:text="Ganti Password"
