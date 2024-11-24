@@ -1,6 +1,7 @@
 package com.example.smk7.Guru;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.smk7.Db_Contract;
 import com.example.smk7.R;
 
 import org.json.JSONObject;
@@ -59,9 +61,11 @@ public class DashboardGuruFragment extends Fragment {
         executor.execute(() -> {
             try {
 
-                String apiUrl = "http://192.168.25.103/WebNewbieTeam/api_dashboard.php";
+                // Menggunakan URL dari Db_Contract
+                String apiDashboardUrl = Db_Contract.urlApiDashboard; // URL untuk dashboard
+                Log.d("URL_Dashboard", apiDashboardUrl);
 
-                String response = HttpRequest.get(apiUrl).body();
+                String response = HttpRequest.get(apiDashboardUrl).body();
 
                 JSONObject jsonObject = new JSONObject(response);
                 JSONObject data = jsonObject.getJSONObject("data");

@@ -63,11 +63,13 @@ public class GantiPasswordActivity extends AppCompatActivity {
     }
 
     private void resetPassword(String email, String newPassword) {
-        String url = "http://192.168.140.109/WebNewbieTeam/reset_password.php";
+        // Menggunakan URL dari Db_Contract
+        String urlResetPassword = Db_Contract.urlGantiPassword; // URL untuk reset password
+        Log.d("URL_Reset_Password", urlResetPassword);
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        StringRequest request = new StringRequest(Request.Method.POST, url,
+        StringRequest request = new StringRequest(Request.Method.POST, urlResetPassword,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

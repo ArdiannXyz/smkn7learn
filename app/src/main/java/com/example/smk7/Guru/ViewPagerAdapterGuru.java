@@ -27,10 +27,8 @@ public class ViewPagerAdapterGuru extends FragmentStateAdapter {
             case 5:
                 return new BankTugasKelas_Guru();
             case 6:
-                return new Profil_guru();
-            case 7:
                 return new ViewProfil_Guru();
-            case 8:
+            case 7:
                 return new EditProfil_Guru();
             default:
                 return new DashboardGuruFragment(); // Default fragment

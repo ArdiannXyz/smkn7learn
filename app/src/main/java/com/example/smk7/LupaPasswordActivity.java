@@ -52,12 +52,13 @@ public class LupaPasswordActivity extends AppCompatActivity {
     }
 
     private void checkEmail(String email) {
-        String url = "http://192.168.140.109/WebNewbieTeam/check_email.php";
+        // Menggunakan URL dari Db_Contract
+        String urlCheckEmail = Db_Contract.urlLupaPassword; // URL untuk cek email
         Log.d("LupaPassword", "Checking email: " + email);  // Log email yang sedang dicek
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        StringRequest request = new StringRequest(Request.Method.POST, url,
+        StringRequest request = new StringRequest(Request.Method.POST, urlCheckEmail,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
