@@ -1,30 +1,30 @@
-package com.example.smk7.Guru;
+package com.example.smk7.RecycleTugasGuru;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import com.example.smk7.BottomNavigationHandler;
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
-public class BankTugasKelas_Guru extends Fragment {
+
+public class UploadTugasMapelGuru extends Fragment {
     private ImageView BackButton;
     private BottomNavigationHandler navigationHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_bank_tugas_kelas_guru, container, false);
-
-        BackButton = view.findViewById(R.id.back_button);
-
-
+        View view = inflater.inflate(R.layout.fragment_tugasmapelguru, container, false);
+        BackButton = view.findViewById(R.id.back_Button);
         BackButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
                 ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(0);

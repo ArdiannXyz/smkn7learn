@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smk7.ApiResponse;
 import com.example.smk7.ApiService;
 import com.example.smk7.ApiServiceInterface;
-import com.example.smk7.KelasAdapter;
-import com.example.smk7.ClassModel;
+import com.example.smk7.Adapter.KelasAdapter;
+import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class Kelas_guru extends Fragment {
 
     private RecyclerView recyclerView;
     private KelasAdapter kelasAdapter;
-    private List<ClassModel> kelasList;
+    private List<KelasModel> kelasList;
 
     public Kelas_guru() {
     }

@@ -1,4 +1,4 @@
-package com.example.smk7.Guru;
+package com.example.smk7.Recyclemateriguru;
 
 import android.os.Bundle;
 
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
 public class UploadMateriView_Guru extends Fragment {
@@ -18,7 +19,7 @@ public class UploadMateriView_Guru extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_materi_kelas__guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_materi_mapel_guru, container, false);
 
         BackButton = view.findViewById(R.id.back_Button);
 

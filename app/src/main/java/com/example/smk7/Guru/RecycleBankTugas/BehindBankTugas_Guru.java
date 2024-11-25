@@ -1,4 +1,4 @@
-package com.example.smk7.Guru;
+package com.example.smk7.Guru.RecycleBankTugas;
 
 import android.os.Bundle;
 
@@ -12,10 +12,10 @@ import com.example.smk7.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link BankTugasView_Guru#newInstance} factory method to
+ * Use the {@link BehindBankTugas_Guru#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BankTugasView_Guru extends Fragment {
+public class BehindBankTugas_Guru extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class BankTugasView_Guru extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public BankTugasView_Guru() {
+    public BehindBankTugas_Guru() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class BankTugasView_Guru extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment BankTugasView_Guru.
+     * @return A new instance of fragment BehindBankTugas_Guru.
      */
     // TODO: Rename and change types and number of parameters
-    public static BankTugasView_Guru newInstance(String param1, String param2) {
-        BankTugasView_Guru fragment = new BankTugasView_Guru();
+    public static BehindBankTugas_Guru newInstance(String param1, String param2) {
+        BehindBankTugas_Guru fragment = new BehindBankTugas_Guru();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class BankTugasView_Guru extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bank_tugas_view__guru, container, false);
+        return inflater.inflate(R.layout.fragment_behind_bank_tugas__guru, container, false);
     }
 }

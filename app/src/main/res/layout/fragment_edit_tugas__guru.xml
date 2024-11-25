@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Guru.EditTugas_Guru"
+    tools:context=".RecycleTugasGuru.EditTugas_Guru"
     android:orientation="vertical">
 
     <LinearLayout

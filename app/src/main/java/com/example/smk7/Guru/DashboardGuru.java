@@ -18,7 +18,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class DashboardGuru extends AppCompatActivity implements BottomNavigationHandler {
 
-    ViewPager2 viewPager2;
+    public ViewPager2 viewPager2;
     ViewPagerAdapterGuru viewPagerAdapterguru;
     BottomNavigationView bottomNavigationView;
 
@@ -33,6 +33,8 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
         viewPagerAdapterguru = new ViewPagerAdapterGuru(this);
         viewPager2.setAdapter(viewPagerAdapterguru);
         viewPager2.setUserInputEnabled(true);
+
+
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")

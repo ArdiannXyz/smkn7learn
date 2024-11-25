@@ -62,7 +62,7 @@ public class DashboardGuruFragment extends Fragment {
             try {
 
                 // Menggunakan URL dari Db_Contract
-                String apiDashboardUrl = Db_Contract.urlApiDashboard; // URL untuk dashboard
+                String apiDashboardUrl = Db_Contract.urlApiDashboard;
                 Log.d("URL_Dashboard", apiDashboardUrl);
 
                 String response = HttpRequest.get(apiDashboardUrl).body();

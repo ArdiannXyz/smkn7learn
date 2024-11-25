@@ -9,7 +9,7 @@ public class ApiClient {
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(Db_Contract.BASE_URL) // Menggunakan BASE_URL dari Db_Contract
+                    .baseUrl(Db_Contract.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

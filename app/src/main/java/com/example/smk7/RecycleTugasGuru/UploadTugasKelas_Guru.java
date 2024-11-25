@@ -1,4 +1,4 @@
-package com.example.smk7.Guru;
+package com.example.smk7.RecycleTugasGuru;
 
 import android.os.Bundle;
 
@@ -12,10 +12,10 @@ import com.example.smk7.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link EditTugas_Guru#newInstance} factory method to
+ * Use the {@link UploadTugasKelas_Guru#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditTugas_Guru extends Fragment {
+public class UploadTugasKelas_Guru extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class EditTugas_Guru extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public EditTugas_Guru() {
+    public UploadTugasKelas_Guru() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class EditTugas_Guru extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment EditTugas_Guru.
+     * @return A new instance of fragment UploadTugasKelas_Guru.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditTugas_Guru newInstance(String param1, String param2) {
-        EditTugas_Guru fragment = new EditTugas_Guru();
+    public static UploadTugasKelas_Guru newInstance(String param1, String param2) {
+        UploadTugasKelas_Guru fragment = new UploadTugasKelas_Guru();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class EditTugas_Guru extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_tugas__guru, container, false);
+        return inflater.inflate(R.layout.fragment_upload_tugas_kelas__guru, container, false);
     }
 }

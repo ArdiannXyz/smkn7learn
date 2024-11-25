@@ -1,4 +1,4 @@
-package com.example.smk7;
+package com.example.smk7.Model;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,30 +1,29 @@
-package com.example.smk7.Guru;
+package com.example.smk7.Guru.RecycleBankTugas;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.example.smk7.BottomNavigationHandler;
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
-
-public class TugasKelas_Guru extends Fragment {
+public class BankTugasMapel_Guru extends Fragment {
     private ImageView BackButton;
     private BottomNavigationHandler navigationHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tugas_kelas__guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_bank_tugas_mapel_guru, container, false);
 
-        BackButton = view.findViewById(R.id.back_Button);
+        BackButton = view.findViewById(R.id.back_button);
 
 
         BackButton.setOnClickListener(v -> {

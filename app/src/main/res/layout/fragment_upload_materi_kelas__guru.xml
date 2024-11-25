@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Guru.TugasKelas_Guru"
+    tools:context=".Recyclemateriguru.UploadMateriKelas_Guru"
     android:orientation="vertical">
 
     <LinearLayout

@@ -1,10 +1,11 @@
-package com.example.smk7.Guru;
+package com.example.smk7.Recyclemateriguru;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,33 +13,41 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.smk7.ApiResponse;
 import com.example.smk7.ApiService;
 import com.example.smk7.ApiServiceInterface;
-import com.example.smk7.MateriAdapter;
-import com.example.smk7.MateriModel;
+import com.example.smk7.Guru.DashboardGuru;
+import com.example.smk7.Adapter.MateriAdapter;
+import com.example.smk7.Model.MateriModel;
 import com.example.smk7.R;
 
 import java.io.IOException;
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MateriKelas_Guru extends Fragment {
+public class UploadMateriMapel_Guru extends Fragment {
 
     private RecyclerView recyclerView;
     private MateriAdapter materiAdapter;
     private List<MateriModel> materiList;
+    private ImageView backButton;
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_materi_mapel_guru, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_materi_kelas__guru, container, false);
+        backButton = view.findViewById(R.id.back_Button);
+        backButton.setOnClickListener(v -> {
+            if (getActivity() instanceof DashboardGuru) {
+                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(0);
+            }
+        });
 
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -49,7 +58,6 @@ public class MateriKelas_Guru extends Fragment {
     }
 
     private void fetchMapelData() {
-
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
         Call<ApiResponse> call = apiService.getMapelData();
 
@@ -62,9 +70,10 @@ public class MateriKelas_Guru extends Fragment {
                     Log.d("API Response", apiResponse.toString());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        List<MateriModel> materiList = apiResponse.getMateriModel();
+                        materiList = apiResponse.getMateriModel();
                         if (materiList != null && !materiList.isEmpty()) {
-                            materiAdapter = new MateriAdapter(materiList);
+                            ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
+                            materiAdapter = new MateriAdapter(materiList , viewPager);
                             recyclerView.setAdapter(materiAdapter);
                         } else {
                             Log.e("API Response", "materiModel is null or empty");
@@ -73,9 +82,7 @@ public class MateriKelas_Guru extends Fragment {
                     } else {
                         Toast.makeText(getContext(), "API error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-
                 } else {
-                    // Logging error body
                     String errorBody = "";
                     try {
                         if (response.errorBody() != null) {
