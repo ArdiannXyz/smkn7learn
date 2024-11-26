@@ -1,5 +1,6 @@
 package com.example.smk7.Adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +17,17 @@ import java.util.List;
 public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHolder> {
 
     private List<KelasModel> kelasList;
+    private OnItemClickListener listener;
 
-    // Constructor untuk menerima list data
-    public
+    // Interface untuk menangkap klik item
+    public interface OnItemClickListener {
+        void onItemClick(String idKelas, String namaKelas);
+    }
 
-
-    KelasAdapter(List<KelasModel> kelasList) {
+    // Constructor untuk menerima list data dan listener
+    public KelasAdapter(List<KelasModel> kelasList, OnItemClickListener listener) {
         this.kelasList = kelasList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -37,13 +42,25 @@ public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHol
     public void onBindViewHolder(@NonNull KelasViewHolder holder, int position) {
         KelasModel kelas = kelasList.get(position);
 
+        // Log untuk memastikan data yang ada di adapter
+        Log.d("KelasAdapter", "ID Kelas: " + kelas.getId_kelas() + ", Nama Kelas: " + kelas.getNama_kelas());
+
+        // Set data ke view
         holder.namaKelas.setText(kelas.getNama_kelas());
         holder.waliKelas.setText(kelas.getWali_kelas());
+
+        // Listener untuk item RecyclerView
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                Log.d("KelasAdapter", "Mengirim ID Kelas: " + kelas.getId_kelas() + ", Nama Kelas: " + kelas.getNama_kelas());
+                listener.onItemClick(kelas.getId_kelas(), kelas.getNama_kelas());
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return kelasList != null ? kelasList.size() : 0; // Hindari NullPointerException
+        return kelasList != null ? kelasList.size() : 0;
     }
 
     public static class KelasViewHolder extends RecyclerView.ViewHolder {

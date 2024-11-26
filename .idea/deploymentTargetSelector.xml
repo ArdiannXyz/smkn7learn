@@ -13,10 +13,10 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="DashboardGuru">
+      <SelectionState runConfigName="UploadMateri_Guru">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="DashboardSiswa">
+      <SelectionState runConfigName="DashboardGuru">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

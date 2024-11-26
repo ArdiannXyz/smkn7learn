@@ -1,4 +1,4 @@
-package com.example.smk7.Guru.RecycleBankTugas;
+package com.example.smk7.RecycleBankTugas;
 
 import android.content.Context;
 import android.os.Bundle;

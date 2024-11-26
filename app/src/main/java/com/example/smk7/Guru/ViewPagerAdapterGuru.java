@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.smk7.Guru.RecycleBankTugas.BankTugasMapel_Guru;
+import com.example.smk7.RecycleBankTugas.BankTugasMapel_Guru;
 import com.example.smk7.RecycleTugasGuru.UploadTugasMapelGuru;
 import com.example.smk7.Recyclemateriguru.UploadMateriKelas_Guru;
 import com.example.smk7.Recyclemateriguru.UploadMateriMapel_Guru;
