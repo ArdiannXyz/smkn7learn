@@ -46,6 +46,13 @@
         <activity
             android:name=".Recyclemateriguru.UploadMateri_Guru"
             android:exported="true" />
+        <activity
+            android:name=".Recyclemateriguru.UploadMateriKelas_Guru"
+            android:exported="true" />
+        <activity
+            android:name=".Recyclemateriguru.RecyleViewMateri_Guru"
+            android:exported="true" />
+
 
         <meta-data
             android:name="preloaded_fonts"

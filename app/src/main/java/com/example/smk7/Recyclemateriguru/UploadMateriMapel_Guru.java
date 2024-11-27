@@ -19,8 +19,8 @@ import com.example.smk7.ApiResponse;
 import com.example.smk7.ApiService;
 import com.example.smk7.ApiServiceInterface;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Adapter.MateriAdapter;
-import com.example.smk7.Model.MateriModel;
+import com.example.smk7.Adapter.MapelAdapter;
+import com.example.smk7.Model.MapelModel;
 import com.example.smk7.R;
 
 import java.io.IOException;
@@ -33,8 +33,8 @@ import retrofit2.Response;
 public class UploadMateriMapel_Guru extends Fragment {
 
     private RecyclerView recyclerView;
-    private MateriAdapter materiAdapter;
-    private List<MateriModel> materiList;
+    private MapelAdapter mapelAdapter;
+    private List<MapelModel> mapelList;
     private ImageView backButton;
 
     @Nullable
@@ -66,15 +66,14 @@ public class UploadMateriMapel_Guru extends Fragment {
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ApiResponse apiResponse = response.body();
-
                     Log.d("API Response", apiResponse.toString());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        materiList = apiResponse.getMateriModel();
-                        if (materiList != null && !materiList.isEmpty()) {
+                        mapelList = apiResponse.getMapelModel();
+                        if (mapelList != null && !mapelList.isEmpty()) {
                             ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-                            materiAdapter = new MateriAdapter(materiList , viewPager);
-                            recyclerView.setAdapter(materiAdapter);
+                            mapelAdapter = new MapelAdapter(mapelList , viewPager);
+                            recyclerView.setAdapter(mapelAdapter);
                         } else {
                             Log.e("API Response", "materiModel is null or empty");
                             Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();

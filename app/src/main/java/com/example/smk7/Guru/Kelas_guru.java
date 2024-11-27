@@ -1,6 +1,5 @@
 package com.example.smk7.Guru;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import com.example.smk7.ApiServiceInterface;
 import com.example.smk7.Adapter.KelasAdapter;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
-import com.example.smk7.Recyclemateriguru.UploadMateri_Guru;
 
 import java.util.List;
 
@@ -31,26 +29,15 @@ public class Kelas_guru extends Fragment {
     private RecyclerView recyclerView;
     private List<KelasModel> kelasList;
 
-    public Kelas_guru() {
-        // Default constructor
-    }
-
-    public static Kelas_guru newInstance(String param1, String param2) {
-        Kelas_guru fragment = new Kelas_guru();
-        Bundle args = new Bundle();
-        args.putString("param1", param1);
-        args.putString("param2", param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_kelas_guru, container, false);
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Fetch kelas data from API
         fetchKelasData();
+
         return view;
     }
 
@@ -61,19 +48,32 @@ public class Kelas_guru extends Fragment {
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     ApiResponse apiResponse = response.body();
-                    if (apiResponse != null && "success".equals(apiResponse.getStatus())) {
-                        kelasList = apiResponse.getData();
-                        for (KelasModel kelas : kelasList) {
-                            Log.d("Kelas_guru", "Data Kelas: ID = " + kelas.getId_kelas() + ", Nama = " + kelas.getNama_kelas());
-                        }
-                        setupRecyclerView(kelasList);
+                    Log.d("API Response", "Status: " + apiResponse.getStatus());
+                    Log.d("API Response", "Message: " + apiResponse.getMessage());
+
+                    // Debugging output to check data
+                    if (apiResponse.getKelasModel() != null && !apiResponse.getKelasModel().isEmpty()) {
+                        Log.d("API Response", "Kelas data found: " + apiResponse.getKelasModel().size());
                     } else {
-                        Toast.makeText(getContext(), "No data found", Toast.LENGTH_SHORT).show();
+                        Log.d("API Response", "Kelas data is empty or null");
+                    }
+
+                    if ("success".equals(apiResponse.getStatus())) {
+                        kelasList = apiResponse.getKelasModel();
+                        if (kelasList != null && !kelasList.isEmpty()) {
+                            setupRecyclerView(kelasList);
+                        } else {
+                            Log.e("API Response", "Kelas data is empty");
+                            Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Log.e("API Response", "API status is not success");
+                        Toast.makeText(getContext(), "API error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Log.e("API Error", "Response failed: " + response.message());
+                    Log.e("API Error", "Response failed: " + response.code() + ", message: " + response.message());
                     Toast.makeText(getContext(), "API error: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -87,13 +87,10 @@ public class Kelas_guru extends Fragment {
     }
 
     private void setupRecyclerView(List<KelasModel> kelasList) {
-        KelasAdapter adapter = new KelasAdapter(kelasList, (idKelas, namaKelas) -> {
-            Log.d("Kelas_guru", "Mengirim ID Kelas: " + idKelas + ", Nama Kelas: " + namaKelas);
-            Intent intent = new Intent(getContext(), UploadMateri_Guru.class);
-            intent.putExtra("id_kelas", idKelas);
-            intent.putExtra("nama_kelas", namaKelas);
-            startActivity(intent);
-        });
-        recyclerView.setAdapter(adapter);
+        // Pastikan adapter hanya dipasang jika kelasList tidak null atau kosong
+        if (kelasList != null && !kelasList.isEmpty()) {
+            KelasAdapter adapter = new KelasAdapter(kelasList, null, false);
+            recyclerView.setAdapter(adapter);
+        }
     }
 }

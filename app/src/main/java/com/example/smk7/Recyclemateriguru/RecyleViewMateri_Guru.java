@@ -1,5 +1,6 @@
 package com.example.smk7.Recyclemateriguru;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,13 +14,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.smk7.Adapter.KelasAdapter;
 import com.example.smk7.ApiResponse;
 import com.example.smk7.ApiService;
 import com.example.smk7.ApiServiceInterface;
-import com.example.smk7.Model.KelasModel;
+import com.example.smk7.Guru.DashboardGuru;
+import com.example.smk7.Adapter.MateriAdapter;
+import com.example.smk7.Model.MateriModel;
 import com.example.smk7.R;
 
 import java.io.IOException;
@@ -29,38 +30,36 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UploadMateriKelas_Guru extends Fragment {
+public class RecyleViewMateri_Guru extends Fragment {
 
     private RecyclerView recyclerView;
+    private MateriAdapter materiAdapter;
+    private List<MateriModel> materiList;
     private ImageView backButton;
-    private List<KelasModel> kelasList;
-    private KelasAdapter kelasAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_upload_materi_kelas__guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_recyle_view_materi__guru, container, false);
 
-        // Back button listener
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
-
+            if (getActivity() instanceof DashboardGuru) {
+                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(0);
+            }
         });
 
-        // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Fetch data from API
-        fetchKelasData();
+        fetchMateriData();
 
         return view;
     }
 
-    private void fetchKelasData() {
+    private void fetchMateriData() {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
-        Call<ApiResponse> call = apiService.getKelasData();
-
+        Call<ApiResponse> call = apiService.getMateriData();
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
@@ -69,15 +68,12 @@ public class UploadMateriKelas_Guru extends Fragment {
                     Log.d("API Response", apiResponse.toString());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        kelasList = apiResponse.getKelasModel();  // Make sure this is the correct method to fetch kelas data
-
-                        // If kelasList is valid and non-empty
-                        if (kelasList != null && !kelasList.isEmpty()) {
-                            ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-                            kelasAdapter = new KelasAdapter(kelasList, viewPager, true);  // Passing true for ViewPager usage
-                            recyclerView.setAdapter(kelasAdapter);
+                        materiList = apiResponse.getMateriModel();
+                        if (materiList != null && !materiList.isEmpty()) {
+                            // Call the method to setup the RecyclerView with the data
+                            setupRecyclerView(materiList);
                         } else {
-                            Log.e("API Response", "kelasModel is null or empty");
+                            Log.e("API Response", "materiModel is null or empty");
                             Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
                         }
                     } else {
@@ -105,5 +101,16 @@ public class UploadMateriKelas_Guru extends Fragment {
                 Log.e("API Error", "Request failed: " + t.getMessage(), t);
             }
         });
+    }
+
+    private void setupRecyclerView(List<MateriModel> materiList) {
+        // Create an instance of the adapter and set it on the RecyclerView
+        materiAdapter = new MateriAdapter(materiList, namaMateri -> {
+            // When an item is clicked, start the UploadMateri_Guru activity and pass the clicked item
+            Intent intent = new Intent(getContext(), UploadMateri_Guru.class);
+            intent.putExtra("nama_materi", namaMateri);
+            startActivity(intent);
+        });
+        recyclerView.setAdapter(materiAdapter);
     }
 }
