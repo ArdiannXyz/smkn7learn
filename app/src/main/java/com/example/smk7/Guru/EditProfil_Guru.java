@@ -21,7 +21,7 @@ public class EditProfil_Guru extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_edit_profil__guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_profil_guru, container, false);
 
         BackButton = view.findViewById(R.id.back_Button);
 

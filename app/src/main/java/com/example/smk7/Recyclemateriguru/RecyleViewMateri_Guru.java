@@ -15,9 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.smk7.ApiResponse;
-import com.example.smk7.ApiService;
-import com.example.smk7.ApiServiceInterface;
+import com.example.smk7.ApiDatabase.ApiResponse;
+import com.example.smk7.ApiDatabase.ApiService;
+import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Adapter.MateriAdapter;
 import com.example.smk7.Model.MateriModel;
@@ -40,7 +40,7 @@ public class RecyleViewMateri_Guru extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recyle_view_materi__guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_recycleview_materi_guru, container, false);
 
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {

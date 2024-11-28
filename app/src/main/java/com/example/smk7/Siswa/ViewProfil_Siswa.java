@@ -1,8 +1,5 @@
 package com.example.smk7.Siswa;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,8 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.example.smk7.BottomNavigationHandler;
@@ -35,7 +30,7 @@ public class ViewProfil_Siswa extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_view_profil__siswa, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_profil_siswa, container, false);
 
         BackButton = view.findViewById(R.id.btn_kembali);
         EditProf = view.findViewById(R.id.editprofil);

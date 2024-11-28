@@ -33,7 +33,7 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
     @Override
     public MateriViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Inflate item layout for RecyclerView
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.carditem_uploadmateri, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.carditem_upload_materi, parent, false);
         return new MateriViewHolder(itemView);
     }
 

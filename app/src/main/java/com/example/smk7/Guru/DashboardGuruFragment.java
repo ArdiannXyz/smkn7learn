@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.smk7.Db_Contract;
+import com.example.smk7.ApiDatabase.Db_Contract;
 import com.example.smk7.R;
 
 import org.json.JSONObject;
@@ -25,7 +25,7 @@ public class DashboardGuruFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_dashgurufragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_dashboard_guru_fragment, container, false);
 
         txtKelas = view.findViewById(R.id.txtkelas);
         txtMateri = view.findViewById(R.id.txtmateri);

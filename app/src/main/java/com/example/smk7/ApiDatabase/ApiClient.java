@@ -1,4 +1,4 @@
-package com.example.smk7;
+package com.example.smk7.ApiDatabase;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

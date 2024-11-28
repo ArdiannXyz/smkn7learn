@@ -28,6 +28,8 @@ public class DashboardSiswa extends AppCompatActivity implements BottomNavigatio
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboardsiswa);
+
+
         LayoutInflater inflater = getLayoutInflater();
         bottomNavigationView = findViewById(R.id.bottomnav);
         viewPager2 = findViewById(R.id.Viewpagersiswa);
