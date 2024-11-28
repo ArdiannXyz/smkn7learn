@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.smk7.ApiResponse;
-import com.example.smk7.ApiService;
-import com.example.smk7.ApiServiceInterface;
+import com.example.smk7.ApiDatabase.ApiResponse;
+import com.example.smk7.ApiDatabase.ApiService;
+import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Adapter.MapelAdapter;
 import com.example.smk7.Model.MapelModel;

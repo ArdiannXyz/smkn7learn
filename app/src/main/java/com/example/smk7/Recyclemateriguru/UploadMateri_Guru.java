@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.smk7.ApiHelper;
-import com.example.smk7.Db_Contract;
+import com.example.smk7.ApiDatabase.ApiHelper;
+import com.example.smk7.ApiDatabase.Db_Contract;
 import com.example.smk7.R;
 
 import java.util.HashMap;
@@ -28,7 +28,6 @@ public class UploadMateri_Guru extends AppCompatActivity {
     private TextView tvNamaKelas;
     private Button btnSimpan;
     private ImageView backButton;
-
     private String idKelas;
     private String namaKelas;
 

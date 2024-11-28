@@ -19,9 +19,9 @@ public class UploadMateriView_Guru extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_materi_mapel_guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_upload_materi_view_guru, container, false);
 
-        BackButton = view.findViewById(R.id.back_Button);
+        BackButton = view.findViewById(R.id.back_Buttonedit);
 
 
 

@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.smk7.ApiResponse;
-import com.example.smk7.ApiService;
-import com.example.smk7.ApiServiceInterface;
+import com.example.smk7.ApiDatabase.ApiResponse;
+import com.example.smk7.ApiDatabase.ApiService;
+import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Adapter.MapelAdapter;
 import com.example.smk7.Model.MapelModel;
@@ -40,7 +40,7 @@ public class UploadTugasMapelGuru extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_materi_mapel_guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_upload_materi_guru, container, false);
 
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {

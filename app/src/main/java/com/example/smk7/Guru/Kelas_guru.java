@@ -11,9 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.smk7.ApiResponse;
-import com.example.smk7.ApiService;
-import com.example.smk7.ApiServiceInterface;
+import com.example.smk7.ApiDatabase.ApiResponse;
+import com.example.smk7.ApiDatabase.ApiService;
+import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Adapter.KelasAdapter;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;

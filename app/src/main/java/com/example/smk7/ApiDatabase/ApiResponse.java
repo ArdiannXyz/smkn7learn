@@ -1,4 +1,4 @@
-package com.example.smk7;
+package com.example.smk7.ApiDatabase;
 
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.Model.MapelModel;

@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
 public class DashboardSiswaFragment extends Fragment {
@@ -16,7 +15,9 @@ public class DashboardSiswaFragment extends Fragment {
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_dashboardsiswafragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_dashboard_siswa_fragment, container, false);
+
+
         LinearLayout linearLayoutmaterisiswa = view.findViewById(R.id.materisiswa);
         LinearLayout linearLayouttugassiswa = view.findViewById(R.id.tugassiswa);
 

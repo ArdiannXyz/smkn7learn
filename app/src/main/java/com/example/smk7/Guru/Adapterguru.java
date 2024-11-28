@@ -45,7 +45,7 @@ public class Adapterguru extends RecyclerView.Adapter<MyViewHolder> {
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.carditem_dataguru, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.carditem_data_guru, parent, false);
         return new MyViewHolder(view);
     }
     @Override

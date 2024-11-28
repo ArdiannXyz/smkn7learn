@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.smk7.Adapter.KelasAdapter;
-import com.example.smk7.ApiResponse;
-import com.example.smk7.ApiService;
-import com.example.smk7.ApiServiceInterface;
+import com.example.smk7.ApiDatabase.ApiResponse;
+import com.example.smk7.ApiDatabase.ApiService;
+import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
 
@@ -39,7 +39,7 @@ public class UploadMateriKelas_Guru extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_upload_materi_kelas__guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_upload_materi_kelas_guru, container, false);
 
         // Back button listener
         backButton = view.findViewById(R.id.back_Button);

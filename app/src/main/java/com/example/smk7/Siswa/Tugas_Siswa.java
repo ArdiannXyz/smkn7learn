@@ -1,6 +1,5 @@
 package com.example.smk7.Siswa;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -25,7 +24,7 @@ public class Tugas_Siswa extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tugas__siswa, container, false);
+        View view = inflater.inflate(R.layout.fragment_tugas_siswa, container, false);
 
         BackButton = view.findViewById(R.id.back_Button);
 

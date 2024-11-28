@@ -61,6 +61,6 @@ public class BehindBankTugas_Guru extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_behind_bank_tugas__guru, container, false);
+        return inflater.inflate(R.layout.fragment_behind_bank_tugas_guru, container, false);
     }
 }
