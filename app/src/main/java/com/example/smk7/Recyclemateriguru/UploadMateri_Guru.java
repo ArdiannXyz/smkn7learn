@@ -119,12 +119,12 @@ public class UploadMateri_Guru extends AppCompatActivity {
                             Toast.makeText(this, "Kesalahan pada server.", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, "Error parsing response: " + e.getMessage(), e);
-                        Toast.makeText(this, "Kesalahan parsing respons.", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Error parsing response: " + e.getMessage());
+                        Toast.makeText(this, "Terjadi kesalahan.", Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (Exception e) {
-                Log.e(TAG, "Error saat mengirim data ke server: " + e.getMessage(), e);
+                Log.e(TAG, "Error dalam upload materi: " + e.getMessage());
             }
         }).start();
     }

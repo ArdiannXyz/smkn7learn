@@ -21,11 +21,11 @@ public class ApiResponse {
     @SerializedName("kelasModel")
     private List<KelasModel> kelasModel;
 
-    // Data Materi - Tetap sesuai dengan struktur sebelumnya
+    // Data Mapel - Ubah serialized name sesuai dengan respons terbaru
     @SerializedName("mapel_model")
     private List<MapelModel> mapelModel;
 
-    // Data MateriModel - Ditambahkan sesuai permintaan
+    // Data Materi - Ubah serialized name sesuai dengan respons terbaru
     @SerializedName("materi_model")
     private List<MateriModel> materiModel;
 

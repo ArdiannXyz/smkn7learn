@@ -19,6 +19,7 @@ import com.example.smk7.Adapter.KelasAdapter;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
 
@@ -44,8 +45,12 @@ public class UploadMateriKelas_Guru extends Fragment {
         // Back button listener
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
-
+            if (getActivity() instanceof DashboardGuru) {
+                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(0);
+            }
         });
+
+
 
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recycleView);
@@ -69,12 +74,14 @@ public class UploadMateriKelas_Guru extends Fragment {
                     Log.d("API Response", apiResponse.toString());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        kelasList = apiResponse.getKelasModel();  // Make sure this is the correct method to fetch kelas data
+                        kelasList = apiResponse.getKelasModel();  // Pastikan ini adalah metode yang benar untuk mendapatkan data kelas
 
-                        // If kelasList is valid and non-empty
+                        // Jika kelasList valid dan tidak kosong
                         if (kelasList != null && !kelasList.isEmpty()) {
+                            // Ambil ViewPager2 dari layout
                             ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-                            kelasAdapter = new KelasAdapter(kelasList, viewPager, true);  // Passing true for ViewPager usage
+                            // Kirimkan kelasList, viewPager, dan flag true ke konstruktor KelasAdapter
+                            kelasAdapter = new KelasAdapter(kelasList, viewPager, true);
                             recyclerView.setAdapter(kelasAdapter);
                         } else {
                             Log.e("API Response", "kelasModel is null or empty");

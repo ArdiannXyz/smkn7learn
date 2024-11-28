@@ -18,10 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
-import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Adapter.MateriAdapter;
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Model.MateriModel;
 import com.example.smk7.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,6 +37,7 @@ public class RecyleViewMateri_Guru extends Fragment {
     private MateriAdapter materiAdapter;
     private List<MateriModel> materiList;
     private ImageView backButton;
+    private FloatingActionButton fabAddMateri;
 
     @Nullable
     @Override
@@ -47,6 +49,14 @@ public class RecyleViewMateri_Guru extends Fragment {
             if (getActivity() instanceof DashboardGuru) {
                 ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(0);
             }
+        });
+
+        // Setup FAB button
+        fabAddMateri = view.findViewById(R.id.fabAddMateri);
+        fabAddMateri.setOnClickListener(v -> {
+            // When FAB is clicked, navigate to UploadMateri_Guru activity
+            Intent intent = new Intent(getContext(), UploadMateri_Guru.class);
+            startActivity(intent);
         });
 
         recyclerView = view.findViewById(R.id.recycleView);
@@ -105,11 +115,13 @@ public class RecyleViewMateri_Guru extends Fragment {
 
     private void setupRecyclerView(List<MateriModel> materiList) {
         // Create an instance of the adapter and set it on the RecyclerView
-        materiAdapter = new MateriAdapter(materiList, namaMateri -> {
-            // When an item is clicked, start the UploadMateri_Guru activity and pass the clicked item
-            Intent intent = new Intent(getContext(), UploadMateri_Guru.class);
-            intent.putExtra("nama_materi", namaMateri);
-            startActivity(intent);
+        materiAdapter = new MateriAdapter(getContext(), materiList, new MateriAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MateriModel materiModel) {
+                // Remove the code that navigates to another activity
+                // You can implement your own logic here if needed
+                Toast.makeText(getContext(), "Item clicked: " + materiModel.getJudulTugas(), Toast.LENGTH_SHORT).show();
+            }
         });
         recyclerView.setAdapter(materiAdapter);
     }
