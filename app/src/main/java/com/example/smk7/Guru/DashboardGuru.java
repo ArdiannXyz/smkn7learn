@@ -27,15 +27,15 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboardguru);
-        LayoutInflater inflater = getLayoutInflater();
+
+        // Inisialisasi elemen-elemen UI
         bottomNavigationView = findViewById(R.id.bottomnav);
         viewPager2 = findViewById(R.id.Viewpagerguru);
         viewPagerAdapterguru = new ViewPagerAdapterGuru(this);
         viewPager2.setAdapter(viewPagerAdapterguru);
         viewPager2.setUserInputEnabled(true);
 
-
-
+        // Setup BottomNavigationView untuk navigasi antar halaman
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")
             @Override
@@ -48,8 +48,6 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
                 } else if (id == R.id.b_pb_setting) {
                     viewPager2.setCurrentItem(2);
                 }
-
-
                 return true;
             }
         });
@@ -64,8 +62,6 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
                 } else if (position == 2) {
                     bottomNavigationView.getMenu().findItem(R.id.b_pb_setting).setChecked(true);
                 }
-
-                viewPager2.setUserInputEnabled(false);
                 super.onPageSelected(position);
             }
         });
@@ -73,7 +69,6 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
 
     @Override
     public void hideBottomNav() {
-
         if (bottomNavigationView != null) {
             bottomNavigationView.setVisibility(View.GONE);
         }
@@ -84,6 +79,5 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
         if (bottomNavigationView != null) {
             bottomNavigationView.setVisibility(View.VISIBLE);
         }
-
     }
 }

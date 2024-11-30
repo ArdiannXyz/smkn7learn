@@ -5,14 +5,18 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.smk7.RecycleBankTugas.BankTugasMapel_Guru;
-import com.example.smk7.RecycleTugasGuru.UploadTugasMapelGuru;
+import com.example.smk7.Recyclemateriguru.EditMateri_Guru;
 import com.example.smk7.Recyclemateriguru.RecyleViewMateri_Guru;
 import com.example.smk7.Recyclemateriguru.UploadMateriKelas_Guru;
 import com.example.smk7.Recyclemateriguru.UploadMateriMapel_Guru;
-import com.example.smk7.Recyclemateriguru.UploadMateri_Guru;
+import com.example.smk7.RecycleTugasGuru.UploadTugasMapelGuru;
+import com.example.smk7.RecycleBankTugas.BankTugasMapel_Guru;
+import com.example.smk7.Guru.DashboardGuruFragment;
+import com.example.smk7.Guru.Kelas_guru;
+import com.example.smk7.Guru.Profil_guru;
 
 public class ViewPagerAdapterGuru extends FragmentStateAdapter {
+
     public ViewPagerAdapterGuru(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
@@ -41,6 +45,8 @@ public class ViewPagerAdapterGuru extends FragmentStateAdapter {
                 return new UploadMateriKelas_Guru();
             case 9:
                 return new RecyleViewMateri_Guru();
+//            case 10:
+//                return new EditMateri_Guru();
             default:
                 return new DashboardGuruFragment();
         }
@@ -48,6 +54,6 @@ public class ViewPagerAdapterGuru extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 10;
+        return 10; // Jumlah halaman yang ada di ViewPager2
     }
 }

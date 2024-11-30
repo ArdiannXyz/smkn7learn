@@ -10,6 +10,9 @@ public class MateriModel {
     @SerializedName("judul_tugas")  // Sesuaikan dengan JSON
     private String judulTugas;
 
+    @SerializedName("id_kelas")  // Menambahkan id_kelas
+    private String idKelas;  // Properti untuk ID kelas
+
     // Getter dan Setter untuk idTugas
     public String getIdTugas() {
         return idTugas;
@@ -26,5 +29,14 @@ public class MateriModel {
 
     public void setJudulTugas(String judulTugas) {
         this.judulTugas = judulTugas;
+    }
+
+    // Getter dan Setter untuk idKelas
+    public String getIdKelas() {
+        return idKelas;
+    }
+
+    public void setIdKelas(String idKelas) {
+        this.idKelas = idKelas;
     }
 }

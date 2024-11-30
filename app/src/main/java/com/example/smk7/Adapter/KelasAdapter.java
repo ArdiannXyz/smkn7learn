@@ -1,6 +1,7 @@
 package com.example.smk7.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
+import com.example.smk7.Recyclemateriguru.UploadMateri_Guru;
 
 import java.util.List;
 
@@ -46,8 +48,11 @@ public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHol
                 // Jika ViewPager diperlukan, pindahkan ke halaman yang sesuai
                 viewPager.setCurrentItem(9, true);
             } else {
-                // Tidak ada aksi saat item diklik jika ViewPager tidak diperlukan
-                // Kamu bisa menambahkan aksi lain jika diperlukan
+                // Kirimkan nama_kelas ke UploadMateriGuru jika ViewPager tidak diperlukan
+                Context context = v.getContext();
+                Intent intent = new Intent(context, UploadMateri_Guru.class);
+                intent.putExtra("nama_kelas", kelas.getNama_kelas());  // Mengirimkan nama_kelas
+                context.startActivity(intent);  // Memulai activity UploadMateriGuru
             }
         });
     }

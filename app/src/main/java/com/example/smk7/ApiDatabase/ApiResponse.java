@@ -13,7 +13,9 @@ public class ApiResponse {
     @SerializedName("status")
     private String status;
 
-    // Pesan API
+    @SerializedName("success")
+    private boolean success;
+
     @SerializedName("message")
     private String message;
 
@@ -36,6 +38,15 @@ public class ApiResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    // Getter dan Setter untuk success
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
     // Getter dan Setter untuk message
