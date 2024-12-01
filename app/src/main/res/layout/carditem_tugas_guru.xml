@@ -41,7 +41,7 @@
                 android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/txtnama_materi"
+                android:id="@+id/txtnama_mapel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pemograman dasar menggunakan Java"

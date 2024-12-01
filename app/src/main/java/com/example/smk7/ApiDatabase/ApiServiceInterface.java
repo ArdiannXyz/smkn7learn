@@ -10,4 +10,6 @@ public interface ApiServiceInterface {
     Call<ApiResponse> getMapelData();
     @GET("api_materiguru.php")
     Call<ApiResponse> getMateriData();
+    @GET("api_tugasguru.php")
+    Call<ApiResponse> getTugasData();
 }

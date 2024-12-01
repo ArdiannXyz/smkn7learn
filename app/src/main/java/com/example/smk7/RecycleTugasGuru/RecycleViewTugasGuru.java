@@ -1,5 +1,6 @@
-package com.example.smk7.RecycleBankTugas;
+package com.example.smk7.RecycleTugasGuru;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,41 +8,41 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
+
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Adapter.MapelAdapter;
-import com.example.smk7.Model.MapelModel;
+import com.example.smk7.Adapter.TugasAdapter;
+import com.example.smk7.Model.TugasModel;
 import com.example.smk7.R;
-import com.example.smk7.RecycleTugasGuru.UploadTugasMapelGuru;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BankTugasMapel_Guru extends Fragment {
+public class RecycleViewTugasGuru extends Fragment {
 
     private RecyclerView recyclerView;
-    private MapelAdapter mapelAdapter;
-    private List<MapelModel> mapelList = new ArrayList<>();
+    private TugasAdapter tugasAdapter;
+    private List<TugasModel> tugasList;
     private ImageView backButton;
-    private ViewPager2 viewPager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_bank_tugas_mapel_guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_recycle_view_tugas_guru, container, false);
 
+        // Initialize back button and its click listener
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
@@ -49,18 +50,19 @@ public class BankTugasMapel_Guru extends Fragment {
             }
         });
 
+        // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        fetchMapelData();
+        // Fetch Tugas data
+        fetchTugasData();
 
         return view;
     }
 
-    private void fetchMapelData() {
+    private void fetchTugasData() {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
-        Call<ApiResponse> call = apiService.getMapelData();
-
+        Call<ApiResponse> call = apiService.getTugasData();
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
@@ -68,38 +70,50 @@ public class BankTugasMapel_Guru extends Fragment {
                     ApiResponse apiResponse = response.body();
                     Log.d("API Response", apiResponse.toString());
 
+                    // Check if the response status is successful
                     if ("success".equals(apiResponse.getStatus())) {
-                        mapelList = apiResponse.getMapelModel();
-                        if (mapelList != null && !mapelList.isEmpty()) {
-                            // Mendapatkan ViewPager2 dari activity
-                            viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-                            if (viewPager == null) {
-                                Log.e("Error", "ViewPager2 tidak ditemukan!");
-                            }
-
-                            // Menyediakan fragment saat ini untuk adapter
-                            Fragment currentFragment = getParentFragment() != null ? getParentFragment() : BankTugasMapel_Guru.this;
-
-                            // Menyesuaikan adapter dengan fragment yang aktif
-                            mapelAdapter = new MapelAdapter(mapelList, viewPager, currentFragment);
-                            recyclerView.setAdapter(mapelAdapter);
-                            mapelAdapter.notifyDataSetChanged();  // Update UI
+                        tugasList = apiResponse.getTugasModel(); // Fetch tugasModel here
+                        if (tugasList != null && !tugasList.isEmpty()) {
+                            // Setup the RecyclerView with Tugas data
+                            setupRecyclerView(tugasList);
                         } else {
-                            Log.e("API Response", "mapelModel is null or empty");
+                            Log.e("API Response", "tugasModel is null or empty");
                             Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(getContext(), "API error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "Response not successful or body is null", Toast.LENGTH_SHORT).show();
+                    String errorBody = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
+                        }
+                    } catch (IOException e) {
+                        Log.e("API Error", "Error reading error body: " + e.getMessage());
+                    }
+                    Log.e("API Error", "Response failed with code: " + response.code() +
+                            ", message: " + response.message() +
+                            ", errorBody: " + errorBody);
+                    Toast.makeText(getContext(), "API error: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
                 Toast.makeText(getContext(), "Request failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("API Error", "Request failed: " + t.getMessage(), t);
             }
         });
+    }
+
+    private void setupRecyclerView(List<TugasModel> tugasList) {
+        tugasAdapter = new TugasAdapter(tugasList, namaTugas -> {
+            // Handle task item click event (optional)
+            Intent intent = new Intent(getContext(), UploadTugas_guru.class);
+            intent.putExtra("nama_tugas", namaTugas);
+            startActivity(intent);
+        });
+        recyclerView.setAdapter(tugasAdapter);
     }
 }

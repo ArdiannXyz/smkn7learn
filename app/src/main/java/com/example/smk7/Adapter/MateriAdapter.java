@@ -64,7 +64,7 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
 
         public MateriViewHolder(View view) {
             super(view);
-            nama_materi = view.findViewById(R.id.txtnama_materi);  // Assuming this is the TextView ID in your layout
+            nama_materi = view.findViewById(R.id.txtnama_mapel);  // Assuming this is the TextView ID in your layout
         }
     }
 }

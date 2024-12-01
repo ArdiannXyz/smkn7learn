@@ -52,7 +52,9 @@
         <activity
             android:name=".Recyclemateriguru.RecyleViewMateri_Guru"
             android:exported="true" />
-
+        <activity
+            android:name=".RecycleTugasGuru.RecycleViewTugas_Guru"
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"

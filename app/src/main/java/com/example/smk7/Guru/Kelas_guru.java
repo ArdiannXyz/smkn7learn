@@ -53,13 +53,6 @@ public class Kelas_guru extends Fragment {
                     Log.d("API Response", "Status: " + apiResponse.getStatus());
                     Log.d("API Response", "Message: " + apiResponse.getMessage());
 
-                    // Debugging output to check data
-                    if (apiResponse.getKelasModel() != null && !apiResponse.getKelasModel().isEmpty()) {
-                        Log.d("API Response", "Kelas data found: " + apiResponse.getKelasModel().size());
-                    } else {
-                        Log.d("API Response", "Kelas data is empty or null");
-                    }
-
                     if ("success".equals(apiResponse.getStatus())) {
                         kelasList = apiResponse.getKelasModel();
                         if (kelasList != null && !kelasList.isEmpty()) {
@@ -89,7 +82,8 @@ public class Kelas_guru extends Fragment {
     private void setupRecyclerView(List<KelasModel> kelasList) {
         // Pastikan adapter hanya dipasang jika kelasList tidak null atau kosong
         if (kelasList != null && !kelasList.isEmpty()) {
-            KelasAdapter adapter = new KelasAdapter(kelasList, null, false);
+            // Pass null for viewPager and false for isViewPagerRequired in this fragment
+            KelasAdapter adapter = new KelasAdapter(kelasList, null, false, null);
             recyclerView.setAdapter(adapter);
         }
     }

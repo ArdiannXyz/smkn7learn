@@ -1,66 +1,111 @@
 package com.example.smk7.RecycleBankTugas;
 
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.smk7.Adapter.KelasAdapter;
+import com.example.smk7.ApiDatabase.ApiResponse;
+import com.example.smk7.ApiDatabase.ApiService;
+import com.example.smk7.ApiDatabase.ApiServiceInterface;
+import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
 
+import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BankTugasKelas_Guru#newInstance} factory method to
- * create an instance of this fragment.
- */
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class BankTugasKelas_Guru extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerView;
+    private ImageView backButton;
+    private List<KelasModel> kelasList;
+    private KelasAdapter kelasAdapter;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public BankTugasKelas_Guru() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Datatugas_guru.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BankTugasKelas_Guru newInstance(String param1, String param2) {
-        BankTugasKelas_Guru fragment = new BankTugasKelas_Guru();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_bank_tugas_kelas_guru, container, false);
+
+        // Back button listener
+        backButton = view.findViewById(R.id.back_Button);
+        backButton.setOnClickListener(v -> {
+
+        });
+
+        // Initialize RecyclerView
+        recyclerView = view.findViewById(R.id.recycleView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Fetch data from API
+        fetchKelasData();
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bank_tugas_mapel_guru, container, false);
+    private void fetchKelasData() {
+        ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
+        Call<ApiResponse> call = apiService.getKelasData();
+
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse apiResponse = response.body();
+                    Log.d("API Response", apiResponse.toString());
+
+                    if ("success".equals(apiResponse.getStatus())) {
+                        kelasList = apiResponse.getKelasModel();  // Pastikan data kelas diambil dengan benar
+
+                        // Pastikan kelasList valid dan tidak kosong
+                        if (kelasList != null && !kelasList.isEmpty()) {
+                            // Ambil ViewPager2 dari activity
+                            ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
+
+                            if (viewPager != null) {
+                                // Pastikan currentFragment sesuai dengan kondisi ini
+                                Fragment currentFragment = BankTugasKelas_Guru.this;  // Gunakan fragment yang aktif
+
+                                // Panggil adapter dengan parameter yang benar
+                                kelasAdapter = new KelasAdapter(kelasList, viewPager, true, currentFragment);
+                                recyclerView.setAdapter(kelasAdapter);  // Set adapter ke RecyclerView
+
+                                // Jika RecyclerView di-click, maka pindah ke halaman 13 di ViewPager2
+                                recyclerView.setOnClickListener(v -> {
+                                    if (currentFragment instanceof BankTugasKelas_Guru) {
+                                        Log.d("FragmentC", "Pindah ke halaman 13...");
+                                        viewPager.setCurrentItem(13, true);  // Pindah ke halaman 13 untuk Fragment A
+                                    }
+                                });
+                            }
+                        }
+                    } else {
+                        Log.e("API Error", "Error: " + apiResponse.getMessage());
+                    }
+                } else {
+                    Log.e("API Error", "Response not successful or body is null");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Request failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("API Error", "Request failed: " + t.getMessage(), t);
+            }
+        });
     }
 }

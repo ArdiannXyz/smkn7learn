@@ -21,6 +21,7 @@ import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
+import com.example.smk7.Recyclemateriguru.UploadMateriKelas_Guru;
 
 import java.io.IOException;
 import java.util.List;
@@ -69,35 +70,38 @@ public class UploadTugasKelas_Guru extends Fragment {
                     Log.d("API Response", apiResponse.toString());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        kelasList = apiResponse.getKelasModel();  // Make sure this is the correct method to fetch kelas data
+                        kelasList = apiResponse.getKelasModel();  // Pastikan data kelas diambil dengan benar
 
-                        // If kelasList is valid and non-empty
+                        // Pastikan kelasList valid dan tidak kosong
                         if (kelasList != null && !kelasList.isEmpty()) {
+                            // Ambil ViewPager2 dari activity
                             ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-                            kelasAdapter = new KelasAdapter(kelasList, viewPager, true);  // Passing true for ViewPager usage
-                            recyclerView.setAdapter(kelasAdapter);
-                        } else {
-                            Log.e("API Response", "kelasModel is null or empty");
-                            Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
+
+                            if (viewPager != null) {
+                                // Pastikan currentFragment sesuai dengan kondisi ini
+                                Fragment currentFragment = UploadTugasKelas_Guru.this;  // Gunakan fragment yang aktif
+
+                                // Panggil adapter dengan parameter yang benar
+                                kelasAdapter = new KelasAdapter(kelasList, viewPager, true, currentFragment);
+                                recyclerView.setAdapter(kelasAdapter);  // Set adapter ke RecyclerView
+
+                                // Jika RecyclerView di-click, maka pindah ke halaman 12 di ViewPager2
+                                recyclerView.setOnClickListener(v -> {
+                                    if (currentFragment instanceof UploadTugasKelas_Guru) {
+                                        Log.d("FragmentB", "Pindah ke halaman 12...");
+                                        viewPager.setCurrentItem(12, true);  // Pindah ke halaman 12 untuk Fragment B
+                                    }
+                                });
+                            }
                         }
                     } else {
-                        Toast.makeText(getContext(), "API error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("API Error", "Error: " + apiResponse.getMessage());
                     }
                 } else {
-                    String errorBody = "";
-                    try {
-                        if (response.errorBody() != null) {
-                            errorBody = response.errorBody().string();
-                        }
-                    } catch (IOException e) {
-                        Log.e("API Error", "Error reading error body: " + e.getMessage());
-                    }
-                    Log.e("API Error", "Response failed with code: " + response.code() +
-                            ", message: " + response.message() +
-                            ", errorBody: " + errorBody);
-                    Toast.makeText(getContext(), "API error: " + response.message(), Toast.LENGTH_SHORT).show();
+                    Log.e("API Error", "Response not successful or body is null");
                 }
             }
+
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
