@@ -68,7 +68,7 @@ public class MapelAdapter extends RecyclerView.Adapter<MapelAdapter.MapelViewHol
 
         public MapelViewHolder(View view) {
             super(view);
-            nama_mapel = view.findViewById(R.id.txtnama_materi);
+            nama_mapel = view.findViewById(R.id.txtnama_mapel);
         }
     }
 }

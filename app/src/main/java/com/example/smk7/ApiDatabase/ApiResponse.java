@@ -3,6 +3,7 @@ package com.example.smk7.ApiDatabase;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.Model.MapelModel;
 import com.example.smk7.Model.MateriModel;
+import com.example.smk7.Model.TugasModel;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -18,6 +19,11 @@ public class ApiResponse {
 
     @SerializedName("message")
     private String message;
+
+
+    // Data TugasModel - Ditambahkan untuk tugasModel
+    @SerializedName("tugas_model")
+    private List<TugasModel> tugasModel;
 
     // Data Kelas - Ubah serialized name sesuai dengan respons terbaru
     @SerializedName("kelasModel")
@@ -85,6 +91,15 @@ public class ApiResponse {
         this.materiModel = materiModel;
     }
 
+    // Getter dan Setter untuk tugasModel
+    public List<TugasModel> getTugasModel() {
+        return tugasModel;
+    }
+    public void setTugasModel(List<TugasModel> tugasModel) {
+        this.tugasModel = tugasModel;
+    }
+
+
     // Menambahkan method untuk memeriksa jika response kosong
     public boolean isKelasModelEmpty() {
         return kelasModel == null || kelasModel.isEmpty();
@@ -96,5 +111,9 @@ public class ApiResponse {
 
     public boolean isMateriModelEmpty() {
         return materiModel == null || materiModel.isEmpty();
+    }
+
+    public boolean isTugasModelEmpty() {
+        return tugasModel == null || tugasModel.isEmpty();
     }
 }

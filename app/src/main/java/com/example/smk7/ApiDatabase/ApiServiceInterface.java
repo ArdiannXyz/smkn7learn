@@ -26,6 +26,12 @@ public interface ApiServiceInterface {
     @GET("api_materiguru.php")
     Call<ApiResponse> getMateriData();
 
+    @GET("api_tugasguru.php")
+    Call<ApiResponse> getTugasData();
+
+
+
+
 //    // Endpoint untuk mendapatkan materi berdasarkan ID kelas
 //    @GET("api-crud.php?action=getMateriByKelas")
 //    Call<List<MateriModel>> getMateriByKelas(@Query("id_kelas") String id_kelas);

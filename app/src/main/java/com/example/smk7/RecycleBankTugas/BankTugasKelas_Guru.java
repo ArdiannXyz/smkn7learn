@@ -80,9 +80,8 @@ public class BankTugasKelas_Guru extends Fragment {
                                 // Pastikan currentFragment sesuai dengan kondisi ini
                                 Fragment currentFragment = BankTugasKelas_Guru.this;  // Gunakan fragment yang aktif
 
-                                // Panggil adapter dengan parameter yang benar
-                                kelasAdapter = new KelasAdapter(kelasList, viewPager, true, currentFragment);
-                                recyclerView.setAdapter(kelasAdapter);  // Set adapter ke RecyclerView
+                                kelasAdapter = new KelasAdapter(kelasList, viewPager, true); // Hapus currentFragment
+                                recyclerView.setAdapter(kelasAdapter);
 
                                 // Jika RecyclerView di-click, maka pindah ke halaman 13 di ViewPager2
                                 recyclerView.setOnClickListener(v -> {

@@ -80,10 +80,9 @@ public class BankTugasMapel_Guru extends Fragment {
                             // Menyediakan fragment saat ini untuk adapter
                             Fragment currentFragment = getParentFragment() != null ? getParentFragment() : BankTugasMapel_Guru.this;
 
-                            // Menyesuaikan adapter dengan fragment yang aktif
-                            mapelAdapter = new MapelAdapter(mapelList, viewPager, currentFragment);
+                            mapelAdapter = new MapelAdapter(mapelList, viewPager); // Hapus currentFragment
                             recyclerView.setAdapter(mapelAdapter);
-                            mapelAdapter.notifyDataSetChanged();  // Update UI
+                            mapelAdapter.notifyDataSetChanged();
                         } else {
                             Log.e("API Response", "mapelModel is null or empty");
                             Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
