@@ -19,7 +19,7 @@ import com.example.smk7.R;
 
 
 public class Profil_guru extends Fragment {
-    private Button ViewButton, EditButton, LogoutButton;
+    private Button ViewButton, LogoutButton;
     private TextView textView_gantipw; // Deklarasi TextView
 
     @Override
@@ -29,20 +29,14 @@ public class Profil_guru extends Fragment {
 
         ViewButton = view.findViewById(R.id.btn_view);
         LogoutButton = view.findViewById(R.id.btn_Logout);
-        EditButton = view.findViewById(R.id.btn_edt);
         textView_gantipw = view.findViewById(R.id.textView_gantipw); // Inisialisasi TextView
 
         ViewButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(7);
+                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(3);
             }
         });
 
-        EditButton.setOnClickListener(v -> {
-            if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(8);
-            }
-        });
 
         LogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -23,7 +23,7 @@ import com.example.smk7.R;
 
 
 public class ViewProfil_Guru extends Fragment {
-    private Button BackButton , Editprof;
+    private Button BackButton , Editimg, EditProfil;
     private BottomNavigationHandler navigationHandler;
     private static final int PICK_IMAGE_REQUEST = 1;
 
@@ -32,10 +32,11 @@ public class ViewProfil_Guru extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_profil_guru, container, false);
 
+        EditProfil = view.findViewById(R.id.btn_edit);
         BackButton = view.findViewById(R.id.btn_kembali);
-        Editprof = view.findViewById(R.id.editprofil);
+        Editimg = view.findViewById(R.id.editprofil);
 
-        Editprof.setOnClickListener(new View.OnClickListener() {
+        Editimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showProfileDialog();
@@ -44,10 +45,17 @@ public class ViewProfil_Guru extends Fragment {
 
         BackButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(6);
+                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(2);
+            }
+        });
+
+        EditProfil.setOnClickListener(v -> {
+            if (getActivity() instanceof DashboardGuru) {
+                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(4);
             }
         });
         return view;
+
 
     }
 

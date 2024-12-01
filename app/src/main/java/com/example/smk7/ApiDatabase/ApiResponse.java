@@ -3,7 +3,6 @@ package com.example.smk7.ApiDatabase;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.Model.MapelModel;
 import com.example.smk7.Model.MateriModel;
-import com.example.smk7.Model.TugasModel;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -14,7 +13,9 @@ public class ApiResponse {
     @SerializedName("status")
     private String status;
 
-    // Pesan API
+    @SerializedName("success")
+    private boolean success;
+
     @SerializedName("message")
     private String message;
 
@@ -22,17 +23,13 @@ public class ApiResponse {
     @SerializedName("kelasModel")
     private List<KelasModel> kelasModel;
 
-    // Data Mapel - Tetap sesuai dengan struktur sebelumnya
+    // Data Mapel - Ubah serialized name sesuai dengan respons terbaru
     @SerializedName("mapel_model")
     private List<MapelModel> mapelModel;
 
-    // Data MateriModel - Ditambahkan sesuai permintaan
+    // Data Materi - Ubah serialized name sesuai dengan respons terbaru
     @SerializedName("materi_model")
     private List<MateriModel> materiModel;
-
-    // Data TugasModel - Ditambahkan untuk tugasModel
-    @SerializedName("tugas_model")
-    private List<TugasModel> tugasModel;
 
     // Getter dan Setter untuk status
     public String getStatus() {
@@ -41,6 +38,15 @@ public class ApiResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    // Getter dan Setter untuk success
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
     // Getter dan Setter untuk message
@@ -79,15 +85,6 @@ public class ApiResponse {
         this.materiModel = materiModel;
     }
 
-    // Getter dan Setter untuk tugasModel
-    public List<TugasModel> getTugasModel() {
-        return tugasModel;
-    }
-
-    public void setTugasModel(List<TugasModel> tugasModel) {
-        this.tugasModel = tugasModel;
-    }
-
     // Menambahkan method untuk memeriksa jika response kosong
     public boolean isKelasModelEmpty() {
         return kelasModel == null || kelasModel.isEmpty();
@@ -99,9 +96,5 @@ public class ApiResponse {
 
     public boolean isMateriModelEmpty() {
         return materiModel == null || materiModel.isEmpty();
-    }
-
-    public boolean isTugasModelEmpty() {
-        return tugasModel == null || tugasModel.isEmpty();
     }
 }

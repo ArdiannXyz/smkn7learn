@@ -1,18 +1,21 @@
 package com.example.smk7.RecycleTugasGuru;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
@@ -20,11 +23,10 @@ import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Adapter.MapelAdapter;
 import com.example.smk7.Model.MapelModel;
 import com.example.smk7.R;
-import com.example.smk7.Recyclemateriguru.UploadMateriMapel_Guru;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,23 +35,36 @@ public class UploadTugasMapelGuru extends Fragment {
 
     private RecyclerView recyclerView;
     private MapelAdapter mapelAdapter;
-    private List<MapelModel> mapelList = new ArrayList<>();
+    private List<MapelModel> mapelList;
     private ImageView backButton;
-    private ViewPager2 viewPager;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_upload_tugas_mapel_guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_upload_materi_kelas_guru, container, false); // Perbaikan: Menggunakan layout yang benar
 
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(0);
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+
+                // Nonaktifkan input swipe sementara
+                viewPager.setUserInputEnabled(false);
+
+                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
+                viewPager.setCurrentItem(0, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+                // Aktifkan kembali swipe setelah perpindahan selesai
+                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
             }
         });
 
-        recyclerView = view.findViewById(R.id.recycleView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView = view.findViewById(R.id.recycleView); // Pastikan ID RecyclerView di layout Anda benar
+        if (recyclerView != null) { // Penambahan: Memeriksa apakah recyclerView tidak null
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        } else {
+            Log.e("UploadTugasMapelGuru", "RecyclerView is null"); // Mencatat error jika recyclerView null
+        }
 
         fetchMapelData();
 
@@ -70,34 +85,36 @@ public class UploadTugasMapelGuru extends Fragment {
                     if ("success".equals(apiResponse.getStatus())) {
                         mapelList = apiResponse.getMapelModel();
                         if (mapelList != null && !mapelList.isEmpty()) {
-                            // Mendapatkan ViewPager2 dari activity
-                            viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-                            if (viewPager == null) {
-                                Log.e("Error", "ViewPager2 tidak ditemukan!");
-                            }
-
-                            // Menyediakan fragment saat ini untuk adapter
-                            Fragment currentFragment = getParentFragment() != null ? getParentFragment() : UploadTugasMapelGuru.this;
-
-                            // Menyesuaikan adapter dengan fragment yang aktif
-                            mapelAdapter = new MapelAdapter(mapelList, viewPager, currentFragment);
+                            ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
+                            mapelAdapter = new MapelAdapter(mapelList , viewPager);
                             recyclerView.setAdapter(mapelAdapter);
-                            mapelAdapter.notifyDataSetChanged();  // Update UI
                         } else {
-                            Log.e("API Response", "mapelModel is null or empty");
+                            Log.e("API Response", "materiModel is null or empty");
                             Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(getContext(), "API error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "Response not successful or body is null", Toast.LENGTH_SHORT).show();
+                    String errorBody = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
+                        }
+                    } catch (IOException e) {
+                        Log.e("API Error", "Error reading error body: " + e.getMessage());
+                    }
+                    Log.e("API Error", "Response failed with code: " + response.code() +
+                            ", message: " + response.message() +
+                            ", errorBody: " + errorBody);
+                    Toast.makeText(getContext(), "API error: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to fetch data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Request failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("API Error", "Request failed: " + t.getMessage(), t);
             }
         });
     }
