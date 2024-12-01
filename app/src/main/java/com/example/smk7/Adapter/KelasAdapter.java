@@ -2,6 +2,7 @@ package com.example.smk7.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
 import com.example.smk7.Recyclemateriguru.UploadMateri_Guru;
@@ -44,15 +46,19 @@ public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHol
         holder.waliKelas.setText(kelas.getWali_kelas());
 
         holder.itemView.setOnClickListener(v -> {
-            if (isViewPagerRequired && viewPager != null) {
-                // Jika ViewPager diperlukan, pindahkan ke halaman yang sesuai
-                viewPager.setCurrentItem(9, true);
-            } else {
-                // Kirimkan nama_kelas ke UploadMateriGuru jika ViewPager tidak diperlukan
-                Context context = v.getContext();
-                Intent intent = new Intent(context, UploadMateri_Guru.class);
-                intent.putExtra("nama_kelas", kelas.getNama_kelas());  // Mengirimkan nama_kelas
-                context.startActivity(intent);  // Memulai activity UploadMateriGuru
+            Context context = holder.itemView.getContext();
+
+            if (context instanceof DashboardGuru) {
+                ViewPager2 viewPager = ((DashboardGuru) context).viewPager2;
+
+                // Nonaktifkan input swipe sementara
+                viewPager.setUserInputEnabled(false);
+
+                // Pindahkan langsung ke halaman yang diinginkan (halaman 6)
+                viewPager.setCurrentItem(7, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+                // Aktifkan kembali swipe setelah perpindahan selesai
+                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
             }
         });
     }

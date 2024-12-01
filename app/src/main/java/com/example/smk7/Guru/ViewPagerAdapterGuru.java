@@ -32,19 +32,19 @@ public class ViewPagerAdapterGuru extends FragmentStateAdapter {
             case 2:
                 return new Profil_guru();
             case 3:
-                return new UploadMateriMapel_Guru();
-            case 4:
-                return new UploadTugasMapelGuru();
-            case 5:
-                return new BankTugasMapel_Guru();
-            case 6:
                 return new ViewProfil_Guru();
-            case 7:
+            case 4:
                 return new EditProfil_Guru();
-            case 8:
+            case 5:
+                return new UploadMateriMapel_Guru();
+            case 6:
                 return new UploadMateriKelas_Guru();
-            case 9:
+            case 7:
                 return new RecyleViewMateri_Guru();
+            case 8:
+                return new UploadTugasMapelGuru();
+            case 9:
+                return new BankTugasMapel_Guru();
 //            case 10:
 //                return new EditMateri_Guru();
             default:

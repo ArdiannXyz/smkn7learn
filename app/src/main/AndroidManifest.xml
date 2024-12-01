@@ -45,16 +45,16 @@
             android:exported="true" />
         <activity
             android:name=".Recyclemateriguru.UploadMateri_Guru"
-            android:exported="true" />
-        <activity
-            android:name=".Recyclemateriguru.EditMateri_Guru"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".Recyclemateriguru.UploadMateriKelas_Guru"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".Recyclemateriguru.RecyleViewMateri_Guru"
-            android:exported="true" />
+            android:exported="false" />
+        <activity
+            android:name=".Recyclemateriguru.EditMateri_Guru"
+            android:exported="false" />
 
 
         <meta-data

@@ -1,5 +1,7 @@
 package com.example.smk7.Adapter;
 
+import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Model.MapelModel;
 import com.example.smk7.R;
 
@@ -36,8 +39,23 @@ public class MapelAdapter extends RecyclerView.Adapter<MapelAdapter.MapelViewHol
         MapelModel mapel = mapelList.get(position);
         holder.nama_mapel.setText(mapel.getNama_mapel());
         holder.itemView.setOnClickListener(v -> {
-            viewPager.setCurrentItem(8, true);
+            Context context = holder.itemView.getContext();
+
+            if (context instanceof DashboardGuru) {
+                ViewPager2 viewPager = ((DashboardGuru) context).viewPager2;
+
+                // Nonaktifkan input swipe sementara
+                viewPager.setUserInputEnabled(false);
+
+                // Pindahkan langsung ke halaman yang diinginkan (halaman 6)
+                viewPager.setCurrentItem(6, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+                // Aktifkan kembali swipe setelah perpindahan selesai
+                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
+            }
         });
+
+
     }
 
     @Override

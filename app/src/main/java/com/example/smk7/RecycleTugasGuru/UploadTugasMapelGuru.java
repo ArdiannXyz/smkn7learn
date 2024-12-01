@@ -1,6 +1,7 @@
 package com.example.smk7.RecycleTugasGuru;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,17 +41,30 @@ public class UploadTugasMapelGuru extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_upload_materi_guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_upload_materi_kelas_guru, container, false); // Perbaikan: Menggunakan layout yang benar
 
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(0);
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+
+                // Nonaktifkan input swipe sementara
+                viewPager.setUserInputEnabled(false);
+
+                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
+                viewPager.setCurrentItem(0, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+                // Aktifkan kembali swipe setelah perpindahan selesai
+                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
             }
         });
 
-        recyclerView = view.findViewById(R.id.recycleView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView = view.findViewById(R.id.recycleView); // Pastikan ID RecyclerView di layout Anda benar
+        if (recyclerView != null) { // Penambahan: Memeriksa apakah recyclerView tidak null
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        } else {
+            Log.e("UploadTugasMapelGuru", "RecyclerView is null"); // Mencatat error jika recyclerView null
+        }
 
         fetchMapelData();
 

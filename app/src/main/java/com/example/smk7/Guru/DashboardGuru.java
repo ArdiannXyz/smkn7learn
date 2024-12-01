@@ -35,6 +35,9 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
         viewPager2.setAdapter(viewPagerAdapterguru);
         viewPager2.setUserInputEnabled(true);
 
+
+
+
         // Setup BottomNavigationView untuk navigasi antar halaman
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")
@@ -78,6 +81,16 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
     public void showBottomNav() {
         if (bottomNavigationView != null) {
             bottomNavigationView.setVisibility(View.VISIBLE);
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Nonaktifkan swipe untuk ViewPager2
+        ViewPager2 viewPager2 = findViewById(R.id.Viewpagerguru);
+        if (viewPager2 != null) {
+            viewPager2.setUserInputEnabled(false);
         }
     }
 }
