@@ -16,9 +16,9 @@ import com.example.smk7.ApiDatabase.ApiHelper;
 import com.example.smk7.ApiDatabase.Db_Contract;
 import com.example.smk7.R;
 
-import java.util.HashMap;
-
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class UploadMateri_Guru extends AppCompatActivity {
 
@@ -36,6 +36,7 @@ public class UploadMateri_Guru extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_upload_materi_guru);
 
+        // Menyambungkan view ke komponen UI
         backButton = findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> onBackPressed());
 
@@ -55,10 +56,11 @@ public class UploadMateri_Guru extends AppCompatActivity {
 
         // Validasi ID Kelas
         if (idKelas == null || idKelas.trim().isEmpty()) {
-            idKelas = "0"; // Default value
+            idKelas = "0"; // Default value jika ID kelas tidak ditemukan
             Log.e(TAG, "ID Kelas null atau kosong, menggunakan nilai default: " + idKelas);
         }
 
+        // Menampilkan nama kelas
         if (namaKelas != null) {
             tvNamaKelas.setText(namaKelas);
         } else {
@@ -66,35 +68,41 @@ public class UploadMateri_Guru extends AppCompatActivity {
             Log.e(TAG, "Nama kelas tidak ditemukan dalam Intent.");
         }
 
+        // Setup listener untuk tombol Simpan
         btnSimpan.setOnClickListener(v -> uploadMateri());
     }
 
     private void uploadMateri() {
+        // Mendapatkan data dari EditText
         String judulMateri = edtJudulMateri.getText().toString().trim();
         String jenisMateri = edtLampiran.getText().toString().trim();
         String komentar = edtKomentar.getText().toString().trim();
 
+        // Validasi input
         if (TextUtils.isEmpty(judulMateri) || TextUtils.isEmpty(jenisMateri) || TextUtils.isEmpty(komentar)) {
             Toast.makeText(this, "Semua field harus diisi!", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Field kosong saat validasi.");
             return;
         }
 
+        // Validasi ID Kelas
         if (idKelas == null || idKelas.trim().isEmpty()) {
             Toast.makeText(this, "ID Kelas tidak valid!", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "ID Kelas null atau kosong: " + idKelas);
             return;
         }
 
+        // Menyiapkan parameter untuk dikirim ke API
         HashMap<String, String> params = new HashMap<>();
         params.put("judul_materi", judulMateri);
         params.put("jenis_materi", jenisMateri);
         params.put("komentar", komentar);
-        params.put("id_guru", "1");
+        params.put("id_guru", "1"); // Misalnya ID guru hardcoded sebagai 1
         params.put("id_kelas", idKelas);
 
         Log.d(TAG, "Parameter yang dikirim: " + params);
 
+        // Mengirim data ke server API menggunakan thread terpisah
         new Thread(() -> {
             try {
                 String ApiUploadmateri = ApiHelper.post(Db_Contract.urlApiUploadMateri, params);
@@ -102,29 +110,25 @@ public class UploadMateri_Guru extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     try {
-                        if (ApiUploadmateri.startsWith("{")) {
-                            JSONObject jsonResponse = new JSONObject(ApiUploadmateri);
-                            boolean success = jsonResponse.getBoolean("success");
-                            String message = jsonResponse.getString("message");
+                        JSONObject jsonResponse = new JSONObject(ApiUploadmateri);
+                        String status = jsonResponse.getString("status");
 
-                            Toast.makeText(this, message, success ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
-
-                            if (success) {
-                                edtJudulMateri.setText("");
-                                edtLampiran.setText("");
-                                edtKomentar.setText("");
-                            }
+                        if ("success".equals(status)) {
+                            Toast.makeText(this, "Materi berhasil diupload", Toast.LENGTH_SHORT).show();
+                            // Kembali ke activity sebelumnya
+                            onBackPressed();
                         } else {
-                            Log.e(TAG, "Respons bukan JSON: " + ApiUploadmateri);
-                            Toast.makeText(this, "Kesalahan pada server.", Toast.LENGTH_SHORT).show();
+                            String message = jsonResponse.getString("message");
+                            Toast.makeText(this, "Error: " + message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, "Error parsing response: " + e.getMessage(), e);
-                        Toast.makeText(this, "Kesalahan parsing respons.", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Error parsing response: " + e.getMessage());
+                        Toast.makeText(this, "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (Exception e) {
-                Log.e(TAG, "Error saat mengirim data ke server: " + e.getMessage(), e);
+                Log.e(TAG, "Error uploading materi: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(this, "Gagal mengupload materi", Toast.LENGTH_SHORT).show());
             }
         }).start();
     }

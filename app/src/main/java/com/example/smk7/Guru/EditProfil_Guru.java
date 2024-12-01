@@ -25,12 +25,9 @@ public class EditProfil_Guru extends Fragment {
 
         BackButton = view.findViewById(R.id.back_Button);
 
-
-
-
         BackButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(6);
+                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(3);
             }
         });
         return view;

@@ -102,7 +102,8 @@
             android:textColor="#000000"
             android:textColorHint="#000000"
             android:textSize="15sp" />
-        <!-- Username Input -->
+
+        <!-- Edt Lampiran -->
         <EditText
             android:id="@+id/Edt_Lampiran"
             android:layout_width="match_parent"
@@ -116,15 +117,9 @@
             android:textColorHint="#000000"
             android:textSize="15sp" />
 
-        <!-- Password Input -->
 
 
-        <!-- Confirm Password Input -->
-
-
-        <!-- Spinner for Guru/Murid -->
-
-        <!-- Email Input -->
+        <!-- Edt Komentar -->
         <EditText
             android:id="@+id/Edt_Komentar"
             android:layout_width="match_parent"
@@ -138,7 +133,7 @@
             android:textColorHint="#181818"
             android:textSize="15sp" />
 
-        <!-- Login Button -->
+        <!-- Simpan Button -->
         <Button
             android:id="@+id/Btn_simpan"
             android:layout_width="match_parent"

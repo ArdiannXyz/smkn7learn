@@ -1,66 +1,48 @@
 package com.example.smk7.Recyclemateriguru;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditMateri_Guru#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class EditMateri_Guru extends Fragment {
+public class EditMateri_Guru extends AppCompatActivity {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public EditMateri_Guru() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditMateri_Guru.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditMateri_Guru newInstance(String param1, String param2) {
-        EditMateri_Guru fragment = new EditMateri_Guru();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private EditText edtJudulMateri, edtLampiran;
+    private TextView txtIdKelas;  // TextView untuk menampilkan id_kelas
+    private String idKelas, materiId;
+    private ImageView backButton;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+        setContentView(R.layout.fragment_edit_materi_guru);  // Pastikan ini sesuai dengan layout Activity
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_materi_guru, container, false);
+        // Initialize the UI components
+        edtJudulMateri = findViewById(R.id.Edt_JudulMateri);
+        edtLampiran = findViewById(R.id.Edt_Lampiran);
+        txtIdKelas = findViewById(R.id.NamaKelas); // Assuming you have this TextView in your layout
+        backButton = findViewById(R.id.back_Button); // Button untuk kembali
+
+        // Setup back button action
+        backButton.setOnClickListener(v -> {
+            // Bisa kembali ke DashboardGuru
+            finish(); // Menutup activity ini dan kembali ke activity sebelumnya
+        });
+
+        // Get the Intent that started this activity
+        Intent intent = getIntent();
+        if (intent != null) {
+            materiId = intent.getStringExtra("materi_id");  // Get materi ID from Intent
+            idKelas = intent.getStringExtra("id_kelas");  // Get id_kelas from Intent
+
+            // Set the id_kelas to the TextView
+            txtIdKelas.setText("ID Kelas: " + idKelas);
+        }
     }
 }
