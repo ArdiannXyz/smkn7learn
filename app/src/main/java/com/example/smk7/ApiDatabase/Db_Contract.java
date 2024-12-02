@@ -9,15 +9,15 @@ public class Db_Contract {
     public static final String urlGantiPassword = BASE_URL + "api-reset_password.php";
     public static final String urlApiDashboard = BASE_URL + "api_dashboard.php";
     public static final String urlApiUploadMateri = BASE_URL + "api-uploadMateri.php";
-    public static final String urlApiCrudMateri = BASE_URL + "api-materi.php";
+    public static final String urlApiCrudMateri = BASE_URL + "api-crud.php";
 
-//    public static ApiService getApiService() {
-//        return ApiClient.getRetrofitInstance().create(ApiService.class);
-//    }
-
-
-    // Method ini akan mengembalikan instance ApiServiceInterface
-    public static ApiServiceInterface getApiService() {
-        return ApiClient.getRetrofitInstance().create(ApiServiceInterface.class);
+    public static ApiService getApiService() {
+        return ApiClient.getRetrofitInstance().create(ApiService.class);
     }
+
+
+//    // Method ini akan mengembalikan instance ApiServiceInterface
+//    public static ApiServiceInterface getApiService() {
+//        return ApiClient.getRetrofitInstance().create(ApiServiceInterface.class);
+//    }
 }

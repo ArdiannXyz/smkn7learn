@@ -1,6 +1,7 @@
 package com.example.smk7.Adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -81,7 +83,12 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
 
         // Handle delete button click
         holder.btnHps.setOnClickListener(v -> {
-            deleteMateri(materi.getIdTugas());  // Replace with the actual getter method name for idTugas
+            new AlertDialog.Builder(context)
+                    .setTitle("Konfirmasi Hapus")
+                    .setMessage("Apakah Anda yakin ingin menghapus materi ini?")
+                    .setPositiveButton("Hapus", (dialog, which) -> deleteMateri(materi.getIdTugas()))  // Replace with the actual getter method name for idTugas
+                    .setNegativeButton("Batal", null)
+                    .show();
         });
     }
 
@@ -108,8 +115,8 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
     private void deleteMateri(String idTugas) {
         // Periksa apakah idTugas valid
         if (idTugas == null || idTugas.isEmpty()) {
-            Toast.makeText(context, "ID Tugas tidak valid", Toast.LENGTH_SHORT).show();
-            return;  // Tidak melanjutkan eksekusi jika idTugas tidak valid
+            Toast.makeText(context, "ID Tugas tidak valid", Toast.LENGTH_SHORT).show(); // Tambahkan show()
+            return;  // Jangan lanjutkan jika idTugas tidak valid
         }
 
         // Menggunakan URL dari Db_Contract untuk API deleteMateri
@@ -121,18 +128,23 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
                         JSONObject jsonResponse = new JSONObject(response);
                         boolean success = jsonResponse.getBoolean("success");
                         if (success) {
-                            // Remove the item from the list and notify adapter
-                            materiList.removeIf(materi -> materi.getJudulTugas().equals(idTugas));  // Sesuaikan pengecekan ID
+                            // Hapus item dari daftar dan beri tahu adapter
+                            materiList.removeIf(materi -> materi.getIdTugas().equals(idTugas));  // Sesuaikan pengecekan ID
                             notifyDataSetChanged();
-                            Toast.makeText(context, "Materi deleted successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Materi berhasil dihapus", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(context, "Failed to delete materi", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Gagal menghapus materi", Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast.makeText(context, "Terjadi kesalahan saat menghapus materi", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(context, "Error deleting materi", Toast.LENGTH_SHORT).show()
+                error -> {
+                    // Log kesalahan untuk debugging
+                    error.printStackTrace();
+                    Toast.makeText(context, "Error deleting materi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -142,9 +154,8 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
             }
         };
 
-        // Add request to the request queue
+        // Tambahkan permintaan ke antrean permintaan
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
-
 }

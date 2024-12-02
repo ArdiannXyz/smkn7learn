@@ -18,11 +18,9 @@ public interface ApiServiceInterface {
     @GET("api_kelas_guru.php")
     Call<ApiResponse> getKelasData();
 
-    // Endpoint untuk mendapatkan data mapel
     @GET("api_mapelguru.php")
     Call<ApiResponse> getMapelData();
 
-    // Endpoint untuk mendapatkan data materi
     @GET("api_materiguru.php")
     Call<ApiResponse> getMateriData();
 
@@ -30,30 +28,28 @@ public interface ApiServiceInterface {
     Call<ApiResponse> getTugasData();
 
 
-
-
-//    // Endpoint untuk mendapatkan materi berdasarkan ID kelas
-//    @GET("api-crud.php?action=getMateriByKelas")
-//    Call<List<MateriModel>> getMateriByKelas(@Query("id_kelas") String id_kelas);
+//    // API
+//    @POST("api-crud.php?action=createMateri")
+//    Call<ApiResponse> createMateri(@Body MateriModel materi);
 //
-//    // Endpoint untuk update materi
-//    @POST("api-crud.php?action=updateMateri")
+//    @PUT("api-crud.php?action=updateMateri")
 //    Call<ApiResponse> updateMateri(@Body MateriModel materi);
 //
-//    // Endpoint untuk delete materi
-//    @POST("api-crud.php?action=deleteMateri")
-//    Call<ApiResponse> deleteMateri(@Body MateriModel materi); // Kirim MateriModel atau ID Tugas tergantung API
+//    @DELETE("api-crud.php?action=deleteMateri")
+//    Call<ApiResponse> deleteMateri(@Query("id_tugas") String idTugas);
 
 
-    // API untuk Create Materi
-    @POST("api-crud.php?action=createMateri")
-    Call<ApiResponse> createMateri(@Body MateriModel materi);
+    // Endpoint untuk mendapatkan materi berdasarkan ID kelas
+    @GET("api-crud.php?action=getMateriByKelas")
+    Call<List<MateriModel>> getMateriByKelas(@Query("id_kelas") String id_kelas);
 
-    // API untuk Update Materi
-    @PUT("api-crud.php?action=updateMateri")
+    // Endpoint untuk update materi
+    @POST("api-crud.php?action=updateMateri")
     Call<ApiResponse> updateMateri(@Body MateriModel materi);
 
-    // API untuk Delete Materi
-    @DELETE("api-crud.php?action=deleteMateri")
-    Call<ApiResponse> deleteMateri(@Query("id_tugas") String idTugas);
+    // Endpoint untuk delete materi
+    @POST("api-crud.php?action=deleteMateri")
+    Call<ApiResponse> deleteMateri(@Body MateriModel materi); // Kirim MateriModel atau ID Tugas tergantung API
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.smk7.Recyclemateriguru;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -102,6 +103,12 @@ public class UploadMateri_Guru extends AppCompatActivity {
 
         Log.d(TAG, "Parameter yang dikirim: " + params);
 
+        // Menampilkan ProgressDialog
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Mengupload materi...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         // Mengirim data ke server API menggunakan thread terpisah
         new Thread(() -> {
             try {
@@ -109,6 +116,7 @@ public class UploadMateri_Guru extends AppCompatActivity {
                 Log.d(TAG, "Respons mentah dari API: " + ApiUploadmateri);
 
                 runOnUiThread(() -> {
+                    progressDialog.dismiss(); // Menutup ProgressDialog
                     try {
                         JSONObject jsonResponse = new JSONObject(ApiUploadmateri);
                         String status = jsonResponse.getString("status");
@@ -117,18 +125,22 @@ public class UploadMateri_Guru extends AppCompatActivity {
                             Toast.makeText(this, "Materi berhasil diupload", Toast.LENGTH_SHORT).show();
                             // Kembali ke activity sebelumnya
                             onBackPressed();
+
                         } else {
                             String message = jsonResponse.getString("message");
                             Toast.makeText(this, "Error: " + message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "Error parsing response: " + e.getMessage());
-                        Toast.makeText(this, "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Terjadi kesalahan saat memproses respons", Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (Exception e) {
                 Log.e(TAG, "Error uploading materi: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(this, "Gagal mengupload materi", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> {
+                    progressDialog.dismiss(); // Menutup ProgressDialog
+                    Toast.makeText(this, "Gagal mengupload materi", Toast.LENGTH_SHORT).show();
+                });
             }
         }).start();
     }

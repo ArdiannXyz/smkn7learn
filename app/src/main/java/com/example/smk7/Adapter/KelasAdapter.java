@@ -42,8 +42,8 @@ public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHol
     @Override
     public void onBindViewHolder(@NonNull KelasViewHolder holder, int position) {
         KelasModel kelas = kelasList.get(position);
-        holder.namaKelas.setText(kelas.getNama_kelas());
-        holder.waliKelas.setText(kelas.getWali_kelas());
+        holder.namaKelas.setText(kelas.getNamaKelas());
+        holder.waliKelas.setText(kelas.getWaliKelas());
 
         holder.itemView.setOnClickListener(v -> {
             Context context = holder.itemView.getContext();
