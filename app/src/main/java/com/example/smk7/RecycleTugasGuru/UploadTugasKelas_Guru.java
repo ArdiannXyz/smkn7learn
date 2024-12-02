@@ -1,6 +1,7 @@
 package com.example.smk7.RecycleTugasGuru;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.example.smk7.Adapter.KelasAdapter;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
 import com.example.smk7.Recyclemateriguru.UploadMateriKelas_Guru;
@@ -33,7 +35,7 @@ import retrofit2.Response;
 public class UploadTugasKelas_Guru extends Fragment {
 
     private RecyclerView recyclerView;
-    private ImageView back_Button_kelas_guru;
+    private ImageView backButton;
     private List<KelasModel> kelasList;
     private KelasAdapter kelasAdapter;
 
@@ -43,11 +45,21 @@ public class UploadTugasKelas_Guru extends Fragment {
         View view = inflater.inflate(R.layout.fragment_upload_tugas_kelas_guru, container, false);
 
         // Back button listener
-        back_Button_kelas_guru = view.findViewById(R.id.back_Button);
-        back_Button_kelas_guru.setOnClickListener(v -> {
+        backButton = view.findViewById(R.id.back_Button);
+        backButton.setOnClickListener(v -> {
+            if (getActivity() instanceof DashboardGuru) {
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
+                // Nonaktifkan input swipe sementara
+                viewPager.setUserInputEnabled(false);
+
+                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
+                viewPager.setCurrentItem(4, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+                // Aktifkan kembali swipe setelah perpindahan selesai
+                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
+            }
         });
-
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -81,8 +93,9 @@ public class UploadTugasKelas_Guru extends Fragment {
                                 // Pastikan currentFragment sesuai dengan kondisi ini
                                 Fragment currentFragment = UploadTugasKelas_Guru.this;  // Gunakan fragment yang aktif
 
-                                kelasAdapter = new KelasAdapter(kelasList, viewPager, true); // Hapus currentFragment
-                                recyclerView.setAdapter(kelasAdapter);
+                                // Panggil adapter dengan parameter yang benar
+                                kelasAdapter = new KelasAdapter(kelasList, viewPager, true, currentFragment);
+                                recyclerView.setAdapter(kelasAdapter);  // Set adapter ke RecyclerView
 
                                 // Jika RecyclerView di-click, maka pindah ke halaman 12 di ViewPager2
                                 recyclerView.setOnClickListener(v -> {

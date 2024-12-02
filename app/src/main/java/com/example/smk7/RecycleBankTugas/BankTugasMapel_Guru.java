@@ -1,6 +1,7 @@
 package com.example.smk7.RecycleBankTugas;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,16 @@ public class BankTugasMapel_Guru extends Fragment {
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(0);
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+
+                // Nonaktifkan input swipe sementara
+                viewPager.setUserInputEnabled(false);
+
+                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
+                viewPager.setCurrentItem(0, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+                // Aktifkan kembali swipe setelah perpindahan selesai
+                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
             }
         });
 
@@ -80,9 +90,10 @@ public class BankTugasMapel_Guru extends Fragment {
                             // Menyediakan fragment saat ini untuk adapter
                             Fragment currentFragment = getParentFragment() != null ? getParentFragment() : BankTugasMapel_Guru.this;
 
-                            mapelAdapter = new MapelAdapter(mapelList, viewPager); // Hapus currentFragment
+                            // Menyesuaikan adapter dengan fragment yang aktif
+                            mapelAdapter = new MapelAdapter(mapelList, viewPager, currentFragment);
                             recyclerView.setAdapter(mapelAdapter);
-                            mapelAdapter.notifyDataSetChanged();
+                            mapelAdapter.notifyDataSetChanged();  // Update UI
                         } else {
                             Log.e("API Response", "mapelModel is null or empty");
                             Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();

@@ -33,7 +33,7 @@ public class Profil_guru extends Fragment {
 
         ViewButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(3);
+                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(6);
             }
         });
 

@@ -71,7 +71,7 @@
                 />
 
             <TextView
-                android:id="@+id/Namasiswa"
+                android:id="@+id/txtnama"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Moh Farhan"
@@ -82,7 +82,7 @@
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/statustugas"
+                android:id="@+id/txtstatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15dp"

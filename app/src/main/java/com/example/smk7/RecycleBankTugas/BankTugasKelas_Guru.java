@@ -2,6 +2,7 @@ package com.example.smk7.RecycleBankTugas;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.example.smk7.Adapter.KelasAdapter;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
 
@@ -44,7 +46,18 @@ public class BankTugasKelas_Guru extends Fragment {
         // Back button listener
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
+            if (getActivity() instanceof DashboardGuru) {
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
+                // Nonaktifkan input swipe sementara
+                viewPager.setUserInputEnabled(false);
+
+                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
+                viewPager.setCurrentItem(10, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+                // Aktifkan kembali swipe setelah perpindahan selesai
+                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
+            }
         });
 
         // Initialize RecyclerView
@@ -80,8 +93,9 @@ public class BankTugasKelas_Guru extends Fragment {
                                 // Pastikan currentFragment sesuai dengan kondisi ini
                                 Fragment currentFragment = BankTugasKelas_Guru.this;  // Gunakan fragment yang aktif
 
-                                kelasAdapter = new KelasAdapter(kelasList, viewPager, true); // Hapus currentFragment
-                                recyclerView.setAdapter(kelasAdapter);
+                                // Panggil adapter dengan parameter yang benar
+                                kelasAdapter = new KelasAdapter(kelasList, viewPager, true, currentFragment);
+                                recyclerView.setAdapter(kelasAdapter);  // Set adapter ke RecyclerView
 
                                 // Jika RecyclerView di-click, maka pindah ke halaman 13 di ViewPager2
                                 recyclerView.setOnClickListener(v -> {

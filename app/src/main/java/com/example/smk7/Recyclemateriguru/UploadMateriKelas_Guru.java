@@ -1,6 +1,5 @@
 package com.example.smk7.Recyclemateriguru;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -21,12 +20,10 @@ import com.example.smk7.Adapter.KelasAdapter;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
-import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
 
-import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,14 +36,12 @@ public class UploadMateriKelas_Guru extends Fragment {
     private ImageView backButton;
     private List<KelasModel> kelasList;
     private KelasAdapter kelasAdapter;
-    private BottomNavigationHandler navigationHandler;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upload_materi_kelas_guru, container, false);
 
-        // Back button listener
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
@@ -56,19 +51,16 @@ public class UploadMateriKelas_Guru extends Fragment {
                 viewPager.setUserInputEnabled(false);
 
                 // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
-                viewPager.setCurrentItem(5, false);  // false berarti tanpa animasi untuk perpindahan langsung
+                viewPager.setCurrentItem(3, false);  // false berarti tanpa animasi untuk perpindahan langsung
 
                 // Aktifkan kembali swipe setelah perpindahan selesai
                 new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
             }
         });
 
-
-
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
 
         // Fetch data from API
         fetchKelasData();
@@ -88,35 +80,35 @@ public class UploadMateriKelas_Guru extends Fragment {
                     Log.d("API Response", apiResponse.toString());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        kelasList = apiResponse.getKelasModel();  // Pastikan ini adalah metode yang benar untuk mendapatkan data kelas
+                        kelasList = apiResponse.getKelasModel();  // Pastikan data kelas diambil dengan benar
 
-                        // Jika kelasList valid dan tidak kosong
+                        // Pastikan kelasList valid dan tidak kosong
                         if (kelasList != null && !kelasList.isEmpty()) {
-                            // Ambil ViewPager2 dari layout
+                            // Ambil ViewPager2 dari activity
                             ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-                            // Kirimkan kelasList, viewPager, dan flag true ke konstruktor KelasAdapter
-                            kelasAdapter = new KelasAdapter(kelasList, viewPager, true);
-                            recyclerView.setAdapter(kelasAdapter);
-                        } else {
-                            Log.e("API Response", "kelasModel is null or empty");
-                            Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
+
+                            if (viewPager != null) {
+                                // Pastikan currentFragment sesuai dengan kondisi ini
+                                Fragment currentFragment = UploadMateriKelas_Guru.this;  // Gunakan fragment yang aktif
+
+                                // Panggil adapter dengan parameter yang benar
+                                kelasAdapter = new KelasAdapter(kelasList, viewPager, true, currentFragment);
+                                recyclerView.setAdapter(kelasAdapter);  // Set adapter ke RecyclerView
+
+                                // Jika RecyclerView di-click, maka pindah ke halaman 11 di ViewPager2
+                                recyclerView.setOnClickListener(v -> {
+                                    if (currentFragment instanceof UploadMateriKelas_Guru) {
+                                        Log.d("FragmentA", "Pindah ke halaman 11...");
+                                        viewPager.setCurrentItem(11, true);  // Pindah ke halaman 11 untuk Fragment A
+                                    }
+                                });
+                            }
                         }
                     } else {
-                        Toast.makeText(getContext(), "API error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("API Error", "Error: " + apiResponse.getMessage());
                     }
                 } else {
-                    String errorBody = "";
-                    try {
-                        if (response.errorBody() != null) {
-                            errorBody = response.errorBody().string();
-                        }
-                    } catch (IOException e) {
-                        Log.e("API Error", "Error reading error body: " + e.getMessage());
-                    }
-                    Log.e("API Error", "Response failed with code: " + response.code() +
-                            ", message: " + response.message() +
-                            ", errorBody: " + errorBody);
-                    Toast.makeText(getContext(), "API error: " + response.message(), Toast.LENGTH_SHORT).show();
+                    Log.e("API Error", "Response not successful or body is null");
                 }
             }
 
@@ -126,38 +118,5 @@ public class UploadMateriKelas_Guru extends Fragment {
                 Log.e("API Error", "Request failed: " + t.getMessage(), t);
             }
         });
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            navigationHandler = (BottomNavigationHandler) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement BottomNavigationHandler");
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (navigationHandler != null) {
-            navigationHandler.hideBottomNav();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (navigationHandler != null) {
-            navigationHandler.showBottomNav();
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        navigationHandler = null;
     }
 }

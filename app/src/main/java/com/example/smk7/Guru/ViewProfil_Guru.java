@@ -51,7 +51,7 @@ public class ViewProfil_Guru extends Fragment {
 
         EditProfil.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(4);
+                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(7);
             }
         });
         return view;

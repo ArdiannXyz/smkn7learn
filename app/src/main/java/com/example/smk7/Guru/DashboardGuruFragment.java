@@ -38,17 +38,17 @@ public class DashboardGuruFragment extends Fragment {
 
         linearLayoutMateriGuru.setOnClickListener(v -> {
             System.out.println("Upload Materi button clicked");
-            openFragment(5);
+            openFragment(3);
         });
 
         linearLayoutTugasGuru.setOnClickListener(v -> {
             System.out.println("Upload Tugas button clicked");
-            openFragment(8);
+            openFragment(4);
         });
 
         linearLayoutDataTugas.setOnClickListener(v -> {
             System.out.println("Bank Tugas button clicked");
-            openFragment(9);
+            openFragment(5);
         });
 
         fetchDataFromServer();
