@@ -27,6 +27,8 @@ public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
             return new ViewProfil_Siswa();
         } else if (position == 6) {
             return new EditProfil_Siswa();
+        } else if (position == 7) {
+            return new UploadTugas_Siswa();
         } else {
             return new DashboardSiswaFragment();
         }
@@ -34,6 +36,6 @@ public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 7;
+        return 8;
     }
 }

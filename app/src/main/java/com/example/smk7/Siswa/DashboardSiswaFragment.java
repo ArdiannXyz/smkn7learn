@@ -32,7 +32,7 @@ public class DashboardSiswaFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                openFragment(4); // Misalnya fragment minuman
+                openFragment(7); // Misalnya fragment minuman
             }
         });
         return  view;
