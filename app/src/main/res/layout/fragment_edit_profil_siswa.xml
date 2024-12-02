@@ -67,6 +67,8 @@
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/edittext_white"
+            android:drawableLeft="@drawable/alamat"
+            android:drawablePadding="10dp"
             android:hint="Alamat Siswa"
             android:inputType="textPersonName"
             android:paddingStart="16dp"
