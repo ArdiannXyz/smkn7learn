@@ -1,5 +1,6 @@
 package com.example.smk7.RecycleBankTugas;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,13 +18,12 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
+import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Adapter.MapelAdapter;
 import com.example.smk7.Model.MapelModel;
 import com.example.smk7.R;
-import com.example.smk7.RecycleTugasGuru.UploadTugasMapelGuru;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -37,6 +37,7 @@ public class BankTugasMapel_Guru extends Fragment {
     private List<MapelModel> mapelList = new ArrayList<>();
     private ImageView backButton;
     private ViewPager2 viewPager;
+    private BottomNavigationHandler navigationHandler;
 
     @Nullable
     @Override
@@ -49,7 +50,6 @@ public class BankTugasMapel_Guru extends Fragment {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
                 // Nonaktifkan input swipe sementara
-                viewPager.setUserInputEnabled(false);
 
                 // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
                 viewPager.setCurrentItem(0, false);  // false berarti tanpa animasi untuk perpindahan langsung
@@ -111,5 +111,38 @@ public class BankTugasMapel_Guru extends Fragment {
                 Log.e("API Error", "Request failed: " + t.getMessage(), t);
             }
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            navigationHandler = (BottomNavigationHandler) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement BottomNavigationHandler");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (navigationHandler != null) {
+            navigationHandler.showBottomNav();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        navigationHandler = null;
     }
 }

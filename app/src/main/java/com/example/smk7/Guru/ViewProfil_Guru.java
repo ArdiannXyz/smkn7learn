@@ -10,7 +10,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +47,15 @@ public class ViewProfil_Guru extends Fragment {
 
         BackButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(2);
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+
+                // Nonaktifkan input swipe sementara
+
+                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
+                viewPager.setCurrentItem(2, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+                // Aktifkan kembali swipe setelah perpindahan selesai
+                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
             }
         });
 

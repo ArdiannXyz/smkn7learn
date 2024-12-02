@@ -1,246 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Siswa.UploadTugas_Siswa">
+    tools:context=".Siswa.UploadTugas_Siswa"
+    android:orientation="vertical">
 
+    <!-- TODO: Update b  fragment layout -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/birulivin"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        tools:ignore="MissingConstraints">
 
-        <TextView
-            android:id="@+id/schoolName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:text="SMK Negeri 7 Jember"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:padding="16dp">
 
         <FrameLayout
-            android:layout_width="40dp"
+            android:layout_width="50dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="150dp">
+            >
 
             <ImageView
+                android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_smk7_foreground" />
+                android:src="@drawable/backlay" />
+
         </FrameLayout>
+
+
     </LinearLayout>
 
-    <!-- First mtkul Layout -->
-    <LinearLayout
-        android:id="@+id/mtkul"
-        android:layout_width="338dp"
-        android:layout_height="81dp"
-        android:layout_marginTop="44dp"
-        android:background="@drawable/white_background"
-        android:elevation="8dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/matkulText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Matkul: TKJ-WIFI1204"
-            android:textColor="@color/birulivin"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textView9"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Dashboard / My Course / TKJ-WIFI / Minggu 10" />
-    </LinearLayout>
-
-    <!-- Pengumpulan Layout -->
-    <!-- Second mtkul Layout renamed to mtkulContent -->
-    <LinearLayout
-        android:id="@+id/mtkulContent"
-        android:layout_width="338dp"
-        android:layout_height="396dp"
-        android:background="@drawable/white_background"
-        android:elevation="8dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mtkul"
-        app:layout_constraintVertical_bias="0.26">
-
-        <TextView
-            android:id="@+id/judul"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pengumpulan Tugas"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <!-- Status Pengumpulan Section -->
-        <LinearLayout
-            android:layout_width="253dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp">
 
             <TextView
-                android:id="@+id/statusPengumpulanLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Status pengumpulan:"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/statusPengumpulan"
+                android:id="@+id/judulmateri"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Belum ada upaya" />
-        </LinearLayout>
+                android:text="Pemograman Dasar"
+                android:layout_marginTop="30dp"
+                android:textSize="20sp"
+                android:textColor="@color/birulivin"
+                android:textStyle="bold"/>
 
-        <!-- Status Penilaian Section -->
-        <LinearLayout
-            android:layout_width="253dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="370dp"
+                android:layout_height="5dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bluecornershape"/>
 
-            <TextView
-                android:id="@+id/statusPenilaianLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Status penilaian:"
-                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/statusPenilaian"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Belum dinilai" />
-        </LinearLayout>
-
-        <!-- Tenggat Waktu Section -->
-        <LinearLayout
-            android:layout_width="253dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+                android:text="File Materi :"
+                android:layout_marginTop="30dp"
+                android:textSize="18sp"
+                android:textColor="@color/birulivin"
+                android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/tenggatWaktuLabel"
+                android:id="@+id/Tenggatwaktu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tenggat waktu:"
-                android:textStyle="bold" />
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/tiltneon"
+                android:text="Jum'at, 19 November 2024"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                />
 
             <TextView
-                android:id="@+id/tenggatWaktu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Jumat, 9 November 2024 21:00 WIB" />
-        </LinearLayout>
-
-        <!-- Waktu Tersisa Section -->
-        <LinearLayout
-            android:layout_width="253dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/waktuTersisaLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Waktu tersisa:"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/waktuTersisa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="6 Hari 22 Jam" />
-        </LinearLayout>
-
-        <!-- Terakhir Diubah Section -->
-        <LinearLayout
-            android:layout_width="253dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/terakhirDieditLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Terakhir diedit:"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/terakhirDiedit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="-" />
-        </LinearLayout>
-
-        <!-- Komentar Section -->
-        <LinearLayout
-            android:layout_width="253dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/labelKomentar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Komentar pengumpulan:"
-                android:textStyle="bold" />
+                android:text="Komentar :"
+                android:layout_marginTop="30dp"
+                android:textSize="18sp"
+                android:textColor="@color/birulivin"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/komentar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Tidak ada komentar" />
-        </LinearLayout>
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/tiltneon"
+                android:text="kumpulkan tugasnya ya bapak mau ke luar negeri"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                />
 
-        <!-- Button Section -->
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="match_parent"
+                android:layout_marginTop="200dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:visibility="gone"
+                android:src="@drawable/pdf" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        >
+
         <Button
-            android:id="@+id/tombolTambahPengumpulan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:id="@+id/button_add_file"
+            android:layout_width="180dp"
+            android:layout_height="60dp"
+            android:text="Tambahkan File"
             android:backgroundTint="@color/birulivin"
-            android:padding="8dp"
-            android:text="Tambahkan File" />
+            android:onClick="onAddFileClick"
+            android:layout_marginRight="10dp"/>
+        />
+
+        <Button
+            android:id="@+id/button_submit_file"
+            android:layout_width="180dp"
+            android:layout_height="60dp"
+            android:text="Serahkan File"
+            android:backgroundTint="@color/birulivin"
+            android:onClick="onSubmitFileClick"/>
+
     </LinearLayout>
 
-    <!-- Footer Layout -->
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

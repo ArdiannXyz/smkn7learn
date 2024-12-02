@@ -1,5 +1,7 @@
 package com.example.smk7.Recyclemateriguru;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -20,6 +22,7 @@ import com.example.smk7.Adapter.KelasAdapter;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
+import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
@@ -36,11 +39,18 @@ public class UploadMateriKelas_Guru extends Fragment {
     private ImageView backButton;
     private List<KelasModel> kelasList;
     private KelasAdapter kelasAdapter;
+    private BottomNavigationHandler navigationHandler;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upload_materi_kelas_guru, container, false);
+
+        Activity activity = getActivity();
+        if (activity != null) {
+            ViewPager2 viewPager2 = activity.findViewById(R.id.Viewpagerguru);
+
+        }
 
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
@@ -48,7 +58,6 @@ public class UploadMateriKelas_Guru extends Fragment {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
                 // Nonaktifkan input swipe sementara
-                viewPager.setUserInputEnabled(false);
 
                 // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
                 viewPager.setCurrentItem(3, false);  // false berarti tanpa animasi untuk perpindahan langsung
@@ -58,7 +67,7 @@ public class UploadMateriKelas_Guru extends Fragment {
             }
         });
 
-        // Initialize RecyclerView
+
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -118,5 +127,44 @@ public class UploadMateriKelas_Guru extends Fragment {
                 Log.e("API Error", "Request failed: " + t.getMessage(), t);
             }
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            navigationHandler = (BottomNavigationHandler) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement BottomNavigationHandler");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+
+            // Pastikan menggunakan view.findViewById() untuk mengakses ViewPager2
+        }
+    }
+
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+
+
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        navigationHandler = null;
     }
 }

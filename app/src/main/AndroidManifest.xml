@@ -55,6 +55,9 @@
         <activity
             android:name=".RecycleTugasGuru.RecycleViewTugasGuru"
             android:exported="true" />
+        <activity
+            android:name=".RecycleTugasGuru.UploadTugas_guru"
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"

@@ -1,6 +1,7 @@
 package com.example.smk7.Adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,18 +63,20 @@ public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHol
                     // Periksa fragment aktif dan arahkan ke halaman yang sesuai
                     if (currentFragment instanceof UploadMateriKelas_Guru) {
                         Log.d("FragmentA", "Pindah ke halaman 11...");
-                        viewPager.setCurrentItem(11, true); // Pindah ke halaman 11 untuk Fragment A
+                        viewPager.setCurrentItem(11, false); // Pindah ke halaman 11 untuk Fragment A
                     } else if (currentFragment instanceof UploadTugasKelas_Guru) {
                         Log.d("FragmentB", "Pindah ke halaman 12...");
-                        viewPager.setCurrentItem(12, true); // Pindah ke halaman 12 untuk Fragment B
+                        viewPager.setCurrentItem(12, false); // Pindah ke halaman 12 untuk Fragment B
                     } else if (currentFragment instanceof BankTugasKelas_Guru) {
                         Log.d("FragmentC", "Pindah ke halaman 13...");
-                        viewPager.setCurrentItem(13, true); // Pindah ke halaman 13 untuk Fragment C
+                        viewPager.setCurrentItem(13, false); // Pindah ke halaman 13 untuk Fragment C
                     } else {
                         // Menangani fragmen yang tidak dikenali
                         Log.e("Fragment Error", "Fragment tidak dikenali!");
                         Toast.makeText(v.getContext(), "Fragment tidak dikenali", Toast.LENGTH_SHORT).show();
                     }
+
+                    new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);
                 } else {
                     Log.e("Fragment Error", "currentFragment is null!");
                     Toast.makeText(v.getContext(), "Fragment aktif tidak ditemukan", Toast.LENGTH_SHORT).show();

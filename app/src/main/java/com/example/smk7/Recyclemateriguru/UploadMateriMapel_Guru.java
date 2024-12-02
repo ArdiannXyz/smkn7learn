@@ -1,5 +1,7 @@
 package com.example.smk7.Recyclemateriguru;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -19,6 +21,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
+import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Adapter.MapelAdapter;
 import com.example.smk7.Model.MapelModel;
@@ -38,20 +41,24 @@ public class UploadMateriMapel_Guru extends Fragment {
     private List<MapelModel> mapelList = new ArrayList<>();
     private ImageView backButton;
     private ViewPager2 viewPager;
+    private BottomNavigationHandler navigationHandler;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_materi_mapel_guru, container, false);
 
-        // Tombol kembali
+        Activity activity = getActivity();
+        if (activity != null) {
+            ViewPager2 viewPager2 = activity.findViewById(R.id.Viewpagerguru);
+
+        }
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
                 // Nonaktifkan input swipe sementara
-                viewPager.setUserInputEnabled(false);
 
                 // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
                 viewPager.setCurrentItem(0, false);  // false berarti tanpa animasi untuk perpindahan langsung
@@ -60,6 +67,7 @@ public class UploadMateriMapel_Guru extends Fragment {
                 new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
             }
         });
+
 
         // Set up RecyclerView
         recyclerView = view.findViewById(R.id.recycleView);
@@ -115,5 +123,38 @@ public class UploadMateriMapel_Guru extends Fragment {
                 Toast.makeText(getContext(), "Failed to fetch data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            navigationHandler = (BottomNavigationHandler) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement BottomNavigationHandler");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (navigationHandler != null) {
+            navigationHandler.showBottomNav();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        navigationHandler = null;
     }
 }

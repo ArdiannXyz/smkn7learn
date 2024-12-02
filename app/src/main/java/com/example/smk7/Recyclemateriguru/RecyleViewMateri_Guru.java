@@ -55,7 +55,6 @@ public class RecyleViewMateri_Guru extends Fragment {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
                 // Nonaktifkan input swipe sementara
-                viewPager.setUserInputEnabled(false);
 
                 // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
                 viewPager.setCurrentItem(8, false);  // false berarti tanpa animasi untuk perpindahan langsung
@@ -144,44 +143,35 @@ public class RecyleViewMateri_Guru extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (getActivity() instanceof BottomNavigationHandler) {
-            BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnav);
-            if (bottomNavigationView != null) {
-                bottomNavigationView.setVisibility(View.GONE);
-            }
+        try {
+            navigationHandler = (BottomNavigationHandler) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement BottomNavigationHandler");
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (getActivity() instanceof BottomNavigationHandler) {
-            BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnav);
-            if (bottomNavigationView != null) {
-                bottomNavigationView.setVisibility(View.GONE);
-            }
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (getActivity() instanceof BottomNavigationHandler) {
-            BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnav);
-            if (bottomNavigationView != null) {
-                bottomNavigationView.setVisibility(View.VISIBLE);
-            }
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if (getActivity() instanceof BottomNavigationHandler) {
-            BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnav);
-            if (bottomNavigationView != null) {
-                bottomNavigationView.setVisibility(View.VISIBLE);
-            }
-        }
+        navigationHandler = null;
     }
-}
+    }
+
+

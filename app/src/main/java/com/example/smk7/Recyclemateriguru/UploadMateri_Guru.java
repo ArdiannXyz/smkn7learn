@@ -1,6 +1,7 @@
 package com.example.smk7.Recyclemateriguru;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,10 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smk7.ApiDatabase.ApiHelper;
 import com.example.smk7.ApiDatabase.Db_Contract;
+import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.R;
 
 import org.json.JSONObject;
@@ -31,6 +34,7 @@ public class UploadMateri_Guru extends AppCompatActivity {
     private ImageView backButton;
     private String idKelas;
     private String namaKelas;
+    private BottomNavigationHandler navigationHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,4 +148,24 @@ public class UploadMateri_Guru extends AppCompatActivity {
             }
         }).start();
     }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+
 }
