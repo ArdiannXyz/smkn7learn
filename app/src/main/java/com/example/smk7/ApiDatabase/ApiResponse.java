@@ -20,22 +20,20 @@ public class ApiResponse {
     @SerializedName("message")
     private String message;
 
-
-    // Data TugasModel - Ditambahkan untuk tugasModel
+    // Model Data
     @SerializedName("tugas_model")
     private List<TugasModel> tugasModel;
 
-    // Data Kelas - Ubah serialized name sesuai dengan respons terbaru
     @SerializedName("kelasModel")
     private List<KelasModel> kelasModel;
 
-    // Data Mapel - Ubah serialized name sesuai dengan respons terbaru
     @SerializedName("mapel_model")
     private List<MapelModel> mapelModel;
 
-    // Data Materi - Ubah serialized name sesuai dengan respons terbaru
     @SerializedName("materi_model")
     private List<MateriModel> materiModel;
+
+
 
     // Getter dan Setter untuk status
     public String getStatus() {
@@ -73,7 +71,6 @@ public class ApiResponse {
         this.kelasModel = kelasModel;
     }
 
-    // Getter dan Setter untuk mapelModel
     public List<MapelModel> getMapelModel() {
         return mapelModel;
     }
@@ -82,7 +79,6 @@ public class ApiResponse {
         this.mapelModel = mapelModel;
     }
 
-    // Getter dan Setter untuk materiModel
     public List<MateriModel> getMateriModel() {
         return materiModel;
     }
@@ -91,16 +87,14 @@ public class ApiResponse {
         this.materiModel = materiModel;
     }
 
-    // Getter dan Setter untuk tugasModel
     public List<TugasModel> getTugasModel() {
         return tugasModel;
     }
+
     public void setTugasModel(List<TugasModel> tugasModel) {
         this.tugasModel = tugasModel;
     }
 
-
-    // Menambahkan method untuk memeriksa jika response kosong
     public boolean isKelasModelEmpty() {
         return kelasModel == null || kelasModel.isEmpty();
     }

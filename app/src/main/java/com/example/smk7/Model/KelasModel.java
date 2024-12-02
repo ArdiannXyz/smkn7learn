@@ -1,37 +1,48 @@
-    package com.example.smk7.Model;
+package com.example.smk7.Model;
 
-    import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName;
 
-    public class KelasModel {
+public class KelasModel {
 
-        @SerializedName("nama_kelas") // Sesuaikan dengan nama JSON field
-        private String nama_kelas;
+    // Sesuaikan dengan nama field di JSON
+    @SerializedName("nama_kelas")
+    private String namaKelas;
 
-        @SerializedName("wali_kelas") // Sesuaikan dengan nama JSON field
-        private String wali_kelas;
+    @SerializedName("wali_kelas")
+    private String waliKelas;
 
-        @SerializedName("id_kelas") // Sesuaikan dengan nama field di API/JSON
-        private String id_kelas;
+    @SerializedName("id_kelas")
+    private String idKelas;
 
-
-        public String getId_kelas() {
-            return id_kelas;
-        }
-
-
-        public String getNama_kelas() {
-            return nama_kelas;
-        }
-
-        public void setNama_kelas(String nama_kelas) {
-            this.nama_kelas = nama_kelas;
-        }
-
-        public String getWali_kelas() {
-            return wali_kelas;
-        }
-
-        public void setWali_kelas(String wali_kelas) {
-            this.wali_kelas = wali_kelas;
-        }
+    // Constructor
+    public KelasModel(String idKelas, String namaKelas, String waliKelas) {
+        this.idKelas = idKelas;
+        this.namaKelas = namaKelas;
+        this.waliKelas = waliKelas;
     }
+
+    // Getter dan Setter
+    public String getIdKelas() {
+        return idKelas;
+    }
+
+    public void setIdKelas(String idKelas) {
+        this.idKelas = idKelas;
+    }
+
+    public String getNamaKelas() {
+        return namaKelas;
+    }
+
+    public void setNamaKelas(String namaKelas) {
+        this.namaKelas = namaKelas;
+    }
+
+    public String getWaliKelas() {
+        return waliKelas;
+    }
+
+    public void setWaliKelas(String waliKelas) {
+        this.waliKelas = waliKelas;
+    }
+}
