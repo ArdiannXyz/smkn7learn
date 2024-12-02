@@ -35,7 +35,7 @@ public class UploadTugas_Siswa extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_upload_tugas_siswa, container, false);
+        View view = inflater.inflate(R.layout.fragment_uploadtugas_siswa, container, false);
 
         buttonAddFile = view.findViewById(R.id.button_add_file);
         buttonSubmitFile = view.findViewById(R.id.button_submit_file);
