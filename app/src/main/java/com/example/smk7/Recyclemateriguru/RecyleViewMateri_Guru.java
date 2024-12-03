@@ -101,7 +101,7 @@ public class RecyleViewMateri_Guru extends Fragment {
                     if ("success".equals(apiResponse.getStatus())) {
                         materiList = apiResponse.getMateriModel();
                         if (materiList != null && !materiList.isEmpty()) {
-                            setupRecyclerView(materiList);
+                            setupRecyclerView(materiList, apiService); // Panggil dengan dua argumen
                         } else {
                             Log.e("API Response", "materiModel is null or empty");
                         }
@@ -130,13 +130,13 @@ public class RecyleViewMateri_Guru extends Fragment {
         });
     }
 
-    private void setupRecyclerView(List<MateriModel> materiList) {
+    private void setupRecyclerView(List<MateriModel> materiList, ApiServiceInterface apiService) {
         materiAdapter = new MateriAdapter(getContext(), materiList, new MateriAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MateriModel materiModel) {
                 Log.d("RecyclerView", "Item clicked: " + materiModel.getJudulTugas());
             }
-        });
+        }, apiService); // Menambahkan apiService sebagai argumen keempat
         recyclerView.setAdapter(materiAdapter);
     }
 

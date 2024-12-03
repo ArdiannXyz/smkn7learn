@@ -3,6 +3,7 @@ package com.example.smk7.Adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.example.smk7.Model.MateriModel;
 import com.example.smk7.R;
 import com.example.smk7.Recyclemateriguru.EditMateri_Guru;
 
+import java.io.IOException;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -106,24 +108,42 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
 
     // Method to delete the materi from the server
     private void deleteMateri(int idTugas) {
-        // Menggunakan ApiServiceInterface untuk menghapus materi
         apiService.hapusMateri(idTugas).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     // Hapus item dari daftar dan beri tahu adapter
-                    materiList.removeIf(materi -> materi.getIdTugas() == idTugas);  // Sesuaikan pengecekan ID
-                    notifyDataSetChanged();
-                    Toast.makeText(context, "Materi berhasil dihapus", Toast.LENGTH_SHORT).show();
+                    int position = -1;
+                    for (int i = 0; i < materiList.size(); i++) {
+                        if (materiList.get(i).getIdTugas() == idTugas) {
+                            position = i;
+                            break;
+                        }
+                    }
+                    if (position != -1) {
+                        materiList.remove(position);
+                        notifyItemRemoved(position);
+                        Toast.makeText(context, "Materi berhasil dihapus", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "Materi tidak ditemukan dalam daftar", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(context, "Gagal menghapus materi", Toast.LENGTH_SHORT).show();
+                    // Tangani error API dengan menampilkan pesan error yang lebih detail
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.e("API Error", "Error deleting materi: " + errorBody);
+                        Toast.makeText(context, "Gagal menghapus materi: " + errorBody, Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        Log.e("API Error", "Error reading error body: " + e.getMessage());
+                        Toast.makeText(context, "Gagal menghapus materi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                // Log kesalahan untuk debugging
-                t.printStackTrace();
+                // Tangani error jaringan dengan menampilkan pesan error yang lebih detail
+                Log.e("API Error", "Error deleting materi: " + t.getMessage(), t);
                 Toast.makeText(context, "Error deleting materi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
