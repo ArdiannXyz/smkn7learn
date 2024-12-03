@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.smk7.BottomNavigationHandler;
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
 
@@ -41,6 +42,10 @@ public class BehindBankTugas_Guru extends Fragment {
         super.onResume();
         if (navigationHandler != null) {
             navigationHandler.hideBottomNav();
+            if (getActivity() != null) {
+                // Menonaktifkan swipe di Activity
+                ((DashboardGuru) getActivity()).setSwipeEnabled(false);
+            }
         }
     }
 

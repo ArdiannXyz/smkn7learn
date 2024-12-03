@@ -1,7 +1,6 @@
-package com.example.smk7.Recyclemateriguru;
+package com.example.smk7.RecycleBankTugas;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,16 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.smk7.Adapter.BankTugasAdapter;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
-import com.example.smk7.Adapter.MateriAdapter;
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Model.MateriModel;
+import com.example.smk7.Model.BankTugasModel;
 import com.example.smk7.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,61 +32,42 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RecyleViewMateri_Guru extends Fragment {
+public class RecyleViewBankTugas_Guru extends Fragment {
 
     private RecyclerView recyclerView;
-    private MateriAdapter materiAdapter;
-    private List<MateriModel> materiList;
+    private BankTugasAdapter bankTugasAdapter;
+    private List<BankTugasModel> bankTugasList;
     private ImageView backButton;
-    private FloatingActionButton fabAddMateri;
     private BottomNavigationHandler navigationHandler;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recycleview_materi_guru, container, false);
+        View view = inflater.inflate(R.layout.fragment_bank_tugas_view_guru, container, false);
 
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
+                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
+                viewPager.setCurrentItem(10, false);  // false berarti tanpa animasi untuk perpindahan langsung
 
-                viewPager.setCurrentItem(8, false);  // false berarti tanpa animasi untuk perpindahan langsung
-
-
+                // Aktifkan kembali swipe setelah perpindahan selesai
             }
-        });
-
-
-
-        // Setup FAB button
-        fabAddMateri = view.findViewById(R.id.fabAddMateri);
-        fabAddMateri.setOnClickListener(v -> {
-            if (getActivity() instanceof BottomNavigationHandler) {
-                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnav);
-                if (bottomNavigationView != null) {
-                    bottomNavigationView.setVisibility(View.GONE);
-                }
-            }
-
-            new Handler().postDelayed(() -> {
-                Intent intent = new Intent(getContext(), UploadMateri_Guru.class);
-                startActivity(intent);
-            }, 200);
         });
 
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        fetchMateriData();
+        fetchBankTugasData();
 
         return view;
     }
 
-    private void fetchMateriData() {
+    private void fetchBankTugasData() {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
-        Call<ApiResponse> call = apiService.getMateriData();
+        Call<ApiResponse> call = apiService.getBankTugasData();  // Pastikan ini sesuai dengan endpoint Anda
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
@@ -98,27 +76,17 @@ public class RecyleViewMateri_Guru extends Fragment {
                     Log.d("API Response", apiResponse.toString());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        materiList = apiResponse.getMateriModel();
-                        if (materiList != null && !materiList.isEmpty()) {
-                            setupRecyclerView(materiList);
+                        bankTugasList = apiResponse.getBankTugasModel();
+                        if (bankTugasList != null && !bankTugasList.isEmpty()) {
+                            setupRecyclerView(bankTugasList);
                         } else {
-                            Log.e("API Response", "materiModel is null or empty");
+                            Log.e("API Response", "bankTugasList is null or empty");
                         }
                     } else {
                         Log.e("API Response", "API error: " + apiResponse.getMessage());
                     }
                 } else {
-                    String errorBody = "";
-                    try {
-                        if (response.errorBody() != null) {
-                            errorBody = response.errorBody().string();
-                        }
-                    } catch (IOException e) {
-                        Log.e("API Error", "Error reading error body: " + e.getMessage());
-                    }
-                    Log.e("API Error", "Response failed with code: " + response.code() +
-                            ", message: " + response.message() +
-                            ", errorBody: " + errorBody);
+                    handleErrorResponse(response);
                 }
             }
 
@@ -129,14 +97,27 @@ public class RecyleViewMateri_Guru extends Fragment {
         });
     }
 
-    private void setupRecyclerView(List<MateriModel> materiList) {
-        materiAdapter = new MateriAdapter(getContext(), materiList, new MateriAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(MateriModel materiModel) {
-                Log.d("RecyclerView", "Item clicked: " + materiModel.getJudulTugas());
+    private void handleErrorResponse(Response<ApiResponse> response) {
+        String errorBody = "";
+        try {
+            if (response.errorBody() != null) {
+                errorBody = response.errorBody().string();
             }
-        });
-        recyclerView.setAdapter(materiAdapter);
+        } catch (IOException e) {
+            Log.e("API Error", "Error reading error body: " + e.getMessage());
+        }
+        Log.e("API Error", "Response failed with code: " + response.code() +
+                ", message: " + response.message() +
+                ", errorBody: " + errorBody);
+    }
+
+    private void setupRecyclerView(List<BankTugasModel> banktugasList) {
+        // Pastikan viewPager diambil dari aktivitas utama atau instance fragment
+        ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+
+        // Buat adapter dengan meneruskan viewPager
+        BankTugasAdapter bankTugasAdapter = new BankTugasAdapter(banktugasList, viewPager);
+        recyclerView.setAdapter(bankTugasAdapter);
     }
 
     @Override
@@ -175,6 +156,4 @@ public class RecyleViewMateri_Guru extends Fragment {
         super.onDetach();
         navigationHandler = null;
     }
-    }
-
-
+}

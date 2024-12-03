@@ -18,13 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.smk7.ApiDatabase.ApiHelper;
 import com.example.smk7.ApiDatabase.Db_Contract;
 import com.example.smk7.BottomNavigationHandler;
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class UploadMateri_Guru extends AppCompatActivity {
+public class UploadMateri_Guru extends DashboardGuru {
 
     private static final String TAG = "UploadMateri_Guru";
 
@@ -75,6 +76,12 @@ public class UploadMateri_Guru extends AppCompatActivity {
 
         // Setup listener untuk tombol Simpan
         btnSimpan.setOnClickListener(v -> uploadMateri());
+
+        if (this instanceof DashboardGuru) {
+            DashboardGuru dashboardActivity = (DashboardGuru) this;
+            dashboardActivity.setSwipeEnabled(false);
+        }
+
     }
 
     private void uploadMateri() {

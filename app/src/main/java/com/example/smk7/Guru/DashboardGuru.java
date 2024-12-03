@@ -69,6 +69,12 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
         });
     }
 
+    public void setSwipeEnabled(boolean enabled) {
+        if (viewPager2 != null) {
+            viewPager2.setUserInputEnabled(enabled);
+        }
+    }
+
     @Override
     public void hideBottomNav() {
         if (bottomNavigationView != null) {
@@ -107,7 +113,7 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
     protected void onResume() {
         super.onResume();
 
-
+        setSwipeEnabled(false);
 
     }
 }

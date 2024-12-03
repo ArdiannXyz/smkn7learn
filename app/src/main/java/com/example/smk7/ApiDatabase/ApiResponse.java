@@ -1,5 +1,6 @@
 package com.example.smk7.ApiDatabase;
 
+import com.example.smk7.Model.BankTugasModel;
 import com.example.smk7.Model.KelasModel;
 import com.example.smk7.Model.MapelModel;
 import com.example.smk7.Model.MateriModel;
@@ -33,7 +34,8 @@ public class ApiResponse {
     @SerializedName("materi_model")
     private List<MateriModel> materiModel;
 
-
+    @SerializedName("bank_tugas_model")
+    private List<BankTugasModel> bankTugasModel;  // Perbaikan: Tambahkan variabel untuk BankTugasModel
 
     // Getter dan Setter untuk status
     public String getStatus() {
@@ -71,6 +73,7 @@ public class ApiResponse {
         this.kelasModel = kelasModel;
     }
 
+    // Getter dan Setter untuk mapelModel
     public List<MapelModel> getMapelModel() {
         return mapelModel;
     }
@@ -79,6 +82,7 @@ public class ApiResponse {
         this.mapelModel = mapelModel;
     }
 
+    // Getter dan Setter untuk materiModel
     public List<MateriModel> getMateriModel() {
         return materiModel;
     }
@@ -87,6 +91,7 @@ public class ApiResponse {
         this.materiModel = materiModel;
     }
 
+    // Getter dan Setter untuk tugasModel
     public List<TugasModel> getTugasModel() {
         return tugasModel;
     }
@@ -95,6 +100,16 @@ public class ApiResponse {
         this.tugasModel = tugasModel;
     }
 
+    // Getter dan Setter untuk bankTugasModel
+    public List<BankTugasModel> getBankTugasModel() {
+        return bankTugasModel;
+    }
+
+    public void setBankTugasModel(List<BankTugasModel> bankTugasModel) {
+        this.bankTugasModel = bankTugasModel;
+    }
+
+    // Method untuk memeriksa apakah data kosong
     public boolean isKelasModelEmpty() {
         return kelasModel == null || kelasModel.isEmpty();
     }
@@ -109,5 +124,9 @@ public class ApiResponse {
 
     public boolean isTugasModelEmpty() {
         return tugasModel == null || tugasModel.isEmpty();
+    }
+
+    public boolean isBankTugasModelEmpty() {
+        return bankTugasModel == null || bankTugasModel.isEmpty();
     }
 }

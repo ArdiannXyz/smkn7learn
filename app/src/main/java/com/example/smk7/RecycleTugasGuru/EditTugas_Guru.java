@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.smk7.BottomNavigationHandler;
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
 public class EditTugas_Guru extends Fragment {
@@ -22,6 +23,10 @@ public class EditTugas_Guru extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_tugas_guru, container, false);
+
+            // Menonaktifkan swipe di Activity
+
+
     }
 
     @Override
@@ -40,6 +45,11 @@ public class EditTugas_Guru extends Fragment {
         super.onResume();
         if (navigationHandler != null) {
             navigationHandler.hideBottomNav();
+
+            if (getActivity() != null) {
+                // Menonaktifkan swipe di Activity
+                ((DashboardGuru) getActivity()).setSwipeEnabled(false);
+            }
         }
     }
 

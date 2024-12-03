@@ -37,7 +37,7 @@ public class EditProfil_Guru extends Fragment {
                 viewPager.setCurrentItem(6, false);  // false berarti tanpa animasi untuk perpindahan langsung
 
                 // Aktifkan kembali swipe setelah perpindahan selesai
-                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
+                  // 300 ms cukup untuk memastikan transisi selesai
             }
         });
         return view;
@@ -60,6 +60,11 @@ public class EditProfil_Guru extends Fragment {
         super.onResume();
         if (navigationHandler != null) {
             navigationHandler.hideBottomNav();
+
+            if (getActivity() != null) {
+                // Menonaktifkan swipe di Activity
+                ((DashboardGuru) getActivity()).setSwipeEnabled(false);
+            }
         }
     }
 
