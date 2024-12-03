@@ -143,6 +143,7 @@ public class UploadMateriMapel_Guru extends Fragment {
                 // Menonaktifkan swipe di Activity
                 ((DashboardGuru) getActivity()).setSwipeEnabled(false);
             }
+
         }
     }
 

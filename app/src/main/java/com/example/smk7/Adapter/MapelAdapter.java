@@ -46,6 +46,7 @@ public class MapelAdapter extends RecyclerView.Adapter<MapelAdapter.MapelViewHol
         holder.itemView.setOnClickListener(v -> {
 
 
+
             // Pastikan currentFragment dan viewPager tidak null
             if (currentFragment != null && viewPager != null) {
                 Log.d("Fragment Check", "Current Fragment: " + currentFragment.getClass().getSimpleName());

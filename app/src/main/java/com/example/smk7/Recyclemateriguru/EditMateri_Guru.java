@@ -44,5 +44,6 @@ public class EditMateri_Guru extends AppCompatActivity {
             // Set the id_kelas to the TextView
             txtIdKelas.setText("ID Kelas: " + idKelas);
         }
+
     }
 }

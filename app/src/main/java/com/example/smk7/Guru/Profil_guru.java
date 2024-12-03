@@ -73,6 +73,7 @@ public class Profil_guru extends Fragment {
 
 
 
+
     @Override
     public void onStop() {
         super.onStop();

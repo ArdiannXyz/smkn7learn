@@ -76,6 +76,7 @@ public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHol
                         Toast.makeText(v.getContext(), "Fragment tidak dikenali", Toast.LENGTH_SHORT).show();
                     }
 
+
                 } else {
                     Log.e("Fragment Error", "currentFragment is null!");
                     Toast.makeText(v.getContext(), "Fragment aktif tidak ditemukan", Toast.LENGTH_SHORT).show();

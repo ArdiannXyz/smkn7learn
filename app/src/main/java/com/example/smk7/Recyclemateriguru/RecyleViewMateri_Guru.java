@@ -159,6 +159,7 @@ public class RecyleViewMateri_Guru extends Fragment {
                 // Menonaktifkan swipe di Activity
                 ((DashboardGuru) getActivity()).setSwipeEnabled(false);
             }
+
         }
     }
 

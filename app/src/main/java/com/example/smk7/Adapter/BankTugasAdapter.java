@@ -25,6 +25,7 @@ public class BankTugasAdapter extends RecyclerView.Adapter<BankTugasAdapter.Bank
         this.viewPager = viewPager;
     }
 
+
     @NonNull
     @Override
     public BanktugasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -50,6 +50,7 @@ public class EditTugas_Guru extends Fragment {
                 // Menonaktifkan swipe di Activity
                 ((DashboardGuru) getActivity()).setSwipeEnabled(false);
             }
+
         }
     }
 

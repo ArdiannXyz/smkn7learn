@@ -134,6 +134,7 @@ public class UploadTugasMapelGuru extends Fragment {
                 // Menonaktifkan swipe di Activity
                 ((DashboardGuru) getActivity()).setSwipeEnabled(false);
             }
+
         }
     }
 

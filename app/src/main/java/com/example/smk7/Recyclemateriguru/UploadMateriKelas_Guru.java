@@ -148,6 +148,7 @@ public class UploadMateriKelas_Guru extends Fragment {
                 ((DashboardGuru) getActivity()).setSwipeEnabled(false);
             }
 
+
             // Pastikan menggunakan view.findViewById() untuk mengakses ViewPager2
         }
     }

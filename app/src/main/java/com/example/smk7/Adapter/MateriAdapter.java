@@ -41,6 +41,7 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
     // Interface for item click handling
     public interface OnItemClickListener {
         void onItemClick(MateriModel materiModel);
+
     }
 
     // Constructor accepts the list and the listener

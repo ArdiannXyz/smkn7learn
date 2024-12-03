@@ -155,6 +155,7 @@ public class RecycleViewTugasGuru extends Fragment {
             throw new ClassCastException(context.toString()
                     + " must implement BottomNavigationHandler");
         }
+
     }
 
     @Override
