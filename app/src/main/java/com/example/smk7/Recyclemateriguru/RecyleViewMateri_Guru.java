@@ -23,6 +23,7 @@ import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Adapter.MateriAdapter;
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
+import com.example.smk7.Model.KelasModel;
 import com.example.smk7.Model.MateriModel;
 import com.example.smk7.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -31,6 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -86,6 +88,28 @@ public class RecyleViewMateri_Guru extends Fragment {
 
         return view;
     }
+
+//    private void (String idKelas, String namaKelas) {
+//        ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
+//
+//        Call<ResponseBody> call = apiService.tambahKelas(idKelas, namaKelas);
+//        call.enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                if (response.isSuccessful()) {
+//                    Log.d("API Response", "Kelas berhasil ditambahkan");
+//                    // Tangani respons sukses
+//                } else {
+//                    Log.e("API Error", "Error: " + response.message());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                Log.e("API Error", "Request failed: " + t.getMessage());
+//            }
+//        });
+//    }
 
     private void fetchMateriData() {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);

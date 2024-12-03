@@ -21,6 +21,7 @@ public interface ApiServiceInterface {
     @GET("api_kelas_guru.php")
     Call<ApiResponse> getKelasData();
 
+
     @GET("api_mapelguru.php")
     Call<ApiResponse> getMapelData();
 
@@ -66,6 +67,13 @@ public interface ApiServiceInterface {
     @POST("api-hapus_materi.php")
     Call<ResponseBody> hapusMateri(
             @Field("id_tugas") int idTugas
+    );
+
+    @FormUrlEncoded
+    @POST("api-kelas_guru.php") // Ganti dengan endpoint yang sesuai
+    Call<ResponseBody> tambahKelas(
+            @Field("id_kelas") String idKelas,
+            @Field("nama_kelas") String namaKelas
     );
 
 }
