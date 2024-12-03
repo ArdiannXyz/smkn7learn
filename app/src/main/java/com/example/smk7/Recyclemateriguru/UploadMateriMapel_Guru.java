@@ -1,5 +1,6 @@
 package com.example.smk7.Recyclemateriguru;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,7 +27,7 @@ import com.example.smk7.Adapter.MapelAdapter;
 import com.example.smk7.Model.MapelModel;
 import com.example.smk7.R;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -37,8 +38,9 @@ public class UploadMateriMapel_Guru extends Fragment {
 
     private RecyclerView recyclerView;
     private MapelAdapter mapelAdapter;
-    private List<MapelModel> mapelList;
+    private List<MapelModel> mapelList = new ArrayList<>();
     private ImageView backButton;
+    private ViewPager2 viewPager;
     private BottomNavigationHandler navigationHandler;
 
     @Nullable
@@ -46,13 +48,17 @@ public class UploadMateriMapel_Guru extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_materi_mapel_guru, container, false);
 
+        Activity activity = getActivity();
+        if (activity != null) {
+            ViewPager2 viewPager2 = activity.findViewById(R.id.Viewpagerguru);
+
+        }
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
                 // Nonaktifkan input swipe sementara
-                viewPager.setUserInputEnabled(false);
 
                 // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
                 viewPager.setCurrentItem(0, false);  // false berarti tanpa animasi untuk perpindahan langsung
@@ -63,11 +69,11 @@ public class UploadMateriMapel_Guru extends Fragment {
         });
 
 
-
+        // Set up RecyclerView
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
+        // Memanggil fetch data
         fetchMapelData();
 
         return view;
@@ -87,36 +93,34 @@ public class UploadMateriMapel_Guru extends Fragment {
                     if ("success".equals(apiResponse.getStatus())) {
                         mapelList = apiResponse.getMapelModel();
                         if (mapelList != null && !mapelList.isEmpty()) {
-                            ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-                            mapelAdapter = new MapelAdapter(mapelList , viewPager);
+                            // Mendapatkan ViewPager2 dari activity
+                            viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
+                            if (viewPager == null) {
+                                Log.e("Error", "ViewPager2 tidak ditemukan!");
+                            }
+
+                            // Menyediakan fragment saat ini untuk adapter
+                            Fragment currentFragment = getParentFragment() != null ? getParentFragment() : UploadMateriMapel_Guru.this;
+
+                            // Menyesuaikan adapter dengan fragment yang aktif
+                            mapelAdapter = new MapelAdapter(mapelList, viewPager, currentFragment);
                             recyclerView.setAdapter(mapelAdapter);
+                            mapelAdapter.notifyDataSetChanged();  // Update UI
                         } else {
-                            Log.e("API Response", "materiModel is null or empty");
+                            Log.e("API Response", "mapelModel is null or empty");
                             Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(getContext(), "API error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    String errorBody = "";
-                    try {
-                        if (response.errorBody() != null) {
-                            errorBody = response.errorBody().string();
-                        }
-                    } catch (IOException e) {
-                        Log.e("API Error", "Error reading error body: " + e.getMessage());
-                    }
-                    Log.e("API Error", "Response failed with code: " + response.code() +
-                            ", message: " + response.message() +
-                            ", errorBody: " + errorBody);
-                    Toast.makeText(getContext(), "API error: " + response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Response not successful or body is null", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Request failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("API Error", "Request failed: " + t.getMessage(), t);
+                Toast.makeText(getContext(), "Failed to fetch data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

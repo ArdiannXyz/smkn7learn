@@ -1,7 +1,9 @@
 package com.example.smk7.RecycleTugasGuru;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +16,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
+import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Adapter.TugasAdapter;
 import com.example.smk7.Model.TugasModel;
 import com.example.smk7.R;
+import com.example.smk7.Recyclemateriguru.UploadMateri_Guru;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,6 +43,8 @@ public class RecycleViewTugasGuru extends Fragment {
     private TugasAdapter tugasAdapter;
     private List<TugasModel> tugasList;
     private ImageView backButton;
+    private BottomNavigationHandler navigationHandler;
+    private FloatingActionButton fabAddTugas;
 
     @Nullable
     @Override
@@ -46,8 +55,30 @@ public class RecycleViewTugasGuru extends Fragment {
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(0);
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+
+                // Nonaktifkan input swipe sementara
+
+                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
+                viewPager.setCurrentItem(9, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+                // Aktifkan kembali swipe setelah perpindahan selesai
+                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
             }
+        });
+
+        fabAddTugas = view.findViewById(R.id.fabAddTugas);
+        fabAddTugas.setOnClickListener(v -> {
+                    if (getActivity() instanceof BottomNavigationHandler) {
+                        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnav);
+                        if (bottomNavigationView != null) {
+                            bottomNavigationView.setVisibility(View.GONE);
+                        }
+                    }
+            new Handler().postDelayed(() -> {
+                Intent intent = new Intent(getContext(), UploadTugas_guru.class);
+                startActivity(intent);
+            }, 200);
         });
 
         // Initialize RecyclerView
@@ -115,5 +146,38 @@ public class RecycleViewTugasGuru extends Fragment {
             startActivity(intent);
         });
         recyclerView.setAdapter(tugasAdapter);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            navigationHandler = (BottomNavigationHandler) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement BottomNavigationHandler");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        navigationHandler = null;
     }
 }
