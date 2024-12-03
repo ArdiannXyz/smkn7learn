@@ -10,6 +10,7 @@ public class Db_Contract {
     public static final String urlApiDashboard = BASE_URL + "api_dashboard.php";
     public static final String urlApiUploadMateri = BASE_URL + "api-uploadMateri.php";
     public static final String urlApiEditMateri = BASE_URL + "api-update_materi.php";
+    public static final String urlApiMateriDetail = BASE_URL + "api-get_materi.php";
     public static final String urlApiCrudMateri = BASE_URL + "api-crud.php";
 
     public static ApiService getApiService() {

@@ -61,6 +61,7 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
 
         // Set the text for the item view (name of materi)
         holder.nama_materi.setText(materi.getJudulTugas());
+        holder.nama_kelas.setText(materi.getNamaKelas());
 
         // Handle item click to open details page
         holder.itemView.setOnClickListener(v -> {
@@ -72,7 +73,9 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
         // Handle edit button click
         holder.btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(context, EditMateri_Guru.class);
-            intent.putExtra("materi_id", materi.getIdTugas());
+            intent.putExtra("id_tugas", materi.getIdTugas());
+            intent.putExtra("id_kelas", materi.getIdKelas());
+            intent.putExtra("nama_kelas", materi.getNamaKelas());
             context.startActivity(intent);
         });
 
@@ -95,12 +98,14 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
     // ViewHolder to bind the item view
     public static class MateriViewHolder extends RecyclerView.ViewHolder {
         public TextView nama_materi;
+        public TextView nama_kelas;
         public ImageView btnEdit;
         public ImageView btnHps;
 
         public MateriViewHolder(View view) {
             super(view);
             nama_materi = view.findViewById(R.id.txtnama_mapel);
+            nama_kelas = view.findViewById(R.id.txt_nama_mapel);
             btnEdit = view.findViewById(R.id.btn_edit);
             btnHps = view.findViewById(R.id.btn_hps);
         }

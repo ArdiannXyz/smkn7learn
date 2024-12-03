@@ -31,8 +31,12 @@ public class MateriModel {
     @SerializedName("video_url")
     private String videoUrl;
 
+
+    @SerializedName("nama_kelas")
+    private String namaKelas;
+
     // Konstruktor
-    public MateriModel(int idTugas, int idGuru, byte[] jenisMateri, String judulTugas, String deskripsi, int idKelas, String tanggalDibuat, String deadline, String videoUrl) {
+    public MateriModel(int idTugas, int idGuru, byte[] jenisMateri, String judulTugas, String deskripsi, int idKelas, String tanggalDibuat, String deadline, String videoUrl, String NamaKelas) {
         this.idTugas = idTugas;
         this.idGuru = idGuru;
         this.jenisMateri = jenisMateri;
@@ -42,6 +46,7 @@ public class MateriModel {
         this.tanggalDibuat = tanggalDibuat;
         this.deadline = deadline;
         this.videoUrl = videoUrl;
+        this.namaKelas = NamaKelas;
     }
 
     // Getter dan Setter
@@ -115,6 +120,14 @@ public class MateriModel {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public String getNamaKelas() {
+        return namaKelas;
+    }
+
+    public void setNamaKelas(String namaKelas) {
+        this.namaKelas = namaKelas;
     }
 
 }

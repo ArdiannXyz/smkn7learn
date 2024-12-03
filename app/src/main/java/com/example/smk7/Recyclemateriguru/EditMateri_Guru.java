@@ -44,16 +44,15 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class EditMateri_Guru extends AppCompatActivity {
-
     private static final String TAG = "EditMateri_Guru";
     private static final int REQUEST_CODE_FILE_PICKER = 1001;
     private static final int PERMISSION_REQUEST_STORAGE = 2001;
 
     private EditText edtJudulMateri, edtLampiran, edtKomentar;
-    private TextView txtIdKelas;
+    private TextView txtNamaKelas;
     private Button btnSimpanEdit;
     private ImageView backButton;
-    private String idKelas, materiId;
+    private String idKelas, namaKelas, idMateri;
     private Uri selectedFileUri;
 
     @Override
@@ -61,13 +60,13 @@ public class EditMateri_Guru extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_edit_materi_guru);
 
-        // Inisialisasi komponen UI
+        // Inisialisasi komponen
         initializeComponents();
 
-        // Ambil data dari Intent
+        // Terima data dari intent
         receiveIntentData();
 
-        // Load data materi yang akan diedit
+        // Muat data materi
         loadMateriData();
     }
 
@@ -75,7 +74,7 @@ public class EditMateri_Guru extends AppCompatActivity {
         edtJudulMateri = findViewById(R.id.Edt_JudulMateri);
         edtLampiran = findViewById(R.id.Edt_Lampiran);
         edtKomentar = findViewById(R.id.Edt_Komentar);
-        txtIdKelas = findViewById(R.id.NamaKelas);
+        txtNamaKelas = findViewById(R.id.NamaKelas);
         btnSimpanEdit = findViewById(R.id.Btn_simpan);
         backButton = findViewById(R.id.back_Button);
 
@@ -88,47 +87,87 @@ public class EditMateri_Guru extends AppCompatActivity {
     private void receiveIntentData() {
         Intent intent = getIntent();
         if (intent != null) {
-            materiId = intent.getStringExtra("materi_id");
-            idKelas = intent.getStringExtra("id_kelas");
-            txtIdKelas.setText("ID Kelas: " + idKelas);
+            // Ubah sesuai dengan cara passing data di adapter sebelumnya
+            idMateri = String.valueOf(intent.getIntExtra("id_tugas", -1));
+            idKelas = String.valueOf(intent.getIntExtra("id_kelas", -1));
+            namaKelas = intent.getStringExtra("nama_kelas");
+
+            // Set nama kelas di TextView
+            if (txtNamaKelas != null && namaKelas != null) {
+                txtNamaKelas.setText(namaKelas);
+            }
+
+            // Validasi data
+            if (idMateri.equals("-1") || idKelas.equals("-1")) {
+                Toast.makeText(this, "Data materi tidak valid", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
         }
     }
 
     private void loadMateriData() {
-        // API untuk mendapatkan detail materi
-        String url = Db_Contract.BASE_URL + "get_materi_detail.php";
+        String url = Db_Contract.urlApiEditMateri;
+
+        // Debug log
+        Log.d(TAG, "Sending id_materi: " + idMateri);
+        Log.d(TAG, "Sending id_kelas: " + idKelas);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
+                    Log.d("API_FULL_RESPONSE", "Raw Response: " + response);
+
                     try {
+                        // Pastikan response adalah JSON yang valid
+                        if (!response.trim().startsWith("{")) {
+                            throw new JSONException("Invalid JSON response: " + response);
+                        }
+
                         JSONObject jsonResponse = new JSONObject(response);
+
+                        Log.d("API_RESPONSE_DETAILS",
+                                "Success: " + jsonResponse.getBoolean("success") +
+                                        ", Full Response: " + jsonResponse.toString(2)
+                        );
+
                         if (jsonResponse.getBoolean("success")) {
                             JSONObject materiData = jsonResponse.getJSONObject("data");
 
                             // Set data ke field
-                            edtJudulMateri.setText(materiData.getString("judul_materi"));
-                            edtLampiran.setText(materiData.getString("jenis_materi"));
-                            edtKomentar.setText(materiData.getString("komentar"));
+                            edtJudulMateri.setText(materiData.optString("judul_materi", ""));
+                            edtLampiran.setText(materiData.optString("jenis_materi", ""));
+                            edtKomentar.setText(materiData.optString("komentar", ""));
                         } else {
-                            Toast.makeText(this, "Gagal memuat data materi", Toast.LENGTH_SHORT).show();
+                            // Log detail error
+                            String errorMessage = jsonResponse.optString("message", "Gagal memuat data");
+                            String errorDetails = jsonResponse.has("details")
+                                    ? jsonResponse.getJSONObject("details").toString()
+                                    : "Tidak ada detail error";
+
+                            Log.e(TAG, "API Error Message: " + errorMessage);
+                            Log.e(TAG, "API Error Details: " + errorDetails);
+
+                            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
-                        Log.e(TAG, "Error parsing response", e);
+                        Log.e(TAG, "JSON Parsing Error", e);
+                        Log.e(TAG, "Raw Response causing error: " + response);
+                        Toast.makeText(this, "Gagal memproses data: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 },
                 error -> {
-                    Log.e(TAG, "Error loading materi", error);
+                    Log.e(TAG, "Network Error", error);
                     Toast.makeText(this, "Gagal memuat data", Toast.LENGTH_SHORT).show();
                 }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("materi_id", materiId);
+                params.put("id_tugas", idMateri);
+                params.put("id_kelas", idKelas);
                 return params;
             }
         };
 
-        // Tambahkan request ke queue
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(stringRequest);
     }
@@ -204,8 +243,7 @@ public class EditMateri_Guru extends AppCompatActivity {
         // Validasi input
         String judulMateri = edtJudulMateri.getText().toString().trim();
         String jenisMateri = edtLampiran.getText().toString().trim();
-        String komentar = edtKomentar.getText().toString().
-                trim();
+        String komentar = edtKomentar.getText().toString().trim();
 
         if (TextUtils.isEmpty(judulMateri) ||
                 TextUtils.isEmpty(jenisMateri) ||
@@ -228,7 +266,7 @@ public class EditMateri_Guru extends AppCompatActivity {
                         .setType(MultipartBody.FORM);
 
                 // Tambahkan parameter text
-                builder.addFormDataPart("materi_id", materiId);
+                builder.addFormDataPart("id_tugas", idMateri);
                 builder.addFormDataPart("judul_materi", judulMateri);
                 builder.addFormDataPart("komentar", komentar);
                 builder.addFormDataPart("id_kelas", idKelas);

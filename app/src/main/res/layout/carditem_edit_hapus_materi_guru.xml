@@ -51,6 +51,18 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
+                <!-- TextView txt_nama_mapel -->
+                <TextView
+                    android:id="@+id/txt_nama_mapel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:paddingBottom="5dp"
+                    android:textColor="@color/birulivin"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
             </LinearLayout>
 
             <ImageView
