@@ -50,6 +50,7 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
         holder.tugas.setText(tugas.getDeskripsi());  // Set text menggunakan getDeskripsi()
 
         // Handle klik item
+
         holder.itemView.setOnClickListener(v -> {
             // Panggil listener untuk meneruskan nama tugas yang diklik
             if (onItemClickListener != null) {

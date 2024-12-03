@@ -53,15 +53,13 @@ public class UploadTugasKelas_Guru extends Fragment {
             if (getActivity() instanceof DashboardGuru) {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
-                // Nonaktifkan input swipe sementara
 
-                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
                 viewPager.setCurrentItem(4, false);  // false berarti tanpa animasi untuk perpindahan langsung
 
-                // Aktifkan kembali swipe setelah perpindahan selesai
-                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
             }
         });
+
+
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -141,6 +139,11 @@ public class UploadTugasKelas_Guru extends Fragment {
         super.onResume();
         if (navigationHandler != null) {
             navigationHandler.hideBottomNav();
+            if (getActivity() != null) {
+                // Menonaktifkan swipe di Activity
+                ((DashboardGuru) getActivity()).setSwipeEnabled(false);
+            }
+
         }
     }
 

@@ -54,15 +54,14 @@ public class RecyleViewMateri_Guru extends Fragment {
             if (getActivity() instanceof DashboardGuru) {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
-                // Nonaktifkan input swipe sementara
 
-                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
                 viewPager.setCurrentItem(8, false);  // false berarti tanpa animasi untuk perpindahan langsung
 
-                // Aktifkan kembali swipe setelah perpindahan selesai
-                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);
+
             }
         });
+
+
 
         // Setup FAB button
         fabAddMateri = view.findViewById(R.id.fabAddMateri);
@@ -156,6 +155,11 @@ public class RecyleViewMateri_Guru extends Fragment {
         super.onResume();
         if (navigationHandler != null) {
             navigationHandler.hideBottomNav();
+            if (getActivity() != null) {
+                // Menonaktifkan swipe di Activity
+                ((DashboardGuru) getActivity()).setSwipeEnabled(false);
+            }
+
         }
     }
 

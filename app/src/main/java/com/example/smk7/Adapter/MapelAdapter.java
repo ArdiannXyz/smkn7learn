@@ -45,21 +45,19 @@ public class MapelAdapter extends RecyclerView.Adapter<MapelAdapter.MapelViewHol
 
         holder.itemView.setOnClickListener(v -> {
 
-            viewPager.setUserInputEnabled(false);
-            new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);
 
 
             // Pastikan currentFragment dan viewPager tidak null
             if (currentFragment != null && viewPager != null) {
                 Log.d("Fragment Check", "Current Fragment: " + currentFragment.getClass().getSimpleName());
 
-                // Nonaktifkan input swipe sementara
+
 
                 // Pindahkan langsung ke halaman yang sesuai berdasarkan fragment aktif
                 if (currentFragment instanceof UploadMateriMapel_Guru) {
                     Log.d("FragmentA", "Pindah ke halaman 8...");
                     viewPager.setCurrentItem(8, false);  // false berarti tanpa animasi
-                } else if (currentFragment instanceof UploadTugasMapelGuru) {
+            } else if (currentFragment instanceof UploadTugasMapelGuru) {
                     Log.d("FragmentB", "Pindah ke halaman 9...");
                     viewPager.setCurrentItem(9, false);  // false berarti tanpa animasi
                 } else if (currentFragment instanceof BankTugasMapel_Guru) {
@@ -69,8 +67,7 @@ public class MapelAdapter extends RecyclerView.Adapter<MapelAdapter.MapelViewHol
                     Log.e("Fragment Error", "Fragment tidak dikenali!");
                 }
 
-                // Aktifkan kembali swipe setelah perpindahan selesai
-                new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);  // 300 ms cukup untuk memastikan transisi selesai
+
             } else {
                 Log.e("Fragment Error", "currentFragment atau viewPager null!");
             }
