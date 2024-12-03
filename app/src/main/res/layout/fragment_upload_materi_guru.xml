@@ -120,15 +120,6 @@
             android:textColorHint="#000000"
             android:textSize="15sp" />
 
-        <!-- Password Input -->
-
-
-        <!-- Confirm Password Input -->
-
-
-        <!-- Spinner for Guru/Murid -->
-
-        <!-- Email Input -->
         <EditText
             android:id="@+id/Edt_Komentar"
             android:layout_width="match_parent"

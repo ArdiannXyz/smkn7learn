@@ -4,25 +4,71 @@ import com.google.gson.annotations.SerializedName;
 
 public class MateriModel {
 
-    @SerializedName("id_tugas")  // Sesuaikan dengan JSON, pastikan nama field JSON sesuai
-    private String idTugas;  // Menambahkan properti untuk ID tugas
+    @SerializedName("id_tugas")
+    private int idTugas;
 
-    @SerializedName("judul_tugas")  // Sesuaikan dengan JSON
+    @SerializedName("id_guru")
+    private int idGuru;
+
+    @SerializedName("jenis_materi")
+    private byte[] jenisMateri; // Tipe BLOB, disimpan sebagai byte array
+
+    @SerializedName("judul_tugas")
     private String judulTugas;
 
-    @SerializedName("id_kelas")  // Menambahkan id_kelas
-    private String idKelas;  // Properti untuk ID kelas
+    @SerializedName("deskripsi")
+    private String deskripsi;
 
-    // Getter dan Setter untuk idTugas
-    public String getIdTugas() {
+    @SerializedName("id_kelas")
+    private int idKelas;
+
+    @SerializedName("tanggal_dibuat")
+    private String tanggalDibuat; // Tipe datetime, bisa disimpan sebagai String
+
+    @SerializedName("deadline")
+    private String deadline; // Tipe datetime, bisa disimpan sebagai String
+
+    @SerializedName("video_url")
+    private String videoUrl;
+
+    // Konstruktor
+    public MateriModel(int idTugas, int idGuru, byte[] jenisMateri, String judulTugas, String deskripsi, int idKelas, String tanggalDibuat, String deadline, String videoUrl) {
+        this.idTugas = idTugas;
+        this.idGuru = idGuru;
+        this.jenisMateri = jenisMateri;
+        this.judulTugas = judulTugas;
+        this.deskripsi = deskripsi;
+        this.idKelas = idKelas;
+        this.tanggalDibuat = tanggalDibuat;
+        this.deadline = deadline;
+        this.videoUrl = videoUrl;
+    }
+
+    // Getter dan Setter
+    public int getIdTugas() {
         return idTugas;
     }
 
-    public void setIdTugas(String idTugas) {
+    public void setIdTugas(int idTugas) {
         this.idTugas = idTugas;
     }
 
-    // Getter dan Setter untuk judulTugas
+    public int getIdGuru() {
+        return idGuru;
+    }
+
+    public void setIdGuru(int idGuru) {
+        this.idGuru = idGuru;
+    }
+
+    public byte[] getJenisMateri() {
+        return jenisMateri;
+    }
+
+    public void setJenisMateri(byte[] jenisMateri) {
+        this.jenisMateri = jenisMateri;
+    }
+
     public String getJudulTugas() {
         return judulTugas;
     }
@@ -31,12 +77,82 @@ public class MateriModel {
         this.judulTugas = judulTugas;
     }
 
-    // Getter dan Setter untuk idKelas
-    public String getIdKelas() {
+    public String getDeskripsi() {
+        return deskripsi;
+    }
+
+    public void setDeskripsi(String deskripsi) {
+        this.deskripsi = deskripsi;
+    }
+
+    public int getIdKelas() {
         return idKelas;
     }
 
-    public void setIdKelas(String idKelas) {
+    public void setIdKelas(int idKelas) {
         this.idKelas = idKelas;
     }
+
+    public String getTanggalDibuat() {
+        return tanggalDibuat;
+    }
+
+    public void setTanggalDibuat(String tanggalDibuat) {
+        this.tanggalDibuat = tanggalDibuat;
+    }
+
+    public String getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
 }
+
+
+//    @SerializedName("id_tugas")  // Sesuaikan dengan JSON, pastikan nama field JSON sesuai
+//    private String idTugas;  // Menambahkan properti untuk ID tugas
+//
+//    @SerializedName("judul_tugas")  // Sesuaikan dengan JSON
+//    private String judulTugas;
+//
+//    @SerializedName("id_kelas")  // Menambahkan id_kelas
+//    private String idKelas;  // Properti untuk ID kelas
+//
+//    // Getter dan Setter untuk idTugas
+//    public String getIdTugas() {
+//        return idTugas;
+//    }
+//
+//    public void setIdTugas(String idTugas) {
+//        this.idTugas = idTugas;
+//    }
+//
+//    // Getter dan Setter untuk judulTugas
+//    public String getJudulTugas() {
+//        return judulTugas;
+//    }
+//
+//    public void setJudulTugas(String judulTugas) {
+//        this.judulTugas = judulTugas;
+//    }
+//
+//    // Getter dan Setter untuk idKelas
+//    public String getIdKelas() {
+//        return idKelas;
+//    }
+
+//    public void setIdKelas(String idKelas) {
+//        this.idKelas = idKelas;
+//    }
+//}

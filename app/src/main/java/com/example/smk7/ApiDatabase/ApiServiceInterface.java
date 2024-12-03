@@ -4,9 +4,12 @@ import com.example.smk7.Model.MateriModel;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -28,6 +31,44 @@ public interface ApiServiceInterface {
     Call<ApiResponse> getTugasData();
 
 
+    @GET("api-get_materi.php")
+    Call<List<MateriModel>> getMateri();
+
+    @FormUrlEncoded
+    @POST("api-tambah_materi.php")
+    Call<ResponseBody> tambahMateri(
+            @Field("id_guru") int idGuru,
+            @Field("jenis_materi") String jenisMateri, // Pastikan ini sesuai dengan format BLOB
+            @Field("judul_tugas") String judulTugas,
+            @Field("deskripsi") String deskripsi,
+            @Field("id_kelas") int idKelas,
+            @Field("deadline") String deadline, // Pastikan ini dalam format datetime yang benar
+            @Field("video_url") String videoUrl
+    );
+
+    @FormUrlEncoded
+    @POST("api-update_materi.php")
+    Call<ResponseBody> updateMateri(
+            @Field("id_tugas") int idTugas,
+            @Field("id_guru") int idGuru,
+            @Field("jenis_materi") String jenisMateri, // Pastikan ini sesuai dengan format BLOB
+            @Field("judul_tugas") String judulTugas,
+            @Field("deskripsi") String deskripsi,
+            @Field("id_kelas") int idKelas,
+            @Field("deadline") String deadline, // Pastikan ini dalam format datetime yang benar
+            @Field("video_url") String videoUrl
+    );
+
+    @FormUrlEncoded
+    @POST("api-hapus_materi.php")
+    Call<ResponseBody> hapusMateri(
+            @Field("id_tugas") int idTugas
+    );
+
+}
+
+
+
 //    // API
 //    @POST("api-crud.php?action=createMateri")
 //    Call<ApiResponse> createMateri(@Body MateriModel materi);
@@ -39,17 +80,17 @@ public interface ApiServiceInterface {
 //    Call<ApiResponse> deleteMateri(@Query("id_tugas") String idTugas);
 
 
-    // Endpoint untuk mendapatkan materi berdasarkan ID kelas
-    @GET("api-crud.php?action=getMateriByKelas")
-    Call<List<MateriModel>> getMateriByKelas(@Query("id_kelas") String id_kelas);
+//    // Endpoint untuk mendapatkan materi berdasarkan ID kelas
+//    @GET("api-crud.php?action=getMateriByKelas")
+//    Call<List<MateriModel>> getMateriByKelas(@Query("id_kelas") String id_kelas);
+//
+//    // Endpoint untuk update materi
+//    @POST("api-crud.php?action=updateMateri")
+//    Call<ApiResponse> updateMateri(@Body MateriModel materi);
+//
+//    // Endpoint untuk delete materi
+//    @POST("api-crud.php?action=deleteMateri")
+//    Call<ApiResponse> deleteMateri(@Body MateriModel materi); // Kirim MateriModel atau ID Tugas tergantung API
+//
 
-    // Endpoint untuk update materi
-    @POST("api-crud.php?action=updateMateri")
-    Call<ApiResponse> updateMateri(@Body MateriModel materi);
-
-    // Endpoint untuk delete materi
-    @POST("api-crud.php?action=deleteMateri")
-    Call<ApiResponse> deleteMateri(@Body MateriModel materi); // Kirim MateriModel atau ID Tugas tergantung API
-
-
-}
+//}

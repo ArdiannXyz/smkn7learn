@@ -60,6 +60,7 @@
             android:name=".RecycleTugasGuru.UploadTugas_guru"
             android:exported="true" />
 
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
