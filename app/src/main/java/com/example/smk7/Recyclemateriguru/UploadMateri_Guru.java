@@ -298,72 +298,24 @@ public class UploadMateri_Guru extends AppCompatActivity {
     // Metode untuk konversi URI ke File
     private File getFileFromUri(Uri uri) {
         try {
-            // Validasi ukuran file
-            long fileSize = getFileSizeFromUri(uri);
-            if (fileSize > 10 * 1024 * 1024) { // Batasi 10MB
-                runOnUiThread(() ->
-                        Toast.makeText(this, "Ukuran file terlalu besar", Toast.LENGTH_SHORT).show()
-                );
-                return null;
-            }
+            // Buat file temporary
+            File file = new File(getCacheDir(),
+                    getFilePathFromUri(uri));
 
-            // Validasi tipe file
-            String mimeType = getContentResolver().getType(uri);
-            if (!isValidFileType(mimeType)) {
-                runOnUiThread(() ->
-                        Toast.makeText(this, "Tipe file tidak didukung", Toast.LENGTH_SHORT).show()
-                );
-                return null;
-            }
+            // Salin file dari Uri ke file temporary
+            FileInputStream inputStream =
+                    (FileInputStream) getContentResolver().openInputStream(uri);
 
-            // Proses konversi file
-            File file = new File(getCacheDir(), getFilePathFromUri(uri));
-            try (FileInputStream inputStream =
-                         (FileInputStream) getContentResolver().openInputStream(uri)) {
-                org.apache.commons.io.FileUtils.copyInputStreamToFile(inputStream, file);
-                return file;
-            }
+            // Proses copy file
+            org.apache.commons.io.FileUtils.copyInputStreamToFile(inputStream, file);
+
+            return file;
         } catch (IOException e) {
             Log.e(TAG, "Error membuat file", e);
-            runOnUiThread(() ->
-                    Toast.makeText(this, "Gagal memproses file", Toast.LENGTH_SHORT).show()
-            );
             return null;
         }
     }
 
-    // Metode tambahan untuk validasi
-    private long getFileSizeFromUri(Uri uri) {
-        try {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            if (cursor != null) {
-                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                cursor.moveToFirst();
-                long fileSize = cursor.getLong(sizeIndex);
-                cursor.close();
-                return fileSize;
-            }
-            return -1;
-        } catch (Exception e) {
-            return -1;
-        }
-    }
-
-    private boolean isValidFileType(String mimeType) {
-        String[] allowedTypes = {
-                "image/jpeg", "image/png", "image/gif",
-                "application/pdf",
-                "application/msword",
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        };
-
-        for (String type : allowedTypes) {
-            if (type.equals(mimeType)) {
-                return true;
-            }
-        }
-        return false;
-    }
     // Metode lifecycle lainnya
     @Override
     public void onResume() {
