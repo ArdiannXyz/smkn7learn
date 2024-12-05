@@ -16,11 +16,13 @@ import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface ApiServiceInterface {
+    // Metode untuk mengambil materi berdasarkan ID kelas
+//    @GET("api-get_materi_by_kelas.php")
+//    Call<ApiResponse> getMateriByKelas(@Query("id_kelas") int idKelas);
 
     // Endpoint untuk mendapatkan data kelas
     @GET("api_kelas_guru.php")
     Call<ApiResponse> getKelasData();
-
 
     @GET("api_mapelguru.php")
     Call<ApiResponse> getMapelData();
@@ -67,6 +69,7 @@ public interface ApiServiceInterface {
     @POST("api-hapus_materi.php")
     Call<ResponseBody> hapusMateri(
             @Field("id_tugas") int idTugas
+//            @Field("log_info") String logInfo // Tambahan untuk debugging
     );
 
     @FormUrlEncoded
@@ -77,6 +80,12 @@ public interface ApiServiceInterface {
     );
 
 }
+
+
+
+
+
+
 
 
 

@@ -35,7 +35,7 @@ public class ApiClient {
     }
 
     // Mendapatkan ApiServiceInterface
-    public static ApiService getApiService() {
-        return getRetrofitInstance().create(ApiService.class);
+    public static ApiServiceInterface getApiService() {
+        return getRetrofitInstance().create(ApiServiceInterface.class);
     }
 }

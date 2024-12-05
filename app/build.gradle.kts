@@ -88,9 +88,14 @@ dependencies {
     // SwipeRefreshLayout
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
-
+//    //berbagi data menggunakan viewmodel
+//    def lifecycle_version = "2.5.1"
+//    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+//    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
+//
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }
+

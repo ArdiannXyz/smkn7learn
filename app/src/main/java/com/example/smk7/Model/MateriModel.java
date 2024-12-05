@@ -122,15 +122,27 @@ public class MateriModel {
         this.videoUrl = videoUrl;
     }
 
-    public String getNamaKelas() {
-        return namaKelas;
-    }
-
-    public void setNamaKelas(String namaKelas) {
-        this.namaKelas = namaKelas;
-    }
+    public String getNamaKelas() { return namaKelas;}
+    public void setNamaKelas(String namaKelas) { this.namaKelas = namaKelas;}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //    @SerializedName("id_tugas")  // Sesuaikan dengan JSON, pastikan nama field JSON sesuai

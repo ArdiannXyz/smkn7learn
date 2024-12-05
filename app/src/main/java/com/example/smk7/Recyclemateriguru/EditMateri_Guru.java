@@ -2,7 +2,9 @@ package com.example.smk7.Recyclemateriguru;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -21,27 +23,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.example.smk7.ApiDatabase.ApiClient;
+import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.ApiDatabase.Db_Contract;
 import com.example.smk7.R;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EditMateri_Guru extends AppCompatActivity {
     private static final String TAG = "EditMateri_Guru";
@@ -60,13 +59,8 @@ public class EditMateri_Guru extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_edit_materi_guru);
 
-        // Inisialisasi komponen
         initializeComponents();
-
-        // Terima data dari intent
         receiveIntentData();
-
-        // Muat data materi
         loadMateriData();
     }
 
@@ -78,7 +72,6 @@ public class EditMateri_Guru extends AppCompatActivity {
         btnSimpanEdit = findViewById(R.id.Btn_simpan);
         backButton = findViewById(R.id.back_Button);
 
-        // Setup listener
         backButton.setOnClickListener(v -> finish());
         edtLampiran.setOnClickListener(v -> checkStoragePermission());
         btnSimpanEdit.setOnClickListener(v -> editMateri());
@@ -87,90 +80,116 @@ public class EditMateri_Guru extends AppCompatActivity {
     private void receiveIntentData() {
         Intent intent = getIntent();
         if (intent != null) {
-            // Ubah sesuai dengan cara passing data di adapter sebelumnya
             idMateri = String.valueOf(intent.getIntExtra("id_tugas", -1));
             idKelas = String.valueOf(intent.getIntExtra("id_kelas", -1));
             namaKelas = intent.getStringExtra("nama_kelas");
 
-            // Set nama kelas di TextView
             if (txtNamaKelas != null && namaKelas != null) {
                 txtNamaKelas.setText(namaKelas);
             }
 
-            // Validasi data
             if (idMateri.equals("-1") || idKelas.equals("-1")) {
                 Toast.makeText(this, "Data materi tidak valid", Toast.LENGTH_SHORT).show();
                 finish();
-                return;
             }
         }
-
     }
 
     private void loadMateriData() {
-        String url = Db_Contract.urlApiEditMateri;
+        // Implementasi loadMateriData sesuai kebutuhan Anda
+        // Misalnya menggunakan Retrofit atau Volley untuk mengambil data materi
+    }
 
-        // Debug log
-        Log.d(TAG, "Sending id_materi: " + idMateri);
-        Log.d(TAG, "Sending id_kelas: " + idKelas);
+    private void editMateri() {
+        String judulMateri = edtJudulMateri.getText().toString().trim();
+        String jenisMateri = edtLampiran.getText().toString().trim();
+        String komentar = edtKomentar.getText().toString().trim();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                response -> {
-                    Log.d("API_FULL_RESPONSE", "Raw Response: " + response);
+        int idGuru = getCurrentLoggedInTeacherId();
+        String deadline = getCurrentDateTime();
+        String videoUrl = "";
 
-                    try {
-                        // Pastikan response adalah JSON yang valid
-                        if (!response.trim().startsWith("{")) {
-                            throw new JSONException("Invalid JSON response: " + response);
-                        }
+        if (TextUtils.isEmpty(judulMateri) ||
+                TextUtils.isEmpty(jenisMateri) ||
+                TextUtils.isEmpty(komentar)) {
+            Toast.makeText(this, "Semua field harus diisi!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-                        JSONObject jsonResponse = new JSONObject(response);
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Mengupdate materi...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
-                        Log.d("API_RESPONSE_DETAILS",
-                                "Success: " + jsonResponse.getBoolean("success") +
-                                        ", Full Response: " + jsonResponse.toString(2)
-                        );
+        ApiServiceInterface apiService = ApiClient.getApiService();
+        Call<ResponseBody> call = apiService.updateMateri(
+                Integer.parseInt(idMateri),
+                idGuru,
+                jenisMateri,
+                judulMateri,
+                komentar,
+                Integer.parseInt(idKelas),
+                deadline,
+                videoUrl
+        );
 
-                        if (jsonResponse.getBoolean("success")) {
-                            JSONObject materiData = jsonResponse.getJSONObject("data");
-
-                            // Set data ke field
-                            edtJudulMateri.setText(materiData.optString("judul_materi", ""));
-                            edtLampiran.setText(materiData.optString("jenis_materi", ""));
-                            edtKomentar.setText(materiData.optString("komentar", ""));
-                        } else {
-                            // Log detail error
-                            String errorMessage = jsonResponse.optString("message", "Gagal memuat data");
-                            String errorDetails = jsonResponse.has("details")
-                                    ? jsonResponse.getJSONObject("details").toString()
-                                    : "Tidak ada detail error";
-
-                            Log.e(TAG, "API Error Message: " + errorMessage);
-                            Log.e(TAG, "API Error Details: " + errorDetails);
-
-                            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        Log.e(TAG, "JSON Parsing Error", e);
-                        Log.e(TAG, "Raw Response causing error: " + response);
-                        Toast.makeText(this, "Gagal memproses data: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                },
-                error -> {
-                    Log.e(TAG, "Network Error", error);
-                    Toast.makeText(this, "Gagal memuat data", Toast.LENGTH_SHORT).show();
-                }) {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("id_tugas", idMateri);
-                params.put("id_kelas", idKelas);
-                return params;
-            }
-        };
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                progressDialog.dismiss();
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(stringRequest);
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseString = response.body().string();
+
+                        Log.d(TAG, "Full Response: " + responseString);
+
+                        JSONObject jsonResponse = new JSONObject(responseString);
+
+                        if (jsonResponse.optBoolean("success", false)) {
+                            Toast.makeText(
+                                    EditMateri_Guru.this,
+                                    "Materi berhasil diupdate",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+                            Toast.makeText(
+                                    EditMateri_Guru.this,
+                                    "Gagal update: " + jsonResponse.optString("message", "Terjadi kesalahan"),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    } else {
+                        Toast.makeText(
+                                EditMateri_Guru.this,
+                                "Gagal update: " + response.code(),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error parsing response", e);
+                    Toast.makeText(
+                            EditMateri_Guru.this,
+                            "Terjadi kesalahan: " + e.getMessage(),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.e(TAG, "Network error", t);
+                Toast.makeText(
+                        EditMateri_Guru.this,
+                        "Gagal terhubung: " + t.getMessage(),
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
     }
 
     private void checkStoragePermission() {
@@ -188,7 +207,7 @@ public class EditMateri_Guru extends AppCompatActivity {
 
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*"); // Semua tipe file
+        intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         try {
@@ -223,7 +242,11 @@ public class EditMateri_Guru extends AppCompatActivity {
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
             try {
                 if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    // Tambahkan pengecekan indeks kolom
+                    int displayNameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    if (displayNameIndex != -1) {
+                        result = cursor.getString(displayNameIndex);
+                    }
                 }
             } finally {
                 if (cursor != null)
@@ -240,147 +263,21 @@ public class EditMateri_Guru extends AppCompatActivity {
         return result;
     }
 
-    private void editMateri() {
-        // Validasi input
-        String judulMateri = edtJudulMateri.getText().toString().trim();
-        String jenisMateri = edtLampiran.getText().toString().trim();
-        String komentar = edtKomentar.getText().toString().trim();
-
-        if (TextUtils.isEmpty(judulMateri) ||
-                TextUtils.isEmpty(jenisMateri) ||
-                TextUtils.isEmpty(komentar)) {
-            Toast.makeText(this, "Semua field harus diisi!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Tampilkan progress dialog
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Mengupdate materi...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
-        // Proses edit di background thread
-        new Thread(() -> {
-            try {
-                // Siapkan MultipartBody untuk upload file
-                MultipartBody.Builder builder = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM);
-
-                // Tambahkan parameter text
-                builder.addFormDataPart("id_tugas", idMateri);
-                builder.addFormDataPart("judul_materi", judulMateri);
-                builder.addFormDataPart("komentar", komentar);
-                builder.addFormDataPart("id_kelas", idKelas);
-
-                // Tambahkan file jika ada
-                if (selectedFileUri != null) {
-                    File file = getFileFromUri(selectedFileUri);
-                    if (file != null) {
-                        RequestBody fileBody = RequestBody.create(
-                                MediaType.parse(getContentResolver().getType(selectedFileUri)),
-                                file
-                        );
-                        builder.addFormDataPart(
-                                "jenis_materi",
-                                file.getName(),
-                                fileBody
-                        );
-                    }
-                }
-
-                // Buat request body
-                RequestBody requestBody = builder.build();
-
-                // Buat request
-                okhttp3.Request request = new okhttp3.Request.Builder()
-                        .url(Db_Contract.urlApiEditMateri)
-                        .put(requestBody)
-                        .build();
-
-                // Kirim request menggunakan OkHttp
-                OkHttpClient client = new OkHttpClient();
-                Response response = client.newCall(request).execute();
-
-                // Proses response di main thread
-                runOnUiThread(() -> {
-                    progressDialog.dismiss();
-
-                    try {
-                        String responseBody = response.body().string();
-                        JSONObject jsonResponse = new JSONObject(responseBody);
-
-                        if (jsonResponse.getString("status").equals("success")) {
-                            Toast.makeText(
-                                    EditMateri_Guru.this,
-                                    "Materi berhasil diupdate",
-                                    Toast.LENGTH_SHORT
-                            ).show();
-
-                            // Kembali ke halaman sebelumnya
-                            setResult(RESULT_OK);
-                            finish();
-                        } else {
-                            Toast.makeText(
-                                    EditMateri_Guru.this,
-                                    "Gagal update: " + jsonResponse.getString("message"),
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error parsing response", e);
-                        Toast.makeText(
-                                EditMateri_Guru.this,
-                                "Terjadi kesalahan",
-                                Toast.LENGTH_SHORT
-                        ).show();
-                    }
-                });
-
-            } catch (Exception e) {
-                // Tangani error upload
-                runOnUiThread(() -> {
-                    progressDialog.dismiss();
-                    Log.e(TAG, "Update error", e);
-                    Toast.makeText(
-                            EditMateri_Guru.this,
-                            "Gagal mengupdate: " + e.getMessage(),
-                            Toast.LENGTH_SHORT
-                    ).show();
-                });
-            }
-        }).start();
+    private int getCurrentLoggedInTeacherId() {
+        SharedPreferences prefs = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        return prefs.getInt("id_guru", -1);
     }
 
-    // Metode untuk konversi URI ke File
-    private File getFileFromUri(Uri uri) {
-        try {
-            // Buat file temporary
-            File file = new File(getCacheDir(),
-                    getFilePathFromUri(uri));
-
-            // Salin file dari Uri ke file temporary
-            FileInputStream inputStream =
-                    (FileInputStream) getContentResolver().openInputStream(uri);
-
-            // Proses copy file
-            org.apache.commons.io.FileUtils.copyInputStreamToFile(inputStream, file);
-
-            return file;
-        } catch (IOException e) {
-            Log.e(TAG, "Error membuat file", e);
-            return null;
-        }
+    private String getCurrentDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date());
     }
 
-    // Metode untuk handle permission
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_STORAGE) {
-            if (grantResults.length > 0 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openFilePicker();
             } else {
                 Toast.makeText(this, "Permission ditolak", Toast.LENGTH_SHORT).show();

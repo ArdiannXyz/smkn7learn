@@ -37,6 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class RecyleViewMateri_Guru extends Fragment {
 
     private RecyclerView recyclerView;
@@ -200,6 +201,5 @@ public class RecyleViewMateri_Guru extends Fragment {
         super.onDetach();
         navigationHandler = null;
     }
-    }
-
+}
 

@@ -1,5 +1,6 @@
 package com.example.smk7.Adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,6 +20,8 @@ import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Model.MateriModel;
 import com.example.smk7.R;
 import com.example.smk7.Recyclemateriguru.EditMateri_Guru;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -114,44 +117,76 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
 
     // Method to delete the materi from the server
     private void deleteMateri(int idTugas) {
+        // Validasi ID di sisi client
+        if (idTugas <= 0) {
+            Log.e("Delete Materi", "Invalid ID: " + idTugas);
+            Toast.makeText(context, "ID Materi tidak valid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Tambahkan loading indicator jika perlu
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Menghapus materi...");
+        progressDialog.show();
+
         apiService.hapusMateri(idTugas).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    // Hapus item dari daftar dan beri tahu adapter
-                    int position = -1;
-                    for (int i = 0; i < materiList.size(); i++) {
-                        if (materiList.get(i).getIdTugas() == idTugas) {
-                            position = i;
-                            break;
+                progressDialog.dismiss();
+
+                try {
+                    if (response.isSuccessful()) {
+                        // Parse response JSON
+                        String responseBody = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(responseBody);
+                        String message = jsonResponse.getString("message");
+
+                        // Cari dan hapus item dari list
+                        int position = findMateriPositionById(idTugas);
+                        if (position != -1) {
+                            materiList.remove(position);
+                            notifyItemRemoved(position);
+
+                            // Logging
+                            Log.i("Delete Materi", "Materi berhasil dihapus: " + idTugas);
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.w("Delete Materi", "Materi tidak ditemukan di list: " + idTugas);
+                            Toast.makeText(context, "Materi tidak ditemukan", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                    if (position != -1) {
-                        materiList.remove(position);
-                        notifyItemRemoved(position);
-                        Toast.makeText(context, "Materi berhasil dihapus", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(context, "Materi tidak ditemukan dalam daftar", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    // Tangani error API dengan menampilkan pesan error yang lebih detail
-                    try {
+                        // Tangani error response dari server
                         String errorBody = response.errorBody().string();
-                        Log.e("API Error", "Error deleting materi: " + errorBody);
-                        Toast.makeText(context, "Gagal menghapus materi: " + errorBody, Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        Log.e("API Error", "Error reading error body: " + e.getMessage());
-                        Toast.makeText(context, "Gagal menghapus materi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        JSONObject errorJson = new JSONObject(errorBody);
+                        String errorMessage = errorJson.getString("error");
+
+                        Log.e("Delete Materi", "Server Error: " + errorMessage);
+                        Toast.makeText(context, "Gagal menghapus: " + errorMessage, Toast.LENGTH_SHORT).show();
                     }
+                } catch (Exception e) {
+                    Log.e("Delete Materi", "Parsing Error", e);
+                    Toast.makeText(context, "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                // Tangani error jaringan dengan menampilkan pesan error yang lebih detail
-                Log.e("API Error", "Error deleting materi: " + t.getMessage(), t);
-                Toast.makeText(context, "Error deleting materi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+
+                // Logging error jaringan
+                Log.e("Delete Materi", "Network Error", t);
+                Toast.makeText(context, "Gagal terhubung: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    // Metode tambahan untuk mencari posisi materi berdasarkan ID
+    private int findMateriPositionById(int idTugas) {
+        for (int i = 0; i < materiList.size(); i++) {
+            if (materiList.get(i).getIdTugas() == idTugas) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
