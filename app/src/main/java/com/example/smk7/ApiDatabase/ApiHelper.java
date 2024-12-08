@@ -53,7 +53,7 @@ public class ApiHelper {
     public void getMateriData(Callback<ApiResponse> callback) {
         try {
 
-            URL url = new URL(Db_Contract.BASE_URL + "api-tambah_materi.php"); // Ganti dengan endpoint API Anda
+            URL url = new URL(Db_Contract.urlApiTambahMateri); // Ganti dengan endpoint API Anda
             HttpURLConnection conn= (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Connection", "close");
@@ -83,7 +83,7 @@ public class ApiHelper {
     public void hapusMateri(int idTugas, Callback<ResponseBody> callback) {
         try {
             Log.d("ApiHelper", "Deleting materi with ID: " + idTugas);
-            URL url = new URL(Db_Contract.BASE_URL + "api-hapus_materi.php?" + idTugas); // Ganti dengan endpoint API Anda
+            URL url = new URL(Db_Contract.urlApiHapusMateri + idTugas); // Ganti dengan endpoint API Anda
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("DELETE");
             conn.setRequestProperty("Connection", "close");
