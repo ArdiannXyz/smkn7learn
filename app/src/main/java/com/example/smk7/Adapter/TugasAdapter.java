@@ -21,7 +21,7 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
 
     // Interface for item click handling
     public interface OnItemClickListener {
-        void onItemClick(String namaTugas);
+        void onItemClick(String judulTugas, int idTugas); // Mengirim judul tugas dan ID tugas
     }
 
     // Constructor accepts the list and the listener
@@ -46,15 +46,14 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
     public void onBindViewHolder(@NonNull TugasViewHolder holder, int position) {
         TugasModel tugas = tugasList.get(position);
 
-        // Set teks untuk item view (nama tugas atau deskripsi tugas)
-        holder.tugas.setText(tugas.getDeskripsi());  // Set text menggunakan getDeskripsi()
+        // Set teks untuk item view (judul tugas)
+        holder.tugas.setText(tugas.getJudulTugas());  // Set text menggunakan getJudulTugas()
 
         // Handle klik item
-
         holder.itemView.setOnClickListener(v -> {
-            // Panggil listener untuk meneruskan nama tugas yang diklik
+            // Panggil listener untuk meneruskan judul tugas dan ID tugas yang diklik
             if (onItemClickListener != null) {
-                onItemClickListener.onItemClick(tugas.getDeskripsi());  // Kirim nama tugas ke listener
+                onItemClickListener.onItemClick(tugas.getJudulTugas(), tugas.getIdTugas());  // Kirim judul tugas dan ID tugas ke listener
             }
         });
     }
@@ -74,4 +73,5 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
             tugas = view.findViewById(R.id.txtnama_mapel);  // Asumsi ini adalah ID TextView di layout Anda
         }
     }
+
 }

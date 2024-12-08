@@ -1,70 +1,62 @@
 package com.example.smk7.RecycleTugasGuru;
 
-import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
-public class EditTugas_Guru extends Fragment {
+public class EditTugas_Guru extends AppCompatActivity implements BottomNavigationHandler {
 
-    private BottomNavigationHandler navigationHandler;
+    private DashboardGuru dashboardGuru;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_tugas_guru, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_edit_tugas_guru); // Gunakan layout fragment yang sama
 
-            // Menonaktifkan swipe di Activity
+        // Inisialisasi komponen jika diperlukan
+        initializeComponents();
+    }
 
-
+    private void initializeComponents() {
+        // Tambahkan inisialisasi komponen di sini
+        // Misalnya: findViewById, setOnClickListener, dll.
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            navigationHandler = (BottomNavigationHandler) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement BottomNavigationHandler");
-        }
-    }
-
-    @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
-        if (navigationHandler != null) {
-            navigationHandler.hideBottomNav();
+        hideBottomNav();
 
-            if (getActivity() != null) {
-                // Menonaktifkan swipe di Activity
-                ((DashboardGuru) getActivity()).setSwipeEnabled(false);
-            }
-
+        // Menonaktifkan swipe di Activity
+        if (dashboardGuru != null) {
+            dashboardGuru.setSwipeEnabled(false);
         }
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
-        if (navigationHandler != null) {
-            navigationHandler.hideBottomNav();
+        showBottomNav();
+    }
+
+    @Override
+    public void hideBottomNav() {
+        // Implementasi untuk menyembunyikan bottom navigation
+        if (dashboardGuru != null) {
+            dashboardGuru.hideBottomNav();
         }
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        navigationHandler = null;
+    public void showBottomNav() {
+        // Implementasi untuk menampilkan bottom navigation
+        if (dashboardGuru != null) {
+            dashboardGuru.showBottomNav();
+        }
     }
 }

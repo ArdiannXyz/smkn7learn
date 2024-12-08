@@ -4,6 +4,7 @@ import com.example.smk7.Model.MateriModel;
 
 import java.util.List;
 
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -68,7 +69,7 @@ public interface ApiServiceInterface {
     @FormUrlEncoded
     @POST("api-hapus_materi.php")
     Call<ResponseBody> hapusMateri(
-            @Field("id_tugas") int idTugas
+            @Body RequestBody requestBody
 //            @Field("log_info") String logInfo // Tambahan untuk debugging
     );
 

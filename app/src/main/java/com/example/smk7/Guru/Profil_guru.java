@@ -63,6 +63,7 @@ public class Profil_guru extends Fragment {
         textView_gantipw.setOnClickListener(new View.OnClickListener() { // Listener untuk TextView
             @Override
             public void onClick(View v) {
+                Log.d("ProfilGuru", "Tombol Ganti Password diklik");
                 Intent intent = new Intent(getActivity(), GantiPasswordActivity.class);
                 startActivity(intent);
             }
