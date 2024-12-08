@@ -88,12 +88,14 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
 
         // Handle delete button click
         holder.btnHps.setOnClickListener(v -> {
+            Log.d("Delete Materi", "ID Tugas saat klik: " + materi.getIdTugas());
             new AlertDialog.Builder(context)
                     .setTitle("Konfirmasi Hapus")
                     .setMessage("Apakah Anda yakin ingin menghapus materi ini?")
                     .setPositiveButton("Hapus", (dialog, which) -> deleteMateri(materi.getIdTugas()))
                     .setNegativeButton("Batal", null)
                     .show();
+            deleteMateri(materi.getIdTugas());
         });
     }
 
@@ -121,10 +123,11 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
     // Method to delete the materi from the server
     private void deleteMateri(int idTugas) {
         Log.d("Delete Materi", "Menghapus Materi dengan ID: " + idTugas);
+
         // Validasi ID di sisi client
         if (idTugas <= 0) {
-            Log.e("Delete Materi", "Invalid ID: " + idTugas);
-            Toast.makeText(context, "ID Materi tidak valid", Toast.LENGTH_SHORT).show();
+            Log.e("Delete Materi", "PERINGATAN: ID Tugas tidak valid");
+            Toast.makeText(context, "Gagal: ID Materi tidak valid", Toast.LENGTH_SHORT).show();
             return;
         }
         // Buat objek JSON untuk dikirim
