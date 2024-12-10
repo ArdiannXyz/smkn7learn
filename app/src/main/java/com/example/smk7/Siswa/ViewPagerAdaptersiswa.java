@@ -26,9 +26,9 @@ public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
             case 5:
                 return new EditProfil_Siswa();
             case 6:
-                return new Tugas_Siswa();
+                return new Recycle_Tugas_Siswa();
             case 7:
-                return new Materi_Siswa();
+                return new Recycle_Materi_Siswa();
             case 8:
                 return new DetailMateri_Siswa();
             case 9:

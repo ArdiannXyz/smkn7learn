@@ -73,7 +73,7 @@ public class Recycle_Materi_Siswa extends Fragment {
                                     Log.e("Error", "ViewPager2 not found!");
                                 }
 
-                                Fragment currentFragment = getParentFragment() != null ? getParentFragment() : Materi_Siswa.this;
+                                Fragment currentFragment = getParentFragment() != null ? getParentFragment() : Recycle_Materi_Siswa.this;
                                 MateriSiswaAdapter materiSiswaAdapter = new MateriSiswaAdapter(materiList, viewPager, currentFragment);
                                 recyclerView.setAdapter(materiSiswaAdapter);
                             }

@@ -13,7 +13,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.smk7.R;
 import com.example.smk7.Siswa.Model.TugasSiswaModel;
-import com.example.smk7.Siswa.Tugas_Siswa;
+import com.example.smk7.Siswa.Recycle_Tugas_Siswa;
 
 import java.util.List;
 
@@ -56,7 +56,7 @@ public class TugasSiswaAdapter extends RecyclerView.Adapter<TugasSiswaAdapter.Tu
                 Log.d("Fragment Check", "Current Fragment: " + currentFragment.getClass().getSimpleName());
 
                 // Hanya melakukan perpindahan halaman jika fragment adalah Tugas_Siswa
-                if (currentFragment instanceof Tugas_Siswa) {
+                if (currentFragment instanceof Recycle_Tugas_Siswa) {
                     Log.d("FragmentA", "Pindah ke halaman 10...");
                     viewPager.setCurrentItem(9, false);  // false berarti tanpa animasi
                 } else {

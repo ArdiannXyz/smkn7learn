@@ -26,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Tugas_Siswa extends Fragment {
+public class Recycle_Tugas_Siswa extends Fragment {
 
     private ImageView backButton;
     private BottomNavigationHandler navigationHandler;
@@ -79,7 +79,7 @@ public class Tugas_Siswa extends Fragment {
                                     Log.e("Error", "ViewPager2 not found!");
                                 }
 
-                                Fragment currentFragment = getParentFragment() != null ? getParentFragment() : Tugas_Siswa.this;
+                                Fragment currentFragment = getParentFragment() != null ? getParentFragment() : Recycle_Tugas_Siswa.this;
                                 TugasSiswaAdapter tugasSiswaAdapter = new TugasSiswaAdapter(tugasList, viewPager, currentFragment);
                                 recyclerView.setAdapter(tugasSiswaAdapter);
                             }
