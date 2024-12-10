@@ -102,19 +102,29 @@
         android:textSize="15sp"
         />
 
-    <WebView
-        android:id="@+id/webView"
-        android:layout_width="match_parent"
-        android:layout_marginTop="200dp"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:text="Lampiran :"
+        android:layout_marginTop="190dp"
+        android:textSize="18sp"
+        android:textColor="@color/birulivin"
+        android:textStyle="bold"/>
 
-    <ImageView
-        android:id="@+id/imageView"
+    <LinearLayout
+        android:id="@+id/filePreviewLayout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"/>
+
+    <ProgressBar
+        android:id="@+id/uploadProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="gone"
-        android:src="@drawable/pdf" />
+        android:layout_below="@id/filePreviewLayout"
+        android:layout_centerHorizontal="true"/>
 
 
 </LinearLayout>
@@ -130,7 +140,7 @@
         >
 
     <Button
-        android:id="@+id/button_add_file"
+        android:id="@+id/btnUploadFile"
         android:layout_width="180dp"
         android:layout_height="60dp"
         android:text="Tambahkan File"
@@ -140,7 +150,7 @@
         />
 
         <Button
-            android:id="@+id/button_submit_file"
+            android:id="@+id/btnSubmit"
             android:layout_width="180dp"
             android:layout_height="60dp"
             android:text="Serahkan File"

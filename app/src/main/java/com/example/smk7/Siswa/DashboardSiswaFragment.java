@@ -25,14 +25,14 @@ public class DashboardSiswaFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                openFragment(3); // Misalnya fragment minuman
+                openFragment(8);
             }
         });
         linearLayouttugassiswa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                openFragment(7); // Misalnya fragment minuman
+                openFragment(9);
             }
         });
         return  view;

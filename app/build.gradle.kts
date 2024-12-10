@@ -55,8 +55,11 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.github.kevinsawicki:http-request:6.0")
     implementation("com.google.android.material:material:1.6.0")
-
-
+    implementation ("com.squareup.picasso:picasso:2.71828")
+    implementation ("androidx.activity:activity-ktx:1.2.0")
+    implementation ("androidx.activity:activity-ktx:1.6.0")
+    implementation ("androidx.fragment:fragment-ktx:1.5.3")
+    implementation ("androidx.appcompat:appcompat:1.6.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

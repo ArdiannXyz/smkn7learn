@@ -20,15 +20,19 @@ public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
         } else if (position == 2) {
             return new Profil_Siswa();
         } else if (position == 3) {
-            return new Materi_Siswa();
+            return new Recycle_Materi_Siswa();
         } else if (position == 4) {
-            return new Tugas_Siswa();
+            return new Recycle_Tugas_Siswa();
         } else if (position == 5) {
             return new ViewProfil_Siswa();
         } else if (position == 6) {
             return new EditProfil_Siswa();
         } else if (position == 7) {
             return new UploadTugas_Siswa();
+        } else if (position == 8) {
+            return new BehindMateri_Siswa();
+        } else if (position == 9) {
+            return new BehindTugas_Siswa();
         } else {
             return new DashboardSiswaFragment();
         }
@@ -36,6 +40,6 @@ public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 8;
+        return 10;
     }
 }
