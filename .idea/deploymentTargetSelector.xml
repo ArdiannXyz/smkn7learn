@@ -13,7 +13,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="DashboardGuru">
+      <SelectionState runConfigName="DashboardSiswa">
         <option name="selectionMode" value="DROPDOWN" />
         <DropdownSelection timestamp="2024-12-07T13:31:08.072684300Z">
           <Target type="DEFAULT_BOOT">
