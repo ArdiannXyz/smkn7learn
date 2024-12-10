@@ -24,8 +24,14 @@ import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Model.BankTugasModel;
 import com.example.smk7.R;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -69,7 +75,7 @@ public class RecyleViewBankTugas_Guru extends Fragment {
 
     private void fetchBankTugasData() {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
-        Call<ApiResponse> call = apiService.getBankTugasData();  // Pastikan ini sesuai dengan endpoint Anda
+        Call<ApiResponse> call = apiService.getBankTugasData();
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
@@ -78,11 +84,37 @@ public class RecyleViewBankTugas_Guru extends Fragment {
                     Log.d("API Response", apiResponse.toString());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        bankTugasList = apiResponse.getBankTugasModel();
-                        if (bankTugasList != null && !bankTugasList.isEmpty()) {
-                            setupRecyclerView(bankTugasList);
-                        } else {
-                            Log.e("API Response", "bankTugasList is null or empty");
+                        try {
+                            String rawJson = new Gson().toJson(response.body());
+                            JSONObject jsonObject = new JSONObject(rawJson);
+                            JSONArray bankTugasArray = jsonObject.getJSONArray("bank_tugas_model");
+                            List<BankTugasModel> parsedList = new ArrayList<>();
+
+                            for (int i = 0; i < bankTugasArray.length(); i++) {
+                                JSONObject obj = bankTugasArray.getJSONObject(i);
+                                String nama = obj.getString("nama");
+                                String status = obj.getString("status");
+                                String fileTugas = obj.optString("file_tugas", "");
+                                String idPengumpulan = obj.optString("id_pengumpulan", "");
+
+                                // Debug log untuk setiap item
+                                Log.d("API Debug", String.format(
+                                        "Item %d: nama=%s, status=%s, file_tugas=%s, id_pengumpulan=%s",
+                                        i, nama, status, fileTugas, idPengumpulan
+                                ));
+
+                                BankTugasModel model = new BankTugasModel(nama, status, fileTugas, idPengumpulan);
+                                parsedList.add(model);
+                            }
+
+                            bankTugasList = parsedList;
+                            if (!bankTugasList.isEmpty()) {
+                                setupRecyclerView(bankTugasList);
+                            } else {
+                                Log.e("API Response", "bankTugasList is empty after parsing");
+                            }
+                        } catch (JSONException e) {
+                            Log.e("API Debug", "Error parsing JSON: " + e.getMessage());
                         }
                     } else {
                         Log.e("API Response", "API error: " + apiResponse.getMessage());
@@ -117,8 +149,11 @@ public class RecyleViewBankTugas_Guru extends Fragment {
         // Pastikan viewPager diambil dari aktivitas utama atau instance fragment
         ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
-        // Buat adapter dengan meneruskan viewPager
-        BankTugasAdapter bankTugasAdapter = new BankTugasAdapter(banktugasList, viewPager);
+        // Tambahkan context
+        Context context = requireContext(); // Atau getActivity()
+
+        // Buat adapter dengan meneruskan viewPager dan context
+        BankTugasAdapter bankTugasAdapter = new BankTugasAdapter(banktugasList, viewPager, context);
         recyclerView.setAdapter(bankTugasAdapter);
     }
 

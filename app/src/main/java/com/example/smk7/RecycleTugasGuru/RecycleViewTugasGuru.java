@@ -29,6 +29,7 @@ import com.example.smk7.R;
 import com.example.smk7.Recyclemateriguru.UploadMateri_Guru;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
@@ -56,9 +57,14 @@ public class RecycleViewTugasGuru extends Fragment {
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+
+
                 viewPager.setCurrentItem(9, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
             }
         });
+
+
 
         fabAddTugas = view.findViewById(R.id.fabAddTugas);
         fabAddTugas.setOnClickListener(v -> {
@@ -90,13 +96,16 @@ public class RecycleViewTugasGuru extends Fragment {
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.d("API_RESPONSE", "Response mentah: " + new Gson().toJson(response.body()));
+                }
                 if (response.isSuccessful() && response.body() != null) {
                     ApiResponse apiResponse = response.body();
                     Log.d("API Response", apiResponse.toString());
 
                     // Check if the response status is successful
                     if ("success".equals(apiResponse.getStatus())) {
-                        tugasList = apiResponse.getTugasModel();
+                        tugasList = apiResponse.getTugasModel(); // Fetch tugasModel here
                         if (tugasList != null && !tugasList.isEmpty()) {
                             // Setup the RecyclerView with Tugas data
                             setupRecyclerView(tugasList);
@@ -132,12 +141,26 @@ public class RecycleViewTugasGuru extends Fragment {
     }
 
     private void setupRecyclerView(List<TugasModel> tugasList) {
-        tugasAdapter = new TugasAdapter(tugasList, new TugasAdapter.OnItemClickListener() {
+        if (tugasList == null) {
+            Log.e("RecyclerView", "tugasList kosong");
+            return;
+        }
+
+        Log.d("RecyclerView", "Menyiapkan " + tugasList.size() + " item");
+
+        tugasAdapter = new TugasAdapter(getContext(), tugasList, new TugasAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String judulTugas, int idTugas) {
-                Intent intent = new Intent(getContext(), EditTugas_Guru.class);
+                Intent intent = new Intent(getContext(), UploadTugas_guru.class);
+                intent.putExtra("nama_tugas", judulTugas);
                 intent.putExtra("id_tugas", idTugas);
                 startActivity(intent);
+            }
+
+            @Override
+            public void onDeleteSuccess() {
+                // Refresh data setelah delete
+                fetchTugasData();
             }
         });
         recyclerView.setAdapter(tugasAdapter);
@@ -152,6 +175,7 @@ public class RecycleViewTugasGuru extends Fragment {
             throw new ClassCastException(context.toString()
                     + " must implement BottomNavigationHandler");
         }
+
     }
 
     @Override

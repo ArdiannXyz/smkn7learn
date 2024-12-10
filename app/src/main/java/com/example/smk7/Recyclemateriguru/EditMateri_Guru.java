@@ -96,8 +96,80 @@ public class EditMateri_Guru extends AppCompatActivity {
     }
 
     private void loadMateriData() {
-        // Implementasi loadMateriData sesuai kebutuhan Anda
-        // Misalnya menggunakan Retrofit atau Volley untuk mengambil data materi
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Memuat data materi...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        ApiServiceInterface apiService = ApiClient.getApiService();
+        Call<ResponseBody> call = apiService.getMateriById(Integer.parseInt(idMateri));
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                progressDialog.dismiss();
+
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseString = response.body().string();
+                        Log.d(TAG, "Full Response: " + responseString);
+
+                        JSONObject jsonResponse = new JSONObject(responseString);
+
+                        if (jsonResponse.optBoolean("success", false)) {
+                            // Parsing data materi
+                            JSONObject materiData = jsonResponse.getJSONObject("data");
+
+                            // Set data ke field-field edit
+                            String judulMateri = materiData.optString("judul_materi", "");
+                            String jenisMateri = materiData.optString("jenis_materi", "");
+                            String komentar = materiData.optString("komentar", "");
+
+                            // Update UI
+                            edtJudulMateri.setText(judulMateri);
+                            edtLampiran.setText(jenisMateri);
+                            edtKomentar.setText(komentar);
+                        } else {
+                            // Tampilkan pesan error jika data tidak ditemukan
+                            Toast.makeText(
+                                    EditMateri_Guru.this,
+                                    "Gagal memuat data: " + jsonResponse.optString("message", "Terjadi kesalahan"),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            finish(); // Tutup activity jika data tidak ditemukan
+                        }
+                    } else {
+                        // Tampilkan pesan error jika response tidak berhasil
+                        Toast.makeText(
+                                EditMateri_Guru.this,
+                                "Gagal memuat data: " + response.code(),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        finish();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error parsing response", e);
+                    Toast.makeText(
+                            EditMateri_Guru.this,
+                            "Terjadi kesalahan: " + e.getMessage(),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.e(TAG, "Network error", t);
+                Toast.makeText(
+                        EditMateri_Guru.this,
+                        "Gagal terhubung: " + t.getMessage(),
+                        Toast.LENGTH_SHORT
+                ).show();
+                finish();
+            }
+        });
     }
 
     private void editMateri() {

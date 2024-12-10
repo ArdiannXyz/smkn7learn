@@ -51,9 +51,9 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <!-- TextView txt_nama_mapel -->
+                <!-- TextView txt_nama_kelas -->
                 <TextView
-                    android:id="@+id/txt_nama_mapel"
+                    android:id="@+id/txt_nama_kelas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"

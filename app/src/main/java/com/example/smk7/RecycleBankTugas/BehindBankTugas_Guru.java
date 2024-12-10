@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +36,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -97,9 +101,23 @@ public class BehindBankTugas_Guru extends Fragment {
         if (args != null) {
             String nama = args.getString("nama", "");
             String status = args.getString("status", "Belum dinilai");
+            String fileTugas = args.getString("file_tugas", "");
+            String idPengumpulan = args.getString("id_pengumpulan", "");
+
+            // Debug log
+            Log.d("Fragment Debug", String.format(
+                    "Received data: nama=%s, status=%s, file_tugas=%s, id_pengumpulan=%s",
+                    nama, status, fileTugas, idPengumpulan
+            ));
 
             tvNamaSiswa.setText(nama);
             tvStatus.setText(status);
+
+            if (idPengumpulan.isEmpty()) {
+                Log.e("Fragment Debug", "ID Pengumpulan is empty!");
+                Toast.makeText(getContext(), "Data pengumpulan tidak lengkap", Toast.LENGTH_SHORT).show();
+                btnBerikaNilai.setEnabled(false);
+            }
         }
     }
 
@@ -137,17 +155,6 @@ public class BehindBankTugas_Guru extends Fragment {
         });
     }
 
-    private void openFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("application/pdf");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        try {
-            filePicker.launch(Intent.createChooser(intent, "Pilih file PDF"));
-        } catch (Exception ex) {
-            Toast.makeText(getContext(), "Silakan instal file manager", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private String getFileName(Uri uri) {
         String result = null;
         if (getContext() != null && uri.getScheme().equals("content")) {
@@ -170,48 +177,145 @@ public class BehindBankTugas_Guru extends Fragment {
         return result;
     }
 
+    private void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        // Change mime type to accept all files
+        intent.setType("*/*");
+        // Add common mime types to filter
+        String[] mimeTypes = {
+                "application/pdf",
+                "image/*",  // All image types
+                "application/msword",  // DOC
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX
+                "application/vnd.ms-excel", // XLS
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // XLSX
+                "application/vnd.ms-powerpoint", // PPT
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation", // PPTX
+                "text/*",  // Text files
+                "application/zip" // ZIP files
+        };
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            filePicker.launch(Intent.createChooser(intent, "Pilih File"));
+        } catch (Exception ex) {
+            Toast.makeText(getContext(), "Silakan instal file manager", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isValidFileType(Uri fileUri) {
+        Context context = getContext();
+        if (context == null) return false;
+
+        String mimeType = context.getContentResolver().getType(fileUri);
+        if (mimeType == null) return false;
+
+        // List of allowed mime type prefixes
+        String[] allowedTypes = {
+                "application/pdf",
+                "image/",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument",
+                "application/vnd.ms-excel",
+                "application/vnd.ms-powerpoint",
+                "text/",
+                "application/zip"
+        };
+
+        for (String type : allowedTypes) {
+            if (mimeType.startsWith(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // BehindBankTugas_Guru.java - method uploadFileAndNilai
     private void uploadFileAndNilai(Uri fileUri, float nilai) {
         if (getContext() == null) return;
 
         try {
-            File fileToUpload = createTempFileFromUri(fileUri);
-            if (fileToUpload == null) {
-                Toast.makeText(getContext(), "Gagal mempersiapkan file", Toast.LENGTH_SHORT).show();
+            // Get id_pengumpulan from arguments
+            Bundle args = getArguments();
+            String idPengumpulan = "";
+            if (args != null) {
+                idPengumpulan = args.getString("id_pengumpulan", "");
+            }
+
+            if (idPengumpulan.isEmpty()) {
+                Toast.makeText(getContext(), "ID Pengumpulan tidak valid", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            RequestBody requestFile = RequestBody.create(
-                    MediaType.parse(getContext().getContentResolver().getType(fileUri)),
-                    fileToUpload
+            // Create file part if file is selected
+            MultipartBody.Part filePart = null;
+            if (fileUri != null) {
+                File fileToUpload = createTempFileFromUri(fileUri);
+                if (fileToUpload != null) {
+                    RequestBody requestFile = RequestBody.create(
+                            MediaType.parse(getContext().getContentResolver().getType(fileUri)),
+                            fileToUpload
+                    );
+                    filePart = MultipartBody.Part.createFormData("file_nilai", fileToUpload.getName(), requestFile);
+                }
+            }
+
+            // Create id_pengumpulan part
+            RequestBody idPengumpulanPart = RequestBody.create(
+                    MediaType.parse("text/plain"),
+                    idPengumpulan
             );
 
-            MultipartBody.Part filePart = MultipartBody.Part.createFormData(
-                    "file",
-                    fileToUpload.getName(),
-                    requestFile
-            );
-
+            // Create nilai part
             RequestBody nilaiPart = RequestBody.create(
                     MediaType.parse("text/plain"),
                     String.valueOf(nilai)
             );
 
+            // Debug log
+            Log.d("Upload Debug", "Sending parameters:");
+            Log.d("Upload Debug", "id_pengumpulan: " + idPengumpulan);
+            Log.d("Upload Debug", "nilai: " + nilai);
+            if (filePart != null) {
+                Log.d("Upload Debug", "file included");
+            }
+
+            // Make API call
             ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
-            Call<ApiResponse> call = apiService.uploadFileAndNilai(filePart, nilaiPart);
+            Call<ApiResponse> call = apiService.uploadFileAndNilai(idPengumpulanPart, nilaiPart, filePart);
 
             call.enqueue(new Callback<ApiResponse>() {
                 @Override
                 public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                    Log.d("API Response", "Code: " + response.code());
+                    if (response.errorBody() != null) {
+                        try {
+                            Log.d("API Response", "Error: " + response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     if (response.isSuccessful() && response.body() != null) {
                         ApiResponse apiResponse = response.body();
                         if ("success".equals(apiResponse.getStatus())) {
-                            Toast.makeText(getContext(), "File dan nilai berhasil dikirim", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Berhasil memberikan nilai", Toast.LENGTH_SHORT).show();
+
+                            // Update UI
                             tvStatus.setText("Sudah dinilai");
                             edtTambahNilai.setEnabled(false);
                             btnBerikaNilai.setEnabled(false);
                             edtLampiran.setEnabled(false);
+
+                            // Navigate back after delay
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                if (getActivity() instanceof DashboardGuru) {
+                                    ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+                                    viewPager.setCurrentItem(10, false);
+                                }
+                            }, 1000);
                         } else {
-                            Toast.makeText(getContext(), "Gagal mengirim: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Gagal: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         handleErrorResponse(response);
@@ -220,13 +324,13 @@ public class BehindBankTugas_Guru extends Fragment {
 
                 @Override
                 public void onFailure(Call<ApiResponse> call, Throwable t) {
-                    Log.e("API Error", "Gagal mengirim: " + t.getMessage(), t);
-                    Toast.makeText(getContext(), "Gagal mengirim, silakan coba lagi", Toast.LENGTH_SHORT).show();
+                    Log.e("API Error", "Request failed: " + t.getMessage(), t);
+                    Toast.makeText(getContext(), "Gagal mengirim, cek koneksi internet", Toast.LENGTH_SHORT).show();
                 }
             });
 
         } catch (Exception e) {
-            Log.e("Upload Error", "Error preparing upload: " + e.getMessage());
+            Log.e("Upload Error", "Error: " + e.getMessage(), e);
             Toast.makeText(getContext(), "Gagal mempersiapkan upload", Toast.LENGTH_SHORT).show();
         }
     }
@@ -237,7 +341,16 @@ public class BehindBankTugas_Guru extends Fragment {
         InputStream inputStream = getContext().getContentResolver().openInputStream(uri);
         if (inputStream == null) return null;
 
-        File tempFile = File.createTempFile("upload", ".pdf", getContext().getCacheDir());
+        // Get the file extension from the Uri
+        String fileName = getFileName(uri);
+        String extension = "";
+        int lastDot = fileName.lastIndexOf('.');
+        if (lastDot >= 0) {
+            extension = fileName.substring(lastDot);
+        }
+
+        // Create temp file with original extension
+        File tempFile = File.createTempFile("upload", extension, getContext().getCacheDir());
         tempFile.deleteOnExit();
 
         FileOutputStream outputStream = new FileOutputStream(tempFile);
@@ -268,7 +381,6 @@ public class BehindBankTugas_Guru extends Fragment {
         Toast.makeText(getContext(), "Gagal mengirim, silakan coba lagi", Toast.LENGTH_SHORT).show();
     }
 
-    // Lifecycle methods remain the same
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

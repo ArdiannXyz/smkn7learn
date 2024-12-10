@@ -1,7 +1,9 @@
 package com.example.smk7.Adapter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +25,13 @@ public class BankTugasAdapter extends RecyclerView.Adapter<BankTugasAdapter.Bank
     private List<BankTugasModel> banktugasList;
     private ViewPager2 viewPager;
     private MateriAdapter.OnItemClickListener listener;
+    private Context context;
 
     // Constructor
-    public BankTugasAdapter(List<BankTugasModel> tugasList, ViewPager2 viewPager) {
+    public BankTugasAdapter(List<BankTugasModel> tugasList, ViewPager2 viewPager, Context context) {
         this.banktugasList = tugasList;
         this.viewPager = viewPager;
+        this.context = context;
     }
 
 
@@ -52,9 +56,17 @@ public class BankTugasAdapter extends RecyclerView.Adapter<BankTugasAdapter.Bank
             if (v.getContext() instanceof DashboardGuru) {
                 DashboardGuru activity = (DashboardGuru) v.getContext();
 
+                // Debug log sebelum mengirim data
+                Log.d("Adapter Debug", String.format(
+                        "Sending data: nama=%s, status=%s, file_tugas=%s, id_pengumpulan=%s",
+                        tugas.getNama(), tugas.getStatus(), tugas.getFileTugas(), tugas.getIdPengumpulan()
+                ));
+
                 Bundle bundle = new Bundle();
                 bundle.putString("nama", tugas.getNama());
                 bundle.putString("status", tugas.getStatus());
+                bundle.putString("file_tugas", tugas.getFileTugas());
+                bundle.putString("id_pengumpulan", tugas.getIdPengumpulan());
 
                 Fragment behindFragment = new BehindBankTugas_Guru();
                 behindFragment.setArguments(bundle);

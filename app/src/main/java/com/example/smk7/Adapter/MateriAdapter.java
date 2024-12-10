@@ -95,7 +95,7 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
                     .setPositiveButton("Hapus", (dialog, which) -> deleteMateri(materi.getIdTugas()))
                     .setNegativeButton("Batal", null)
                     .show();
-            deleteMateri(materi.getIdTugas());
+            // Hapus deleteMateri() yang di luar dialog
         });
     }
 
@@ -114,7 +114,7 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
         public MateriViewHolder(View view) {
             super(view);
             nama_materi = view.findViewById(R.id.txtnama_mapel);
-            nama_kelas = view.findViewById(R.id.txt_nama_mapel);
+            nama_kelas = view.findViewById(R.id.txt_nama_kelas);
             btnEdit = view.findViewById(R.id.btn_edit);
             btnHps = view.findViewById(R.id.btn_hps);
         }
@@ -124,85 +124,72 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
     private void deleteMateri(int idTugas) {
         Log.d("Delete Materi", "Menghapus Materi dengan ID: " + idTugas);
 
-        // Validasi ID di sisi client
         if (idTugas <= 0) {
             Log.e("Delete Materi", "PERINGATAN: ID Tugas tidak valid");
             Toast.makeText(context, "Gagal: ID Materi tidak valid", Toast.LENGTH_SHORT).show();
             return;
         }
-        // Buat objek JSON untuk dikirim
+
+        // Ubah cara membuat request body
         JSONObject jsonParams = new JSONObject();
         try {
-            jsonParams.put("id_tugas", idTugas);
+            jsonParams.put("id_tugas", String.valueOf(idTugas)); // Convert ke String
         } catch (JSONException e) {
             Log.e("Delete Materi", "Error membuat JSON", e);
             return;
         }
 
-        // Convert JSONObject to RequestBody
         RequestBody requestBody = RequestBody.create(
-                MediaType.parse("application/json"),
+                MediaType.parse("application/json; charset=utf-8"), // Tambahkan charset
                 jsonParams.toString()
         );
 
-        // Tambahkan loading indicator jika perlu
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Menghapus materi...");
         progressDialog.show();
+
+        // Tambahkan logging untuk request
+        Log.d("Delete Materi", "Request Body: " + jsonParams.toString());
 
         apiService.hapusMateri(requestBody).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 progressDialog.dismiss();
-                Log.d("Delete Materi", "Response Code: " + response.code());
 
                 try {
-                    String responseBodyString = response.body() != null ? response.body().string() : "Body kosong";
-                    Log.d("Delete Materi", "Response Body: " + responseBodyString);
-
                     if (response.isSuccessful()) {
-                        // Parse response JSON
                         String responseBody = response.body().string();
+                        Log.d("Delete Materi", "Response Body: " + responseBody);
+
                         JSONObject jsonResponse = new JSONObject(responseBody);
-                        String message = jsonResponse.getString("message");
+                        String status = jsonResponse.getString("status");
 
-                        // Cari dan hapus item dari list
-                        int position = findMateriPositionById(idTugas);
-                        if (position != -1) {
-                            materiList.remove(position);
-                            notifyItemRemoved(position);
-
-                            // Logging
-                            Log.i("Delete Materi", "Materi berhasil dihapus: " + idTugas);
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                        if ("success".equals(status)) {
+                            int position = findMateriPositionById(idTugas);
+                            if (position != -1) {
+                                materiList.remove(position);
+                                notifyItemRemoved(position);
+                                Toast.makeText(context, "Berhasil menghapus materi", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            String errorBodyString = response.errorBody() != null ? response.errorBody().string() : "Error body kosong";
-                            Log.e("Delete Materi", "Error Body: " + errorBodyString);
-                            Log.w("Delete Materi", "Materi tidak ditemukan di list: " + idTugas);
-                            Toast.makeText(context, "Materi tidak ditemukan", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Gagal menghapus materi", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        // Tangani error response dari server
                         String errorBody = response.errorBody().string();
-                        JSONObject errorJson = new JSONObject(errorBody);
-                        String errorMessage = errorJson.getString("error");
-
-                        Log.e("Delete Materi", "Server Error: " + errorMessage);
-                        Toast.makeText(context, "Gagal menghapus: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("Delete Materi", "Error Response: " + errorBody);
+                        Toast.makeText(context, "Gagal menghapus materi", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
-                    Log.e("Delete Materi", "Parsing Error", e);
-                    Toast.makeText(context, "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
+                    Log.e("Delete Materi", "Error parsing response", e);
+                    Toast.makeText(context, "Terjadi kesalahan sistem", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 progressDialog.dismiss();
-
-                // Logging error jaringan
                 Log.e("Delete Materi", "Network Error", t);
-                Toast.makeText(context, "Gagal terhubung: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Gagal terhubung ke server", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -3,6 +3,7 @@ package com.example.smk7.ApiDatabase;
 import com.example.smk7.Model.MateriModel;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -17,6 +18,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Query;
 
 public interface ApiServiceInterface {
@@ -39,6 +41,8 @@ public interface ApiServiceInterface {
 
     @GET("api_banktugasguru.php")
     Call<ApiResponse> getBankTugasData();
+
+
 
 
     @GET("api-get_materi.php")
@@ -123,14 +127,20 @@ public interface ApiServiceInterface {
     @Multipart
     @POST("api-update_nilai.php")
     Call<ApiResponse> uploadFileAndNilai(
-            @Part MultipartBody.Part file,
-            @Part("nilai") RequestBody nilai
+            @Part("id_pengumpulan") RequestBody idPengumpulan,  // Ganti nama parameter sesuai API
+            @Part("nilai") RequestBody nilai,
+            @Part MultipartBody.Part file
     );
+
     @POST("api-update_nilai.php")
     Call<ApiResponse> postNilai(
             @Query("file_tugas") String fileTugas,
             @Query("nilai") float nilai
     );
+
+    //@FormUrlEncoded
+    @POST("api-hapus_tugas.php")
+    Call<ApiResponse> hapusTugas(@Body Map<String, Integer> body);
 
 }
 
