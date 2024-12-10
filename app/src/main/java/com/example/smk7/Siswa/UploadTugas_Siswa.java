@@ -59,7 +59,7 @@ public class UploadTugas_Siswa extends Fragment {
         BackButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardSiswa) {
                 ViewPager2 viewPager = ((DashboardSiswa) getActivity()).viewPager2;
-                viewPager.setCurrentItem(0, false);
+                viewPager.setCurrentItem(6, false);
                 if (navigationHandler != null) {
                     navigationHandler.showBottomNav();
                 }
