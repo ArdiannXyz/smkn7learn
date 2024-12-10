@@ -266,74 +266,36 @@ public class UploadTugas_Siswa extends Fragment {
         startActivity(Intent.createChooser(intent, "Buka File"));
     }
 
-        private void submitFiles () {
-            uploadProgressBar.setVisibility(View.VISIBLE);
-            // Simulate file upload progress
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (int i = 0; i < selectedFiles.size(); i++) {
-                        try {
-                            Thread.sleep(1000); // Simulate upload delay
-                            final int progress = (int) (((i + 1) / (float) selectedFiles.size()) * 100);
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    uploadProgressBar.setProgress(progress);
-                                }
-                            });
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+    private void submitFiles () {
+        uploadProgressBar.setVisibility(View.VISIBLE);
+        // Simulate file upload progress
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < selectedFiles.size(); i++) {
+                    try {
+                        Thread.sleep(1000); // Simulate upload delay
+                        final int progress = (int) (((i + 1) / (float) selectedFiles.size()) * 100);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                uploadProgressBar.setProgress(progress);
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            uploadProgressBar.setVisibility(View.GONE);
-                        }
-                    });
                 }
-            }).start();
-        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Fungsi untuk mengambil ekstensi file dari URI
-
-
-
-
-
-
-
-
-
-
-
-
-
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        uploadProgressBar.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }).start();
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {

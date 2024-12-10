@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.smk7.R;
-import com.example.smk7.Siswa.Materi_Siswa;
 import com.example.smk7.Siswa.Model.MateriSiswaModel;
+import com.example.smk7.Siswa.Recycle_Materi_Siswa;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class MateriSiswaAdapter extends RecyclerView.Adapter<MateriSiswaAdapter.
             if (currentFragment != null && viewPager != null) {
                 Log.d("Fragment Check", "Current Fragment: " + currentFragment.getClass().getSimpleName());
                 // Pindah langsung ke halaman yang sesuai berdasarkan fragment aktif
-                if (currentFragment instanceof Materi_Siswa) {
+                if (currentFragment instanceof Recycle_Materi_Siswa) {
                     Log.d("FragmentA", "Pindah ke halaman 10...");
                     viewPager.setCurrentItem(10, false);  // false berarti tanpa animasi
                 } else {
