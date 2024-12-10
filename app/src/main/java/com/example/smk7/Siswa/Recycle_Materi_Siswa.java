@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -42,15 +43,20 @@ public class Recycle_Materi_Siswa extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_materi_siswa, container, false);
 
+        // Initializing RecyclerView
+        recyclerView = view.findViewById(R.id.recycleView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         BackButton = view.findViewById(R.id.back_Button);
         BackButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardSiswa) {
-                ((DashboardSiswa) getActivity()).viewPager2.setCurrentItem(3);
+                ((DashboardSiswa) getActivity()).viewPager2.setCurrentItem(8);
             }
         });
+
         fetchMateriData();
         return view;
     }
+
     private void fetchMateriData() {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
         Call<ApiResponse> call = apiService.getMateriData2();
