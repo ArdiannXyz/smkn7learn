@@ -2,6 +2,7 @@ package com.example.smk7;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,12 +21,14 @@ import com.android.volley.toolbox.Volley;
 import com.example.smk7.ApiDatabase.Db_Contract;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Siswa.DashboardSiswa;
-
 import org.json.JSONObject;
 import org.json.JSONException;
+import android.content.SharedPreferences;
 
 public class LoginActivity extends AppCompatActivity {
 
+    // Membuat PREF_NAME menjadi public static agar dapat diakses di kelas lain
+    public static final String PREF_NAME = "UserPreferences";  // Public static
     private EditText txnama, txpassword;
     private Button btn_login;
     private static final String TAG = "LoginActivity";
@@ -66,13 +69,20 @@ public class LoginActivity extends AppCompatActivity {
                                 String cleanedResponse = response.trim();
                                 if (cleanedResponse.startsWith("{")) {
                                     JSONObject jsonResponse = new JSONObject(cleanedResponse);
-                                    Log.d("json_response",jsonResponse.toString());
+                                    Log.d("json_response", jsonResponse.toString());
 
                                     if (jsonResponse.has("message") && jsonResponse.has("role")) {
                                         String message = jsonResponse.getString("message");
                                         String role = jsonResponse.getString("role");
 
                                         if (message.trim().equalsIgnoreCase("Selamat Datang")) {
+                                            // Menyimpan user_id ke SharedPreferences
+                                            int userId = jsonResponse.getInt("user_id");
+                                            SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putInt("user_id", userId);
+                                            editor.apply();
+
                                             Toast.makeText(getApplicationContext(), "Login Berhasil", Toast.LENGTH_SHORT).show();
 
                                             if (role.equalsIgnoreCase("guru")) {
@@ -123,6 +133,12 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Password Atau Email Salah", Toast.LENGTH_SHORT).show();
                 }
             }
-   });
-}
+        });
+    }
+
+    // Metode untuk mengambil user_id dari SharedPreferences
+    public static int getUserIdFromPreferences(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getInt("user_id", -1); // Default value -1 jika tidak ada user_id
+    }
 }

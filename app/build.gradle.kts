@@ -55,6 +55,8 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.github.kevinsawicki:http-request:6.0")
     implementation("com.google.android.material:material:1.6.0")
+    implementation("androidx.webkit:webkit:1.5.0")
+
 
 
 

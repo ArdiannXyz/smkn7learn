@@ -1,15 +1,13 @@
 package com.example.smk7.ApiDatabase;
 
-import com.example.smk7.Model.MateriModel;
+import com.example.smk7.Guru.Model.MateriModel;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface ApiServiceInterface {
@@ -21,14 +19,27 @@ public interface ApiServiceInterface {
     @GET("api_mapelguru.php")
     Call<ApiResponse> getMapelData();
 
+    @GET("api_mapelsiswa.php")
+    Call<ApiResponse> getMapelData2();
+
     @GET("api_materiguru.php")
     Call<ApiResponse> getMateriData();
+
+    @GET("api_materisiswa.php")
+    Call<ApiResponse> getMateriData2();
 
     @GET("api_tugasguru.php")
     Call<ApiResponse> getTugasData();
 
+    @GET("api_tugassiswa.php")
+    Call<ApiResponse> getTugasData2();
+
     @GET("api_banktugasguru.php")
     Call<ApiResponse> getBankTugasData();
+
+    @GET("api_siswa.php")
+    Call<ApiResponse> getSiswa();
+
 
 
 //    // API

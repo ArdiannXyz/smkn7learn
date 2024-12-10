@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
-import com.example.smk7.Adapter.KelasAdapter;
-import com.example.smk7.Model.KelasModel;
+import com.example.smk7.Guru.Adapter.KelasAdapter;
+import com.example.smk7.Guru.Model.KelasModel;
 import com.example.smk7.R;
 
 import java.util.List;

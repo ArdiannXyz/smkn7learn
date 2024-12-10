@@ -1,4 +1,4 @@
-package com.example.smk7.Model;
+package com.example.smk7.Guru.Model;
 
 public class ModelMapelSiswa {
     int img;

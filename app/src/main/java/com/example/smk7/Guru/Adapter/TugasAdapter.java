@@ -1,4 +1,4 @@
-package com.example.smk7.Adapter;
+package com.example.smk7.Guru.Adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.smk7.Model.TugasModel;
+import com.example.smk7.Guru.Model.TugasModel;
 import com.example.smk7.R;
 
 import java.util.ArrayList;
@@ -48,9 +48,6 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
 
         // Set teks untuk item view (nama tugas atau deskripsi tugas)
         holder.tugas.setText(tugas.getDeskripsi());  // Set text menggunakan getDeskripsi()
-
-        // Handle klik item
-
         holder.itemView.setOnClickListener(v -> {
             // Panggil listener untuk meneruskan nama tugas yang diklik
             if (onItemClickListener != null) {

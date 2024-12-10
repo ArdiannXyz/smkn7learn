@@ -3,7 +3,6 @@ package com.example.smk7.Recyclemateriguru;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +22,8 @@ import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Adapter.MapelAdapter;
-import com.example.smk7.Model.MapelModel;
+import com.example.smk7.Guru.Adapter.MapelAdapter;
+import com.example.smk7.Guru.Model.MapelModel;
 import com.example.smk7.R;
 
 import java.util.ArrayList;
@@ -63,9 +62,6 @@ public class UploadMateriMapel_Guru extends Fragment {
 
             }
         });
-
-
-
 
         // Set up RecyclerView
         recyclerView = view.findViewById(R.id.recycleView);

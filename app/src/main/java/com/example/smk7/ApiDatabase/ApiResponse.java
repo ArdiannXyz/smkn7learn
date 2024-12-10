@@ -1,10 +1,13 @@
 package com.example.smk7.ApiDatabase;
 
-import com.example.smk7.Model.BankTugasModel;
-import com.example.smk7.Model.KelasModel;
-import com.example.smk7.Model.MapelModel;
-import com.example.smk7.Model.MateriModel;
-import com.example.smk7.Model.TugasModel;
+import com.example.smk7.Guru.Model.BankTugasModel;
+import com.example.smk7.Guru.Model.KelasModel;
+import com.example.smk7.Guru.Model.MapelModel;
+import com.example.smk7.Guru.Model.MateriModel;
+import com.example.smk7.Guru.Model.TugasModel;
+import com.example.smk7.Siswa.Model.MapelSiswaModel;
+import com.example.smk7.Siswa.Model.MateriSiswaModel;
+import com.example.smk7.Siswa.Model.TugasSiswaModel;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -25,7 +28,7 @@ public class ApiResponse {
     @SerializedName("tugas_model")
     private List<TugasModel> tugasModel;
 
-    @SerializedName("kelasModel")
+    @SerializedName("kelas_model")
     private List<KelasModel> kelasModel;
 
     @SerializedName("mapel_model")
@@ -35,7 +38,19 @@ public class ApiResponse {
     private List<MateriModel> materiModel;
 
     @SerializedName("bank_tugas_model")
-    private List<BankTugasModel> bankTugasModel;  // Perbaikan: Tambahkan variabel untuk BankTugasModel
+    private List<BankTugasModel> bankTugasModel;
+
+    // Menambahkan MapelSiswaModel
+    @SerializedName("mapel_siswa_model")
+    private List<MapelSiswaModel> mapelSiswaModel;
+
+    // Menambahkan TugasSiswaModel
+    @SerializedName("tugas_siswa_model")
+    private List<TugasSiswaModel> tugasSiswaModel;
+
+    // Menambahkan MateriSiswaModel
+    @SerializedName("materi_siswa_model")
+    private List<MateriSiswaModel> materiSiswaModel;
 
     // Getter dan Setter untuk status
     public String getStatus() {
@@ -109,6 +124,33 @@ public class ApiResponse {
         this.bankTugasModel = bankTugasModel;
     }
 
+    // Getter dan Setter untuk mapelSiswaModel
+    public List<MapelSiswaModel> getMapelSiswaModel() {
+        return mapelSiswaModel;
+    }
+
+    public void setMapelSiswaModel(List<MapelSiswaModel> mapelSiswaModel) {
+        this.mapelSiswaModel = mapelSiswaModel;
+    }
+
+    // Getter dan Setter untuk tugasSiswaModel
+    public List<TugasSiswaModel> getTugasSiswaModel() {
+        return tugasSiswaModel;
+    }
+
+    public void setTugasSiswaModel(List<TugasSiswaModel> tugasSiswaModel) {
+        this.tugasSiswaModel = tugasSiswaModel;
+    }
+
+    // Getter dan Setter untuk materiSiswaModel
+    public List<MateriSiswaModel> getMateriSiswaModel() {
+        return materiSiswaModel;
+    }
+
+    public void setMateriSiswaModel(List<MateriSiswaModel> materiSiswaModel) {
+        this.materiSiswaModel = materiSiswaModel;
+    }
+
     // Method untuk memeriksa apakah data kosong
     public boolean isKelasModelEmpty() {
         return kelasModel == null || kelasModel.isEmpty();
@@ -128,5 +170,17 @@ public class ApiResponse {
 
     public boolean isBankTugasModelEmpty() {
         return bankTugasModel == null || bankTugasModel.isEmpty();
+    }
+
+    public boolean isMapelSiswaModelEmpty() {
+        return mapelSiswaModel == null || mapelSiswaModel.isEmpty();
+    }
+
+    public boolean isTugasSiswaModelEmpty() {
+        return tugasSiswaModel == null || tugasSiswaModel.isEmpty();
+    }
+
+    public boolean isMateriSiswaModelEmpty() {
+        return materiSiswaModel == null || materiSiswaModel.isEmpty();
     }
 }

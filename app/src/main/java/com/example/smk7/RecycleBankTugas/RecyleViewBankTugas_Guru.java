@@ -1,9 +1,6 @@
 package com.example.smk7.RecycleBankTugas;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.smk7.Adapter.BankTugasAdapter;
+import com.example.smk7.Guru.Adapter.BankTugasAdapter;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
-import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Model.BankTugasModel;
+import com.example.smk7.Guru.Model.BankTugasModel;
 import com.example.smk7.R;
 
 import java.io.IOException;
@@ -35,10 +31,8 @@ import retrofit2.Response;
 public class RecyleViewBankTugas_Guru extends Fragment {
 
     private RecyclerView recyclerView;
-    private BankTugasAdapter bankTugasAdapter;
     private List<BankTugasModel> bankTugasList;
     private ImageView backButton;
-    private BottomNavigationHandler navigationHandler;
 
     @Nullable
     @Override
@@ -49,19 +43,14 @@ public class RecyleViewBankTugas_Guru extends Fragment {
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
-
-                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
-                viewPager.setCurrentItem(10, false);  // false berarti tanpa animasi untuk perpindahan langsung
-
-                // Aktifkan kembali swipe setelah perpindahan selesai
+                viewPager.setCurrentItem(10, false);
             }
         });
-
-
 
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Memanggil method untuk mengambil data dari API
         fetchBankTugasData();
 
         return view;
@@ -69,23 +58,21 @@ public class RecyleViewBankTugas_Guru extends Fragment {
 
     private void fetchBankTugasData() {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
-        Call<ApiResponse> call = apiService.getBankTugasData();  // Pastikan ini sesuai dengan endpoint Anda
+        Call<ApiResponse> call = apiService.getBankTugasData();  // Sesuaikan dengan endpoint API Anda
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ApiResponse apiResponse = response.body();
-                    Log.d("API Response", apiResponse.toString());
-
                     if ("success".equals(apiResponse.getStatus())) {
-                        bankTugasList = apiResponse.getBankTugasModel();
+                        bankTugasList = apiResponse.getBankTugasModel();  // Pastikan ini sesuai dengan model API Anda
                         if (bankTugasList != null && !bankTugasList.isEmpty()) {
                             setupRecyclerView(bankTugasList);
                         } else {
-                            Log.e("API Response", "bankTugasList is null or empty");
+                            // Handle empty list
                         }
                     } else {
-                        Log.e("API Response", "API error: " + apiResponse.getMessage());
+                        // Handle API error
                     }
                 } else {
                     handleErrorResponse(response);
@@ -94,7 +81,7 @@ public class RecyleViewBankTugas_Guru extends Fragment {
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Log.e("API Error", "Request failed: " + t.getMessage(), t);
+                // Handle failure
             }
         });
     }
@@ -106,56 +93,17 @@ public class RecyleViewBankTugas_Guru extends Fragment {
                 errorBody = response.errorBody().string();
             }
         } catch (IOException e) {
-            Log.e("API Error", "Error reading error body: " + e.getMessage());
+            e.printStackTrace();
         }
-        Log.e("API Error", "Response failed with code: " + response.code() +
-                ", message: " + response.message() +
-                ", errorBody: " + errorBody);
+        // Log error response
     }
 
-    private void setupRecyclerView(List<BankTugasModel> banktugasList) {
-        // Pastikan viewPager diambil dari aktivitas utama atau instance fragment
+    private void setupRecyclerView(List<BankTugasModel> bankTugasList) {
+        // Pastikan ViewPager2 diambil dari aktivitas utama atau fragment yang sesuai
         ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
-        // Buat adapter dengan meneruskan viewPager
-        BankTugasAdapter bankTugasAdapter = new BankTugasAdapter(banktugasList, viewPager);
+        // Buat adapter dan set pada RecyclerView
+        BankTugasAdapter bankTugasAdapter = new BankTugasAdapter(bankTugasList, viewPager);
         recyclerView.setAdapter(bankTugasAdapter);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            navigationHandler = (BottomNavigationHandler) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement BottomNavigationHandler");
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (navigationHandler != null) {
-            navigationHandler.hideBottomNav();
-            if (getActivity() != null) {
-                // Menonaktifkan swipe di Activity
-                ((DashboardGuru) getActivity()).setSwipeEnabled(false);
-            }
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (navigationHandler != null) {
-            navigationHandler.hideBottomNav();
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        navigationHandler = null;
     }
 }

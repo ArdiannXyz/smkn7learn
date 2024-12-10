@@ -9,33 +9,39 @@ public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
     public ViewPagerAdaptersiswa(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
-
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        if (position == 0) {
-            return new DashboardSiswaFragment();
-        } else if (position == 1) {
-            return new Mapel_Siswa();
-        } else if (position == 2) {
-            return new Profil_Siswa();
-        } else if (position == 3) {
-            return new Materi_Siswa();
-        } else if (position == 4) {
-            return new Tugas_Siswa();
-        } else if (position == 5) {
-            return new ViewProfil_Siswa();
-        } else if (position == 6) {
-            return new EditProfil_Siswa();
-        } else if (position == 7) {
-            return new UploadTugas_Siswa();
-        } else {
-            return new DashboardSiswaFragment();
+        switch (position) {
+            case 0:
+                return new DashboardSiswaFragment();
+            case 1:
+                return new Mapel_Siswa();
+            case 2:
+                return new Profil_Siswa();
+            case 3:
+                return new RecycleViewMapelSiswa();
+            case 4:
+                return new ViewProfil_Siswa();
+            case 5:
+                return new EditProfil_Siswa();
+            case 6:
+                return new Tugas_Siswa();
+            case 7:
+                return new Materi_Siswa();
+            case 8:
+                return new DetailMateri_Siswa();
+            case 9:
+                return new UploadTugas_Siswa();
+            case 10:
+                return new DetailMateri_Siswa();
+            default:
+                return new DashboardSiswaFragment();
         }
     }
 
     @Override
     public int getItemCount() {
-        return 8;
+        return 11;
     }
 }

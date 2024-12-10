@@ -1,10 +1,8 @@
 package com.example.smk7.RecycleBankTugas;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.smk7.Adapter.KelasAdapter;
+import com.example.smk7.Guru.Adapter.KelasAdapter;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Model.KelasModel;
+import com.example.smk7.Guru.Model.KelasModel;
 import com.example.smk7.R;
 
 import java.util.List;

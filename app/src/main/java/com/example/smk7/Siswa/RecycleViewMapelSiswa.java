@@ -22,6 +22,9 @@ import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.BottomNavigationHandler;
+import com.example.smk7.Guru.Adapter.MapelAdapter;
+import com.example.smk7.Guru.DashboardGuru;
+import com.example.smk7.Recyclemateriguru.UploadMateriMapel_Guru;
 import com.example.smk7.Siswa.Adapter.MapelSiswaAdapter;
 import com.example.smk7.R;
 import com.example.smk7.Siswa.Model.MapelSiswaModel;
@@ -33,33 +36,34 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Mapel_Siswa extends Fragment {
+public class RecycleViewMapelSiswa extends Fragment {
+
+    private ImageView backButton;
     private RecyclerView recyclerView;
-    private MapelSiswaAdapter mapelAdapter;
-    private List<MapelSiswaModel> mapelList = new ArrayList<>();
     private ViewPager2 viewPager;
     private BottomNavigationHandler navigationHandler;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mapel_siswa, container, false);
+        View view = inflater.inflate(R.layout.fragment_recycle_view_mapel_siswa, container, false);
 
-        // Mendapatkan ViewPager2 dari activity
-        Activity activity = getActivity();
-        if (activity != null) {
-            viewPager = activity.findViewById(R.id.Viewpagersiswa);
-        }
-        // Set up RecyclerView
+        backButton = view.findViewById(R.id.back_Button);
+        backButton.setOnClickListener(v -> {
+            if (getActivity() instanceof DashboardSiswa) {
+                ViewPager2 viewPager = ((DashboardSiswa) getActivity()).viewPager2;
+                viewPager.setCurrentItem(0, false);  // Navigasi kembali ke item pertama
+            }
+        });
+
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Memanggil fetch data
+        // Memanggil data dari API
         fetchMapelData2();
 
         return view;
     }
-
     private void fetchMapelData2() {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
         Call<ApiResponse> call = apiService.getMapelData2();
@@ -71,14 +75,26 @@ public class Mapel_Siswa extends Fragment {
                     ApiResponse apiResponse = response.body();
                     Log.d("API Response", apiResponse.toString());
 
-                    // Pastikan apiResponse.getMapelSiswaModel() tidak null
+                    // Mengecek status dari API response
                     if ("success".equals(apiResponse.getStatus())) {
-                        List<MapelSiswaModel> mapelSiswaList = apiResponse.getMapelSiswaModel();
+                        List<MapelSiswaModel> mapelList = apiResponse.getMapelSiswaModel();
 
-                        if (mapelSiswaList != null && !mapelSiswaList.isEmpty()) {
-                            // Set adapter
-                            MapelSiswaAdapter mapelSiswaAdapter = new MapelSiswaAdapter(mapelSiswaList, viewPager, getParentFragment());
-                            recyclerView.setAdapter(mapelSiswaAdapter);
+                        if (mapelList != null && !mapelList.isEmpty()) {
+                            if (isAdded() && getActivity() != null) {
+                                // Mendapatkan ViewPager2 dari activity
+                                viewPager = getActivity().findViewById(R.id.Viewpagersiswa);
+                                if (viewPager == null) {
+                                    Log.e("Error", "ViewPager2 tidak ditemukan!");
+                                }
+                                Fragment currentFragment = getParentFragment() != null ? getParentFragment() : RecycleViewMapelSiswa.this;
+
+                                // Menyesuaikan adapter dengan fragment yang aktif
+                                MapelSiswaAdapter mapelAdapter = new MapelSiswaAdapter(mapelList, viewPager, currentFragment);
+                                recyclerView.setAdapter(mapelAdapter);
+                                mapelAdapter.notifyDataSetChanged();  // Update UI
+                            } else {
+                                Log.e("Fragment Error", "Fragment not attached to activity.");
+                            }
                         } else {
                             Log.e("API Response", "mapelSiswaModel is null or empty");
                             Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
@@ -97,6 +113,8 @@ public class Mapel_Siswa extends Fragment {
             }
         });
     }
+
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

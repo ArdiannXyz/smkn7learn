@@ -1,7 +1,6 @@
-package com.example.smk7.Adapter;
+package com.example.smk7.Guru.Adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.smk7.ApiDatabase.Db_Contract;
-import com.example.smk7.Model.MateriModel;
+import com.example.smk7.Guru.Model.MateriModel;
 import com.example.smk7.R;
 import com.example.smk7.Recyclemateriguru.EditMateri_Guru;
 
