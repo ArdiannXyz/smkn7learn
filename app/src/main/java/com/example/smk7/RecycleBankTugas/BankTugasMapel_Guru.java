@@ -1,6 +1,8 @@
 package com.example.smk7.RecycleBankTugas;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +18,12 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
+import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Adapter.MapelAdapter;
 import com.example.smk7.Model.MapelModel;
 import com.example.smk7.R;
-import com.example.smk7.RecycleTugasGuru.UploadTugasMapelGuru;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -36,6 +37,7 @@ public class BankTugasMapel_Guru extends Fragment {
     private List<MapelModel> mapelList = new ArrayList<>();
     private ImageView backButton;
     private ViewPager2 viewPager;
+    private BottomNavigationHandler navigationHandler;
 
     @Nullable
     @Override
@@ -45,7 +47,15 @@ public class BankTugasMapel_Guru extends Fragment {
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
-                ((DashboardGuru) getActivity()).viewPager2.setCurrentItem(0);
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+
+                // Nonaktifkan input swipe sementara
+
+                // Pindahkan langsung ke halaman DashboardGuruFragment (halaman 0)
+                viewPager.setCurrentItem(0, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+                // Aktifkan kembali swipe setelah perpindahan selesai
+                // 300 ms cukup untuk memastikan transisi selesai
             }
         });
 
@@ -80,9 +90,10 @@ public class BankTugasMapel_Guru extends Fragment {
                             // Menyediakan fragment saat ini untuk adapter
                             Fragment currentFragment = getParentFragment() != null ? getParentFragment() : BankTugasMapel_Guru.this;
 
-                            mapelAdapter = new MapelAdapter(mapelList, viewPager); // Hapus currentFragment
+                            // Menyesuaikan adapter dengan fragment yang aktif
+                            mapelAdapter = new MapelAdapter(mapelList, viewPager, currentFragment);
                             recyclerView.setAdapter(mapelAdapter);
-                            mapelAdapter.notifyDataSetChanged();
+                            mapelAdapter.notifyDataSetChanged();  // Update UI
                         } else {
                             Log.e("API Response", "mapelModel is null or empty");
                             Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
@@ -100,5 +111,43 @@ public class BankTugasMapel_Guru extends Fragment {
                 Log.e("API Error", "Request failed: " + t.getMessage(), t);
             }
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            navigationHandler = (BottomNavigationHandler) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement BottomNavigationHandler");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+            if (getActivity() != null) {
+                // Menonaktifkan swipe di Activity
+                ((DashboardGuru) getActivity()).setSwipeEnabled(false);
+            }
+
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (navigationHandler != null) {
+            navigationHandler.showBottomNav();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        navigationHandler = null;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.smk7.Recyclemateriguru;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,17 +12,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.smk7.ApiDatabase.ApiHelper;
 import com.example.smk7.ApiDatabase.Db_Contract;
+import com.example.smk7.BottomNavigationHandler;
+import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class UploadMateri_Guru extends AppCompatActivity {
+public class UploadMateri_Guru extends DashboardGuru {
+
 
     private static final String TAG = "UploadMateri_Guru";
 
@@ -31,6 +36,7 @@ public class UploadMateri_Guru extends AppCompatActivity {
     private ImageView backButton;
     private String idKelas;
     private String namaKelas;
+    private BottomNavigationHandler navigationHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,12 @@ public class UploadMateri_Guru extends AppCompatActivity {
 
         // Setup listener untuk tombol Simpan
         btnSimpan.setOnClickListener(v -> uploadMateri());
+
+        if (this instanceof DashboardGuru) {
+            DashboardGuru dashboardActivity = (DashboardGuru) this;
+            dashboardActivity.setSwipeEnabled(false);
+        }
+
     }
 
     private void uploadMateri() {
@@ -144,4 +156,24 @@ public class UploadMateri_Guru extends AppCompatActivity {
             }
         }).start();
     }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+
 }

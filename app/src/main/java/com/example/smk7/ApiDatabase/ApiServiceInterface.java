@@ -27,6 +27,9 @@ public interface ApiServiceInterface {
     @GET("api_tugasguru.php")
     Call<ApiResponse> getTugasData();
 
+    @GET("api_banktugasguru.php")
+    Call<ApiResponse> getBankTugasData();
+
 
 //    // API
 //    @POST("api-crud.php?action=createMateri")

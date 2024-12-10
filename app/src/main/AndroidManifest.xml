@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
     <application
 
@@ -48,17 +47,19 @@
             android:exported="true" />
         <activity
             android:name=".Recyclemateriguru.UploadMateri_Guru"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Recyclemateriguru.UploadMateriKelas_Guru"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Recyclemateriguru.RecyleViewMateri_Guru"
-            android:exported="false" />
+            android:exported="true" />
         <activity
-            android:name=".Recyclemateriguru.EditMateri_Guru"
-            android:exported="false" />
-
+            android:name=".RecycleTugasGuru.RecycleViewTugasGuru"
+            android:exported="true" />
+        <activity
+            android:name=".RecycleTugasGuru.UploadTugas_guru"
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"

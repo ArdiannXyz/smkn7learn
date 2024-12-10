@@ -80,9 +80,10 @@ public class Kelas_guru extends Fragment {
     }
 
     private void setupRecyclerView(List<KelasModel> kelasList) {
+        // Pastikan adapter hanya dipasang jika kelasList tidak null atau kosong
         if (kelasList != null && !kelasList.isEmpty()) {
-            // Berikan 3 argumen yang sesuai dengan konstruktor KelasAdapter
-            KelasAdapter adapter = new KelasAdapter(kelasList, null, false);
+            // Pass null for viewPager and false for isViewPagerRequired in this fragment
+            KelasAdapter adapter = new KelasAdapter(kelasList, null, false, null);
             recyclerView.setAdapter(adapter);
         }
     }

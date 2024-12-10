@@ -357,7 +357,7 @@ public class UploadTugas_Siswa extends Fragment {
     public void onPause() {
         super.onPause();
         if (navigationHandler != null) {
-            navigationHandler.showBottomNav();
+            navigationHandler.hideBottomNav();
         }
     }
 

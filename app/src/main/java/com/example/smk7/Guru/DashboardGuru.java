@@ -2,7 +2,6 @@ package com.example.smk7.Guru;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -21,6 +20,7 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
     public ViewPager2 viewPager2;
     ViewPagerAdapterGuru viewPagerAdapterguru;
     BottomNavigationView bottomNavigationView;
+    private BottomNavigationHandler navigationHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,6 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
         viewPagerAdapterguru = new ViewPagerAdapterGuru(this);
         viewPager2.setAdapter(viewPagerAdapterguru);
         viewPager2.setUserInputEnabled(true);
-
 
 
 
@@ -70,6 +69,13 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
         });
     }
 
+
+    public void setSwipeEnabled(boolean enabled) {
+        if (viewPager2 != null) {
+            viewPager2.setUserInputEnabled(enabled);
+        }
+    }
+
     @Override
     public void hideBottomNav() {
         if (bottomNavigationView != null) {
@@ -83,14 +89,32 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
             bottomNavigationView.setVisibility(View.VISIBLE);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // Cek jika Activity kembali dari fragment, tampilkan Bottom Navigation
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setVisibility(View.VISIBLE);  // Menampilkan kembali Bottom Navigation
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (navigationHandler != null) {
+            // Tampilkan kembali Bottom Navigation saat fragment berhenti
+            navigationHandler.showBottomNav();  // Memastikan Bottom Navigation muncul tanpa delay
+        }
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
 
-        // Nonaktifkan swipe untuk ViewPager2
-        ViewPager2 viewPager2 = findViewById(R.id.Viewpagerguru);
-        if (viewPager2 != null) {
-            viewPager2.setUserInputEnabled(false);
-        }
+        setSwipeEnabled(false);
+
     }
 }
