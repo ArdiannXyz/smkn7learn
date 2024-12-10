@@ -2,7 +2,6 @@ package com.example.smk7.RecycleTugasGuru;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +19,10 @@ import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Adapter.MapelAdapter;
-import com.example.smk7.Model.MapelModel;
+import com.example.smk7.Guru.Adapter.MapelAdapter;
+import com.example.smk7.Guru.Model.MapelModel;
 import com.example.smk7.R;
-import com.example.smk7.Recyclemateriguru.UploadMateriMapel_Guru;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;

@@ -1,7 +1,5 @@
-package com.example.smk7.Adapter;
+package com.example.smk7.Guru.Adapter;
 
-import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +12,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.smk7.Model.KelasModel;
+import com.example.smk7.Guru.Model.KelasModel;
 import com.example.smk7.R;
 import com.example.smk7.RecycleBankTugas.BankTugasKelas_Guru;
 import com.example.smk7.RecycleTugasGuru.UploadTugasKelas_Guru;
-import com.example.smk7.RecycleTugasGuru.UploadTugas_guru;
 import com.example.smk7.Recyclemateriguru.UploadMateriKelas_Guru;
 
 import java.util.List;

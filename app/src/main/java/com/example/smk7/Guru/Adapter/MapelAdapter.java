@@ -1,6 +1,5 @@
-package com.example.smk7.Adapter;
+package com.example.smk7.Guru.Adapter;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.smk7.Model.MapelModel;
+import com.example.smk7.Guru.Model.MapelModel;
 import com.example.smk7.R;
 import com.example.smk7.RecycleBankTugas.BankTugasMapel_Guru;
 import com.example.smk7.RecycleTugasGuru.UploadTugasMapelGuru;
@@ -42,17 +41,10 @@ public class MapelAdapter extends RecyclerView.Adapter<MapelAdapter.MapelViewHol
     public void onBindViewHolder(@NonNull MapelViewHolder holder, int position) {
         MapelModel mapel = mapelList.get(position);
         holder.nama_mapel.setText(mapel.getNama_mapel());
-
         holder.itemView.setOnClickListener(v -> {
-
-
-
             // Pastikan currentFragment dan viewPager tidak null
             if (currentFragment != null && viewPager != null) {
                 Log.d("Fragment Check", "Current Fragment: " + currentFragment.getClass().getSimpleName());
-
-
-
                 // Pindahkan langsung ke halaman yang sesuai berdasarkan fragment aktif
                 if (currentFragment instanceof UploadMateriMapel_Guru) {
                     Log.d("FragmentA", "Pindah ke halaman 8...");
