@@ -1,65 +1,78 @@
 package com.example.smk7.Siswa;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BehindMateri_Siswa#newInstance} factory method to
- * create an instance of this fragment.
- */
+//untuk menampilkan mapel sebelum masuk ke recyclematerisiswa
+
 public class BehindMateri_Siswa extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public BehindMateri_Siswa() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DataKelas.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BehindMateri_Siswa newInstance(String param1, String param2) {
-        BehindMateri_Siswa fragment = new BehindMateri_Siswa();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private ImageView BackButton;
+    private BottomNavigationHandler navigationHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_behind_materi_siswa, container, false);
+        View view = inflater.inflate(R.layout.fragment_behind_materi_siswa, container, false);
+
+
+        BackButton = view.findViewById(R.id.back_button);
+
+        BackButton.setOnClickListener(v -> {
+            if (getActivity() instanceof DashboardSiswa) {
+                ViewPager2 viewPager = ((DashboardSiswa) getActivity()).viewPager2;
+                viewPager.setCurrentItem(0, false);
+
+            }
+        });
+
+        return view;
+
+
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            navigationHandler = (BottomNavigationHandler) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement BottomNavigationHandler");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (navigationHandler != null) {
+            navigationHandler.hideBottomNav();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        navigationHandler = null;
     }
 }
