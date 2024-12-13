@@ -2,7 +2,7 @@ package com.example.smk7.ApiDatabase;
 
 public class Db_Contract {
 
-    public static String ip = "192.168.172.109";
+    public static String ip = "192.168.134.109";
     public static final String BASE_URL = "http://" + ip + "/WebNewbieTeam/";
     public static final String urlLogin = BASE_URL + "api-login.php";
     public static final String urlLupaPassword = BASE_URL + "api-check_email.php";

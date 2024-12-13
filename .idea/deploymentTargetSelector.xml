@@ -15,10 +15,10 @@
       </SelectionState>
       <SelectionState runConfigName="DashboardGuru">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-12-10T07:40:53.072527100Z">
+        <DropdownSelection timestamp="2024-12-11T22:33:28.853425400Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\kapte\.android\avd\Pixel_3_API_30.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\kapte\.android\avd\Pixel_3a_XL_API_30.avd" />
             </handle>
           </Target>
         </DropdownSelection>

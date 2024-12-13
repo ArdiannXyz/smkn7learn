@@ -94,6 +94,11 @@ public class EditTugas_Guru extends AppCompatActivity {
     private void receiveIntentData() {
         Intent intent = getIntent();
         if (intent != null) {
+            // Tambahkan log untuk melihat nilai yang diterima
+            Log.d(TAG, "ID Tugas dari Intent: " + intent.getIntExtra("id_tugas", -1));
+            Log.d(TAG, "ID Kelas dari Intent: " + intent.getIntExtra("id_kelas", -1));
+            Log.d(TAG, "Nama Kelas dari Intent: " + intent.getStringExtra("nama_kelas"));
+
             idTugas = String.valueOf(intent.getIntExtra("id_tugas", -1));
             idKelas = String.valueOf(intent.getIntExtra("id_kelas", -1));
             namaKelas = intent.getStringExtra("nama_kelas");
@@ -155,8 +160,11 @@ public class EditTugas_Guru extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
+        // Tambahkan log untuk melihat ID yang dikirim ke API
+        Log.d(TAG, "Mengirim request dengan ID Tugas: " + idTugas);
+
         ApiServiceInterface apiService = ApiClient.getApiService();
-        Call<ResponseBody> call = apiService.getMateriById(Integer.parseInt(idTugas));
+        Call<ResponseBody> call = apiService.getTugasById(Integer.parseInt(idTugas));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -168,41 +176,35 @@ public class EditTugas_Guru extends AppCompatActivity {
                         String responseString = response.body().string();
                         Log.d(TAG, "Full Response: " + responseString);
 
+                        // Tambahkan logging URL request
+                        Log.d(TAG, "Request URL: " + call.request().url());
+
                         JSONObject jsonResponse = new JSONObject(responseString);
 
                         if (jsonResponse.optBoolean("success", false)) {
                             JSONObject tugasData = jsonResponse.getJSONObject("data");
 
                             String judulTugas = tugasData.optString("judul_tugas", "");
-                            String keterangan = tugasData.optString("keterangan", "");
+                            String deskripsi = tugasData.optString("deskripsi", "");  // Gunakan deskripsi, bukan keterangan
                             String deadline = tugasData.optString("deadline", "");
 
                             edtJudulTugas.setText(judulTugas);
-                            edtKomentar.setText(keterangan);
+                            edtKomentar.setText(deskripsi);  // Tetap menggunakan edtKomentar untuk UI
                             edtTanggal.setText(deadline);
                         } else {
-                            Toast.makeText(
-                                    EditTugas_Guru.this,
-                                    "Gagal memuat data: " + jsonResponse.optString("message", "Terjadi kesalahan"),
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            String errorMessage = jsonResponse.optString("message", "Terjadi kesalahan");
+                            Log.e(TAG, "API Error: " + errorMessage);
+                            Toast.makeText(EditTugas_Guru.this, "Gagal memuat data: " + errorMessage, Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     } else {
-                        Toast.makeText(
-                                EditTugas_Guru.this,
-                                "Gagal memuat data: " + response.code(),
-                                Toast.LENGTH_SHORT
-                        ).show();
+                        Log.e(TAG, "Response tidak sukses: " + response.code());
+                        Toast.makeText(EditTugas_Guru.this, "Gagal memuat data: " + response.code(), Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error parsing response", e);
-                    Toast.makeText(
-                            EditTugas_Guru.this,
-                            "Terjadi kesalahan: " + e.getMessage(),
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    Toast.makeText(EditTugas_Guru.this, "Terjadi kesalahan: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -211,11 +213,7 @@ public class EditTugas_Guru extends AppCompatActivity {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 progressDialog.dismiss();
                 Log.e(TAG, "Network error", t);
-                Toast.makeText(
-                        EditTugas_Guru.this,
-                        "Gagal terhubung: " + t.getMessage(),
-                        Toast.LENGTH_SHORT
-                ).show();
+                Toast.makeText(EditTugas_Guru.this, "Gagal terhubung: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 finish();
             }
         });

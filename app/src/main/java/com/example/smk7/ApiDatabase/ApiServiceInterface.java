@@ -22,11 +22,8 @@ import retrofit2.http.PartMap;
 import retrofit2.http.Query;
 
 public interface ApiServiceInterface {
-    // Metode untuk mengambil materi berdasarkan ID kelas
-    @GET("api_get_materi_by_id.php")
-    Call<ResponseBody> getMateriById(@Query("id_materi") int idMateri);
 
-    // Endpoint untuk mendapatkan data kelas
+    // API untuk Recyleview
     @GET("api_kelas_guru.php")
     Call<ApiResponse> getKelasData();
 
@@ -43,10 +40,9 @@ public interface ApiServiceInterface {
     Call<ApiResponse> getBankTugasData();
 
 
-
-
-    @GET("api-get_materi.php")
-    Call<List<MateriModel>> getMateri();
+    //API untuk Materi Guru
+    @GET("api-get_materi_by_id.php")
+    Call<ResponseBody> getMateriById(@Query("id_tugas") int idMateri);
 
     @FormUrlEncoded
     @POST("api-tambah_materi.php")
@@ -80,21 +76,14 @@ public interface ApiServiceInterface {
 //            @Field("log_info") String logInfo // Tambahan untuk debugging
     );
 
-    @FormUrlEncoded
-    @POST("api-kelas_guru.php") // Ganti dengan endpoint yang sesuai
-    Call<ResponseBody> tambahKelas(
-            @Field("id_kelas") String idKelas,
-            @Field("nama_kelas") String namaKelas
-    );
 
-
-
-    //api untuk tugas
-    @GET("api-get_materi_by_id.php")
+    //API untuk Tugas Guru
+    @GET("api-get_tugas_by_id.php")
     Call<ResponseBody> getTugasById(@Query("id_tugas") int idTugas);
 
+    //tanpa file
     @FormUrlEncoded
-    @POST("api-update_materi.php")
+    @POST("api-updateTugas.php")
     Call<ResponseBody> updateTugas(
             @Field("id_tugas") int idTugas,
             @Field("id_guru") int idGuru,
@@ -104,26 +93,25 @@ public interface ApiServiceInterface {
             @Field("deadline") String deadline
     );
 
-    // Untuk upload dengan file
+    //dengan file
     @Multipart
-    @POST("api-update_materi.php")
+    @POST("api-updateTugas.php")
     Call<ResponseBody> updateTugasWithFile(
             @Part("id_tugas") RequestBody idTugas,
             @Part("id_guru") RequestBody idGuru,
             @Part("judul_tugas") RequestBody judulTugas,
-            @Part("keterangan") RequestBody keterangan,
+            @Part("deskripsi") RequestBody deskripsi,  // Gunakan deskripsi
             @Part("id_kelas") RequestBody idKelas,
             @Part("deadline") RequestBody deadline,
             @Part MultipartBody.Part file
     );
 
-//    @FormUrlEncoded
-//    @POST("api-update_nilai.php")
-//    Call<ApiResponse> postNilai(
-//            @Field("lampiran") String lampiran,
-//            @Field("nilai") float nilai
-//    );
+    //@FormUrlEncoded
+    @POST("api-hapus_tugas.php")
+    Call<ApiResponse> hapusTugas(@Body Map<String, Integer> body);
 
+
+    //CRUD Bank Tugas Guru Buat Update Nilai
     @Multipart
     @POST("api-update_nilai.php")
     Call<ApiResponse> uploadFileAndNilai(
@@ -132,23 +120,56 @@ public interface ApiServiceInterface {
             @Part MultipartBody.Part file
     );
 
-    @POST("api-update_nilai.php")
-    Call<ApiResponse> postNilai(
-            @Query("file_tugas") String fileTugas,
-            @Query("nilai") float nilai
-    );
 
-    //@FormUrlEncoded
-    @POST("api-hapus_tugas.php")
-    Call<ApiResponse> hapusTugas(@Body Map<String, Integer> body);
+//    @FormUrlEncoded
+//    @POST("update_tugas.php")
+//    Call<ResponseBody> updateTugas(
+//            @Field("id_tugas") int idTugas,
+//            @Field("id_guru") int idGuru,
+//            @Field("judul_tugas") String judulTugas,
+//            @Field("deskripsi") String deskripsi,    // Gunakan deskripsi
+//            @Field("id_kelas") int idKelas,
+//            @Field("deadline") String deadline
+//    );
+//
+//
+//    @Multipart
+//    @POST("api-update_materi.php")
+//    Call<ResponseBody> updateTugasWithFile(
+//            @Part("id_tugas") RequestBody idTugas,
+//            @Part("id_guru") RequestBody idGuru,
+//            @Part("judul_tugas") RequestBody judulTugas,
+//            @Part("keterangan") RequestBody keterangan,
+//            @Part("id_kelas") RequestBody idKelas,
+//            @Part("deadline") RequestBody deadline,
+//            @Part MultipartBody.Part file
+//    );
+//
+//    @FormUrlEncoded
+//    @POST("api-update_nilai.php")
+//    Call<ApiResponse> postNilai(
+//            @Field("lampiran") String lampiran,
+//            @Field("nilai") float nilai
+//    );
+
+
+
+//    @FormUrlEncoded
+//    @POST("api-kelas_guru.php") // Ganti dengan endpoint yang sesuai
+//    Call<ResponseBody> tambahKelas(
+//            @Field("id_kelas") String idKelas,
+//            @Field("nama_kelas") String namaKelas
+//    );
+//
+//    @GET("api-get_materi.php")
+//    Call<List<MateriModel>> getMateri();
+//
+//
+//    @POST("api-update_nilai.php")
+//    Call<ApiResponse> postNilai(
+//            @Query("file_tugas") String fileTugas,
+//            @Query("nilai") float nilai
+//    );
+
 
 }
-
-
-
-
-
-
-
-
-

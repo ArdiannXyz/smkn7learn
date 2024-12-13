@@ -69,9 +69,9 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
         // Handle klik edit
         holder.btn_editTugas.setOnClickListener(v -> {
             Intent intent = new Intent(context, EditTugas_Guru.class);
-            intent.putExtra("ID_TUGAS", tugas.getIdTugas());
-            intent.putExtra("JUDUL_TUGAS", tugas.getJudulTugas());
-            intent.putExtra("NAMA_KELAS", tugas.getNamaKelas());
+            intent.putExtra("id_tugas", tugas.getIdTugas());
+            intent.putExtra("judul_tugas", tugas.getJudulTugas());
+            intent.putExtra("nama_kelas", tugas.getNamaKelas());
             context.startActivity(intent);
         });
 
