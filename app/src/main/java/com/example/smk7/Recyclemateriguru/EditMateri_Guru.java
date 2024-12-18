@@ -210,7 +210,7 @@ public class EditMateri_Guru extends AppCompatActivity {
         }
 
         // Get ID Guru from SharedPreferences
-        SharedPreferences prefs = getSharedPreferences(Db_Contract.urlApiEditMateri, Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("user_preferences", Context.MODE_PRIVATE);
         int idGuru = prefs.getInt("id_guru", -1);
 
         Log.d(TAG, "ID Guru from SharedPreferences: " + idGuru);

@@ -64,11 +64,26 @@ public class GantiPasswordActivity extends AppCompatActivity {
     }
 
     private void resetPassword(String email, String newPassword) {
-        // Menggunakan URL dari Db_Contract
-        String urlResetPassword = Db_Contract.urlGantiPassword; // URL untuk reset password
-        Log.d("URL_Reset_Password", urlResetPassword);
-
+        String urlResetPassword = Db_Contract.urlGantiPassword;
         RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Tambah validasi password
+        if (newPassword.length() < 8) {
+            Toast.makeText(this, "Password harus minimal 8 karakter", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!newPassword.matches(".*[A-Z].*")) {
+            Toast.makeText(this, "Password harus memiliki minimal 1 huruf besar", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!newPassword.matches(".*[a-z].*")) {
+            Toast.makeText(this, "Password harus memiliki minimal 1 huruf kecil", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!newPassword.matches(".*\\d.*")) {
+            Toast.makeText(this, "Password harus memiliki minimal 1 angka", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         StringRequest request = new StringRequest(Request.Method.POST, urlResetPassword,
                 new Response.Listener<String>() {
@@ -81,26 +96,37 @@ public class GantiPasswordActivity extends AppCompatActivity {
                             String message = jsonObject.getString("message");
 
                             if (success) {
-                                Toast.makeText(GantiPasswordActivity.this, "Password reset successful", Toast.LENGTH_SHORT).show();
-                                // Pindah ke MainActivity setelah berhasil reset password
+                                Toast.makeText(GantiPasswordActivity.this, "Password berhasil diubah", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(GantiPasswordActivity.this, LoginActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
-                                finish(); // Tutup aktivitas saat ini
+                                finish();
                             } else {
-                                Toast.makeText(GantiPasswordActivity.this, "Failed to reset password: " + message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GantiPasswordActivity.this, message, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(GantiPasswordActivity.this, "Invalid response format", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GantiPasswordActivity.this, "Format response tidak valid", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("API_ERROR", error.toString());
-                        Toast.makeText(GantiPasswordActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        // Penanganan error yang lebih baik
+                        String pesanError = "Terjadi kesalahan jaringan";
+                        if (error.networkResponse != null) {
+                            pesanError = "Error " + error.networkResponse.statusCode + ": ";
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject data = new JSONObject(responseBody);
+                                pesanError += data.getString("message");
+                            } catch (Exception e) {
+                                pesanError += error.getMessage();
+                            }
+                        }
+                        Log.e("API_ERROR", pesanError);
+                        Toast.makeText(GantiPasswordActivity.this, pesanError, Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override
@@ -108,6 +134,7 @@ public class GantiPasswordActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("email", email);
                 params.put("new_password", newPassword);
+                params.put("confirm_password", newPassword); // Tambahan parameter yang dibutuhkan PHP
                 return params;
             }
         };

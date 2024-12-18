@@ -1,7 +1,6 @@
 package com.example.smk7;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,13 +19,14 @@ import com.android.volley.toolbox.Volley;
 import com.example.smk7.ApiDatabase.Db_Contract;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.Siswa.DashboardSiswa;
-
 import org.json.JSONObject;
 import org.json.JSONException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText txnama, txpassword;
+    private EditText txIdentifier, txpassword;
     private Button btn_login;
     private static final String TAG = "LoginActivity";
 
@@ -34,7 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        txnama = findViewById(R.id.edt_nama);
+
+
+        txIdentifier = findViewById(R.id.edt_nama);
         txpassword = findViewById(R.id.edt_password);
         btn_login = findViewById(R.id.btn_login);
 
@@ -49,80 +51,76 @@ public class LoginActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String nama = txnama.getText().toString();
+                String identifier = txIdentifier.getText().toString().trim();
                 String password = txpassword.getText().toString();
-                if (!(nama.isEmpty() || password.isEmpty())) {
 
+                if (!(identifier.isEmpty() || password.isEmpty())) {
                     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                    String url = Db_Contract.urlLogin + "?nama=" + nama + "&password=" + password;
-                    Log.d(TAG, "Login URL: " + url);
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, Db_Contract.urlLogin,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Log.d(TAG, "Response from server: " + response);
+                                    try {
+                                        JSONObject jsonResponse = new JSONObject(response.trim());
+                                        Log.d("json_response", jsonResponse.toString());
 
-                        @Override
-                        public void onResponse(String response) {
-                            Log.d(TAG, "Response from server: " + response);
-                            try {
-                                String cleanedResponse = response.trim();
-                                if (cleanedResponse.startsWith("{")) {
-                                    JSONObject jsonResponse = new JSONObject(cleanedResponse);
-                                    Log.d("json_response",jsonResponse.toString());
-
-                                    if (jsonResponse.has("message") && jsonResponse.has("role")) {
+                                        boolean success = jsonResponse.getBoolean("success");
                                         String message = jsonResponse.getString("message");
-                                        String role = jsonResponse.getString("role");
 
-                                        if (message.trim().equalsIgnoreCase("Selamat Datang")) {
-                                            Toast.makeText(getApplicationContext(), "Login Berhasil", Toast.LENGTH_SHORT).show();
+                                        if (success) {
+                                            String role = jsonResponse.getString("role");
+                                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                                            // Store user data if needed
+                                            String userId = jsonResponse.getString("user_id");
+                                            String nama = jsonResponse.getString("nama");
+                                            String email = jsonResponse.getString("email");
 
                                             if (role.equalsIgnoreCase("guru")) {
                                                 startActivity(new Intent(getApplicationContext(), DashboardGuru.class));
+                                                finish(); // Menambahkan finish() agar tidak bisa kembali ke halaman login
                                             } else if (role.equalsIgnoreCase("siswa")) {
                                                 startActivity(new Intent(getApplicationContext(), DashboardSiswa.class));
+                                                finish(); // Menambahkan finish() agar tidak bisa kembali ke halaman login
                                             } else {
                                                 Toast.makeText(getApplicationContext(), "Role tidak dikenal", Toast.LENGTH_SHORT).show();
                                             }
                                         } else {
-                                            Toast.makeText(getApplicationContext(), "Login Gagal", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                                         }
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), "Format JSON tidak sesuai", Toast.LENGTH_SHORT).show();
-                                        Log.e(TAG, "Unexpected JSON format: " + response);
+                                    } catch (JSONException e) {
+                                        Log.e(TAG, "Error parsing JSON: " + e.getMessage());
+                                        Toast.makeText(getApplicationContext(), "Error parsing response", Toast.LENGTH_SHORT).show();
                                     }
-                                } else if (cleanedResponse.contains("koneksi berhasil")) {
-                                    Toast.makeText(getApplicationContext(), "Koneksi berhasil, tetapi respons tidak valid untuk login", Toast.LENGTH_SHORT).show();
-                                    Log.e(TAG, "Non-JSON response: " + cleanedResponse);
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Respon server tidak dikenali", Toast.LENGTH_SHORT).show();
-                                    Log.e(TAG, "Unrecognized response: " + cleanedResponse);
                                 }
-                            } catch (JSONException e) {
-                                Log.e(TAG, "Error parsing JSON: " + e.getMessage());
-                                Toast.makeText(getApplicationContext(), "Error parsing response", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "VolleyError: " + error.toString());
+                                }
+                            }) {
                         @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "VolleyError: " + error.toString());
-                            if (error.getCause() != null) {
-                                Log.e(TAG, "Error Cause: " + error.getCause());
-                            }
-                            error.printStackTrace();
+                        protected Map<String, String> getParams() {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("identifier", identifier);
+                            params.put("password", password);
+                            return params;
                         }
+                    };
 
-                    });
                     stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                            5000, // timeout dalam milidetik
+                            5000,
                             DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
                     ));
                     requestQueue.add(stringRequest);
                 } else {
-                    Toast.makeText(getApplicationContext(), "Password Atau Email Salah", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Email/Nama dan Password harus diisi", Toast.LENGTH_SHORT).show();
                 }
             }
-   });
-}
+        });
+    }
 }
