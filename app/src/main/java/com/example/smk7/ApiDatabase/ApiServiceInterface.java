@@ -42,44 +42,51 @@ public interface ApiServiceInterface {
 
     //API untuk Materi Guru
     @GET("api-get_materi_by_id.php")
-    Call<ResponseBody> getMateriById(@Query("id_tugas") int idMateri);
+    Call<ResponseBody> getMateriById(@Query("id_materi") int idMateri);
 
-    @FormUrlEncoded
+    @Multipart
     @POST("api-tambah_materi.php")
     Call<ResponseBody> tambahMateri(
-            @Field("id_guru") int idGuru,
-            @Field("jenis_materi") String jenisMateri, // Pastikan ini sesuai dengan format BLOB
-            @Field("judul_tugas") String judulTugas,
-            @Field("deskripsi") String deskripsi,
-            @Field("id_kelas") int idKelas,
-            @Field("deadline") String deadline, // Pastikan ini dalam format datetime yang benar
-            @Field("video_url") String videoUrl
+            @Part("id_guru") RequestBody idGuru,
+            @Part("id_mapel") RequestBody idMapel,
+            @Part("id_kelas") RequestBody idKelas,
+            @Part("judul_materi") RequestBody judulMateri,
+            @Part("deskripsi") RequestBody deskripsi,
+            @Part MultipartBody.Part file
     );
 
-    @FormUrlEncoded
+    @Multipart
     @POST("api-update_materi.php")
     Call<ResponseBody> updateMateri(
-            @Field("id_tugas") int idTugas,
-            @Field("id_guru") int idGuru,
-            @Field("jenis_materi") String jenisMateri, // Pastikan ini sesuai dengan format BLOB
-            @Field("judul_tugas") String judulTugas,
-            @Field("deskripsi") String deskripsi,
-            @Field("id_kelas") int idKelas,
-            @Field("deadline") String deadline, // Pastikan ini dalam format datetime yang benar
-            @Field("video_url") String videoUrl
+            @Part("id_materi") RequestBody idMateri,
+            @Part("id_mapel") RequestBody idMapel,
+            @Part("id_kelas") RequestBody idKelas,
+            @Part("id_guru") RequestBody idGuru,
+            @Part("judul_materi") RequestBody judulMateri,
+            @Part("deskripsi") RequestBody deskripsi,
+            @Part MultipartBody.Part file
     );
 
-    @FormUrlEncoded
     @POST("api-hapus_materi.php")
-    Call<ResponseBody> hapusMateri(
-            @Body RequestBody requestBody
-//            @Field("log_info") String logInfo // Tambahan untuk debugging
+    Call<ResponseBody> hapusMateri(@Body RequestBody requestBody
     );
 
 
     //API untuk Tugas Guru
     @GET("api-get_tugas_by_id.php")
     Call<ResponseBody> getTugasById(@Query("id_tugas") int idTugas);
+
+    @Multipart
+    @POST("api-tambah_tugas.php")
+    Call<ResponseBody> uploadTugas(
+            @Part("id_guru") RequestBody idGuru,
+            @Part("id_mapel") RequestBody idMapel,
+            @Part("id_kelas") RequestBody idKelas,
+            @Part("judul_tugas") RequestBody judulTugas,
+            @Part("deskripsi") RequestBody deskripsi,
+            @Part("deadline") RequestBody deadline,
+            @Part MultipartBody.Part file
+    );
 
     //tanpa file
     @FormUrlEncoded
@@ -115,10 +122,26 @@ public interface ApiServiceInterface {
     @Multipart
     @POST("api-update_nilai.php")
     Call<ApiResponse> uploadFileAndNilai(
-            @Part("id_pengumpulan") RequestBody idPengumpulan,  // Ganti nama parameter sesuai API
+            @Part("id_pengumpulan") RequestBody idPengumpulan,
             @Part("nilai") RequestBody nilai,
             @Part MultipartBody.Part file
     );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //    @FormUrlEncoded

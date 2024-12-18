@@ -2,7 +2,9 @@ package com.example.smk7.RecycleTugasGuru;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,7 +28,12 @@ import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Guru.DashboardGuru;
 import com.example.smk7.R;
 
+import org.json.JSONObject;
+
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -156,66 +163,123 @@ public class UploadTugas_guru extends AppCompatActivity {
 
     private void uploadTugas() {
         String judulTugas = edtJudulTugas.getText().toString().trim();
-        String komentar = edtKomentar.getText().toString().trim();
+        String deskripsi = edtKomentar.getText().toString().trim();
 
-        // Misalkan Anda memiliki ID guru, jenis materi, ID kelas, dan deadline
-        int idGuru = 1; // Ganti dengan ID guru yang sesuai
-        String jenisMateri = "Tugas"; // Ganti dengan jenis materi yang sesuai
-        int idKelas = 1; // Ganti dengan ID kelas yang sesuai
-        String deadline = "2023-12-31 23:59:59"; // Ganti dengan deadline yang sesuai
-        String videoUrl = ""; // Ganti dengan URL video jika ada
-
-        if (TextUtils.isEmpty(judulTugas) || TextUtils.isEmpty(komentar) || selectedFileUri == null) {
-            Toast.makeText(this, "Semua field harus diisi!", Toast.LENGTH_SHORT).show();
+        // Validasi input
+        if (TextUtils.isEmpty(judulTugas) || TextUtils.isEmpty(deskripsi)) {
+            Toast.makeText(this, "Judul tugas dan deskripsi harus diisi!", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // Get ID guru dari SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        int idGuru = prefs.getInt("id_guru", -1);
+
+        if (idGuru == -1) {
+            Toast.makeText(this, "ID Guru tidak valid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get ID mapel dan ID kelas dari Intent atau SharedPreferences
+        int idMapel = getIntent().getIntExtra("id_mapel", -1);
+        int idKelas = getIntent().getIntExtra("id_kelas", -1);
+
+        if (idMapel == -1 || idKelas == -1) {
+            Toast.makeText(this, "Data mapel atau kelas tidak valid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Format deadline
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String deadline = sdf.format(new Date()); // Set sesuai kebutuhan
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Mengupload tugas...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        // Prepare the file for upload
-        File file = new File(getFilePathFromUri(selectedFileUri));
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-
-        // Create request bodies for other fields
+        // Prepare RequestBody
         RequestBody idGuruPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(idGuru));
-        RequestBody jenisMateriPart = RequestBody.create(MediaType.parse("text/plain"), jenisMateri);
-        RequestBody judulPart = RequestBody.create(MediaType.parse("text/plain"), judulTugas);
-        RequestBody deskripsiPart = RequestBody.create(MediaType.parse("text/plain"), komentar);
+        RequestBody idMapelPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(idMapel));
         RequestBody idKelasPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(idKelas));
+        RequestBody judulPart = RequestBody.create(MediaType.parse("text/plain"), judulTugas);
+        RequestBody deskripsiPart = RequestBody.create(MediaType.parse("text/plain"), deskripsi);
         RequestBody deadlinePart = RequestBody.create(MediaType.parse("text/plain"), deadline);
-        RequestBody videoUrlPart = RequestBody.create(MediaType.parse("text/plain"), videoUrl);
 
-        // Create the API call
+        // Prepare file if selected
+        MultipartBody.Part filePart = null;
+        if (selectedFileUri != null) {
+            try {
+                String fileName = getFilePathFromUri(selectedFileUri);
+                File file = new File(fileName);
+                RequestBody requestFile = RequestBody.create(
+                        MediaType.parse(getContentResolver().getType(selectedFileUri)),
+                        file
+                );
+                filePart = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+            } catch (Exception e) {
+                Log.e(TAG, "Error preparing file: ", e);
+                Toast.makeText(this, "Error mempersiapkan file", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                return;
+            }
+        }
+
+        // If no file selected, create empty part
+        if (filePart == null) {
+            RequestBody emptyBody = RequestBody.create(MediaType.parse("text/plain"), "");
+            filePart = MultipartBody.Part.createFormData("file", "", emptyBody);
+        }
+
+        // Create API call
         ApiServiceInterface apiService = ApiClient.getApiService();
-        Call<ResponseBody> call = apiService.tambahMateri(
-                idGuru,
-                jenisMateri,
-                judulTugas,
-                komentar,
-                idKelas,
-                deadline,
-                videoUrl
+        Call<ResponseBody> call = apiService.uploadTugas(
+                idGuruPart,
+                idMapelPart,
+                idKelasPart,
+                judulPart,
+                deskripsiPart,
+                deadlinePart,
+                filePart
         );
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 progressDialog.dismiss();
-                if (response.isSuccessful()) {
-                    Toast.makeText(UploadTugas_guru.this, "Upload berhasil!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(UploadTugas_guru.this, "Upload gagal: " + response.message(), Toast.LENGTH_SHORT).show();
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseString = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(responseString);
+
+                        if (jsonResponse.optBoolean("success", false)) {
+                            Toast.makeText(UploadTugas_guru.this,
+                                    "Tugas berhasil diupload", Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+                            String message = jsonResponse.optString("message", "Upload gagal");
+                            Toast.makeText(UploadTugas_guru.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        String errorBody = response.errorBody() != null ?
+                                response.errorBody().string() : "Unknown error";
+                        Toast.makeText(UploadTugas_guru.this,
+                                "Upload gagal: " + errorBody, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error parsing response", e);
+                    Toast.makeText(UploadTugas_guru.this,
+                            "Terjadi kesalahan: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(UploadTugas_guru.this, "Upload gagal: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Network error", t);
+                Toast.makeText(UploadTugas_guru.this,
+                        "Gagal terhubung ke server", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,23 +24,21 @@ import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Adapter.MateriAdapter;
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Model.KelasModel;
 import com.example.smk7.Model.MateriModel;
 import com.example.smk7.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class RecyleViewMateri_Guru extends Fragment {
-
+    private static final String TAG = "RecycleViewMateri_Guru";
     private RecyclerView recyclerView;
     private MateriAdapter materiAdapter;
     private List<MateriModel> materiList;
@@ -51,22 +50,25 @@ public class RecyleViewMateri_Guru extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recycleview_materi_guru, container, false);
+        initializeViews(view);
+        return view;
+    }
 
+    private void initializeViews(View view) {
+        // Initialize RecyclerView
+        recyclerView = view.findViewById(R.id.recycleView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Initialize Back Button
         backButton = view.findViewById(R.id.back_Button);
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
-
-
-                viewPager.setCurrentItem(8, false);  // false berarti tanpa animasi untuk perpindahan langsung
-
-
+                viewPager.setCurrentItem(8, false);
             }
         });
 
-
-
-        // Setup FAB button
+        // Initialize FAB
         fabAddMateri = view.findViewById(R.id.fabAddMateri);
         fabAddMateri.setOnClickListener(v -> {
             if (getActivity() instanceof BottomNavigationHandler) {
@@ -82,35 +84,9 @@ public class RecyleViewMateri_Guru extends Fragment {
             }, 200);
         });
 
-        recyclerView = view.findViewById(R.id.recycleView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        // Fetch data
         fetchMateriData();
-
-        return view;
     }
-
-//    private void (String idKelas, String namaKelas) {
-//        ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
-//
-//        Call<ResponseBody> call = apiService.tambahKelas(idKelas, namaKelas);
-//        call.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                if (response.isSuccessful()) {
-//                    Log.d("API Response", "Kelas berhasil ditambahkan");
-//                    // Tangani respons sukses
-//                } else {
-//                    Log.e("API Error", "Error: " + response.message());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                Log.e("API Error", "Request failed: " + t.getMessage());
-//            }
-//        });
-//    }
 
     private void fetchMateriData() {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
@@ -122,15 +98,23 @@ public class RecyleViewMateri_Guru extends Fragment {
                     ApiResponse apiResponse = response.body();
                     Log.d("API Response", apiResponse.toString());
 
-                    if ("success".equals(apiResponse.getStatus())) {
+                    // Ubah pengecekan status menjadi "success" atau cek success boolean
+                    if (apiResponse.isSuccess() || "success".equals(apiResponse.getStatus())) {
                         materiList = apiResponse.getMateriModel();
                         if (materiList != null && !materiList.isEmpty()) {
-                            setupRecyclerView(materiList, apiService); // Panggil dengan dua argumen
+                            setupRecyclerView(materiList, apiService);
+                            Log.d("API Response", "Ditemukan " + materiList.size() + " materi");
                         } else {
-                            Log.e("API Response", "materiModel is null or empty");
+                            Log.e("API Response", "materiModel kosong");
+                            if (getContext() != null) {
+                                Toast.makeText(getContext(), "Tidak ada data materi", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     } else {
                         Log.e("API Response", "API error: " + apiResponse.getMessage());
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), "Error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 } else {
                     String errorBody = "";
@@ -141,27 +125,48 @@ public class RecyleViewMateri_Guru extends Fragment {
                     } catch (IOException e) {
                         Log.e("API Error", "Error reading error body: " + e.getMessage());
                     }
-                    Log.e("API Error", "Response failed with code: " + response.code() +
-                            ", message: " + response.message() +
+                    Log.e("API Error", "Response gagal dengan kode: " + response.code() +
+                            ", pesan: " + response.message() +
                             ", errorBody: " + errorBody);
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Log.e("API Error", "Request failed: " + t.getMessage(), t);
+                Log.e("API Error", "Network error: " + t.getMessage());
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
     private void setupRecyclerView(List<MateriModel> materiList, ApiServiceInterface apiService) {
-        materiAdapter = new MateriAdapter(getContext(), materiList, new MateriAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(MateriModel materiModel) {
-                Log.d("RecyclerView", "Item clicked: " + materiModel.getJudulTugas());
-            }
-        }, apiService); // Menambahkan apiService sebagai argumen keempat
+        if (getContext() == null) return;
+        materiAdapter = new MateriAdapter(getContext(), materiList,
+                new MateriAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(MateriModel materiModel) {
+                        Log.d(TAG, "Item diklik: " + materiModel.getJudulMateri());
+                        // Tambahkan logika handling klik di sini
+                    }
+                },
+                apiService);  // Tambahkan parameter keempat
+
         recyclerView.setAdapter(materiAdapter);
+    }
+
+    private void showEmptyState() {
+        if (getContext() != null) {
+            Toast.makeText(getContext(), "Tidak ada data materi tersedia", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handleError(String message) {
+        Log.e(TAG, message);
+        if (getContext() != null) {
+            Toast.makeText(getContext(), "Error: " + message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -181,10 +186,8 @@ public class RecyleViewMateri_Guru extends Fragment {
         if (navigationHandler != null) {
             navigationHandler.hideBottomNav();
             if (getActivity() != null) {
-                // Menonaktifkan swipe di Activity
                 ((DashboardGuru) getActivity()).setSwipeEnabled(false);
             }
-
         }
     }
 
@@ -202,4 +205,3 @@ public class RecyleViewMateri_Guru extends Fragment {
         navigationHandler = null;
     }
 }
-
