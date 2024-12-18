@@ -3,19 +3,13 @@ package com.example.smk7;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.smk7.Guru.DashboardGuru;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class SplashActivity extends AppCompatActivity {
 
     private Button Btnmasuk;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +17,24 @@ public class SplashActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash);
 
-        Btnmasuk = findViewById(R.id.buttonmasuk);
+        // Inisialisasi SessionManager
+        sessionManager = new SessionManager(this);
+        // Clear any existing session
+        sessionManager.clearSession();
 
+        Btnmasuk = findViewById(R.id.buttonmasuk);
         Btnmasuk.setOnClickListener(v -> {
             startActivity(new Intent(SplashActivity.this, LoginActivity.class));
             finish();
         });
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Pastikan session dibersihkan setiap kali activity dimulai
+        if (sessionManager != null) {
+            sessionManager.clearSession();
+        }
     }
 }

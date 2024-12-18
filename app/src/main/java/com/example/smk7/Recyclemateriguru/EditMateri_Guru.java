@@ -25,17 +25,16 @@ import androidx.core.content.ContextCompat;
 
 import com.example.smk7.ApiDatabase.ApiClient;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
-import com.example.smk7.ApiDatabase.Db_Contract;
+import com.example.smk7.LoginActivity;
 import com.example.smk7.R;
 
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -49,6 +48,8 @@ public class EditMateri_Guru extends AppCompatActivity {
     private static final String TAG = "EditMateri_Guru";
     private static final int REQUEST_CODE_FILE_PICKER = 1001;
     private static final int PERMISSION_REQUEST_STORAGE = 2001;
+    private static final String PREF_NAME = "UserData";
+    private static final String KEY_ID_GURU = "id_guru";
 
     private EditText edtJudulMateri, edtLampiran, edtKomentar;
     private TextView txtNamaKelas;
@@ -56,11 +57,17 @@ public class EditMateri_Guru extends AppCompatActivity {
     private ImageView backButton;
     private String idKelas, namaKelas, idMateri;
     private Uri selectedFileUri;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_edit_materi_guru);
+
+        // Cek status login di awal
+        if (getIdGuru() == -1) {
+            return; // Method getIdGuru sudah menangani redirect
+        }
 
         initializeComponents();
         receiveIntentData();
@@ -75,15 +82,42 @@ public class EditMateri_Guru extends AppCompatActivity {
         btnSimpanEdit = findViewById(R.id.Btn_simpan);
         backButton = findViewById(R.id.back_Button);
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+
         backButton.setOnClickListener(v -> finish());
         edtLampiran.setOnClickListener(v -> checkStoragePermission());
         btnSimpanEdit.setOnClickListener(v -> editMateri());
     }
 
+    private int getIdGuru() {
+        SharedPreferences prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        // Tambahkan log untuk melihat semua data di SharedPreferences
+        Map<String, ?> allPrefs = prefs.getAll();
+        Log.d(TAG, "All SharedPreferences data: " + allPrefs.toString());
+
+        int idGuru = prefs.getInt(KEY_ID_GURU, -1);
+        Log.d(TAG, "Retrieved ID Guru: " + idGuru);
+
+        if (idGuru == -1) {
+            Log.w(TAG, "ID Guru tidak ditemukan di SharedPreferences");
+            Toast.makeText(this, "Sesi guru tidak ditemukan. Silakan login ulang.",
+                    Toast.LENGTH_LONG).show();
+
+            // Redirect ke halaman login
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(loginIntent);
+            finish();
+        }
+
+        return idGuru;
+    }
+
     private void receiveIntentData() {
         Intent intent = getIntent();
         if (intent != null) {
-            // Ubah dari id_tugas menjadi id_materi
             idMateri = String.valueOf(intent.getIntExtra("id_materi", -1));
             idKelas = String.valueOf(intent.getIntExtra("id_kelas", -1));
             namaKelas = intent.getStringExtra("nama_kelas");
@@ -92,7 +126,6 @@ public class EditMateri_Guru extends AppCompatActivity {
                 txtNamaKelas.setText(namaKelas);
             }
 
-            // Log untuk debugging
             Log.d(TAG, "Received ID Materi: " + idMateri);
             Log.d(TAG, "Received ID Kelas: " + idKelas);
 
@@ -100,104 +133,73 @@ public class EditMateri_Guru extends AppCompatActivity {
                 Log.e(TAG, "Invalid ID received: idMateri=" + idMateri + ", idKelas=" + idKelas);
                 Toast.makeText(this, "Data materi tidak valid", Toast.LENGTH_SHORT).show();
                 finish();
-                return;
             }
         }
     }
 
     private void loadMateriData() {
-        ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Memuat data materi...");
-        progressDialog.setCancelable(false);
         progressDialog.show();
 
         ApiServiceInterface apiService = ApiClient.getApiService();
 
-        // Pastikan ID valid sebelum melakukan request
-        int idMateriInt;
         try {
-            idMateriInt = Integer.parseInt(idMateri);
+            int idMateriInt = Integer.parseInt(idMateri);
             if (idMateriInt <= 0) {
                 throw new NumberFormatException("ID tidak valid");
             }
+
+            Call<ResponseBody> call = apiService.getMateriById(idMateriInt);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    progressDialog.dismiss();
+                    handleMateriDataResponse(response);
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    progressDialog.dismiss();
+                    handleNetworkError(t);
+                }
+            });
         } catch (NumberFormatException e) {
             progressDialog.dismiss();
             Toast.makeText(this, "ID Materi tidak valid", Toast.LENGTH_SHORT).show();
             finish();
-            return;
         }
+    }
 
-        // Log untuk debugging
-        Log.d(TAG, "Requesting materi with ID: " + idMateriInt);
+    private void handleMateriDataResponse(Response<ResponseBody> response) {
+        try {
+            if (response.isSuccessful() && response.body() != null) {
+                String responseString = response.body().string();
+                Log.d(TAG, "Full Response: " + responseString);
 
-        Call<ResponseBody> call = apiService.getMateriById(idMateriInt);
-
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                progressDialog.dismiss();
-
-                try {
-                    if (response.isSuccessful() && response.body() != null) {
-                        String responseString = response.body().string();
-                        Log.d(TAG, "Full Response: " + responseString);
-
-                        JSONObject jsonResponse = new JSONObject(responseString);
-
-                        if (jsonResponse.optBoolean("success", false)) {
-                            // Parsing data materi
-                            JSONObject materiData = jsonResponse.getJSONObject("data");
-
-                            // Set data ke field-field edit
-                            String judulMateri = materiData.optString("judul_materi", "");
-                            String jenisMateri = materiData.optString("jenis_materi", "");
-                            String komentar = materiData.optString("komentar", "");
-
-                            // Update UI
-                            edtJudulMateri.setText(judulMateri);
-                            edtLampiran.setText(jenisMateri);
-                            edtKomentar.setText(komentar);
-                        } else {
-                            // Tampilkan pesan error jika data tidak ditemukan
-                            Toast.makeText(
-                                    EditMateri_Guru.this,
-                                    "Gagal memuat data: " + jsonResponse.optString("message", "Terjadi kesalahan"),
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                            finish(); // Tutup activity jika data tidak ditemukan
-                        }
-                    } else {
-                        // Tampilkan pesan error jika response tidak berhasil
-                        Toast.makeText(
-                                EditMateri_Guru.this,
-                                "Gagal memuat data: " + response.code(),
-                                Toast.LENGTH_SHORT
-                        ).show();
-                        finish();
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error parsing response", e);
-                    Toast.makeText(
-                            EditMateri_Guru.this,
-                            "Terjadi kesalahan: " + e.getMessage(),
-                            Toast.LENGTH_SHORT
-                    ).show();
-                    finish();
+                JSONObject jsonResponse = new JSONObject(responseString);
+                if (jsonResponse.optBoolean("success", false)) {
+                    JSONObject materiData = jsonResponse.getJSONObject("data");
+                    updateUIWithMateriData(materiData);
+                } else {
+                    showError("Gagal memuat data: " + jsonResponse.optString("message", "Terjadi kesalahan"));
                 }
+            } else {
+                showError("Gagal memuat data: " + response.code());
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing response", e);
+            showError("Terjadi kesalahan: " + e.getMessage());
+        }
+    }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                progressDialog.dismiss();
-                Log.e(TAG, "Network error", t);
-                Toast.makeText(
-                        EditMateri_Guru.this,
-                        "Gagal terhubung: " + t.getMessage(),
-                        Toast.LENGTH_SHORT
-                ).show();
-                finish();
-            }
-        });
+    private void updateUIWithMateriData(JSONObject materiData) {
+        String judulMateri = materiData.optString("judul_materi", "");
+        String jenisMateri = materiData.optString("jenis_materi", "");
+        String komentar = materiData.optString("komentar", "");
+
+        edtJudulMateri.setText(judulMateri);
+        edtLampiran.setText(jenisMateri);
+        edtKomentar.setText(komentar);
     }
 
     private void editMateri() {
@@ -209,32 +211,48 @@ public class EditMateri_Guru extends AppCompatActivity {
             return;
         }
 
-        // Get ID Guru from SharedPreferences
-        SharedPreferences prefs = getSharedPreferences("user_preferences", Context.MODE_PRIVATE);
-        int idGuru = prefs.getInt("id_guru", -1);
+        int idGuru = getIdGuru();
+        if (idGuru == -1) return;
 
         Log.d(TAG, "ID Guru from SharedPreferences: " + idGuru);
 
-        if (idGuru == -1) {
-            Toast.makeText(this, "Sesi guru tidak ditemukan. Silakan login ulang.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Mengupdate materi...");
-        progressDialog.setCancelable(false);
         progressDialog.show();
 
-        // Create RequestBody instances
+        // Prepare request bodies
         RequestBody idMateriBody = RequestBody.create(MediaType.parse("text/plain"), idMateri);
-        RequestBody idMapelBody = RequestBody.create(MediaType.parse("text/plain"), "1"); // Sesuaikan dengan ID mapel yang benar
+        RequestBody idMapelBody = RequestBody.create(MediaType.parse("text/plain"), "1");
         RequestBody idKelasBody = RequestBody.create(MediaType.parse("text/plain"), idKelas);
         RequestBody idGuruBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(idGuru));
         RequestBody judulMateriBody = RequestBody.create(MediaType.parse("text/plain"), judulMateri);
         RequestBody deskripsiBody = RequestBody.create(MediaType.parse("text/plain"), deskripsi);
 
-        // Handle file part
-        MultipartBody.Part filePart = null;
+        // Handle file upload
+        MultipartBody.Part filePart = prepareFilePart();
+
+        // Make API call
+        ApiServiceInterface apiService = ApiClient.getApiService();
+        Call<ResponseBody> call = apiService.updateMateri(
+                idMateriBody, idMapelBody, idKelasBody, idGuruBody,
+                judulMateriBody, deskripsiBody, filePart
+        );
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                progressDialog.dismiss();
+                handleUpdateResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.dismiss();
+                handleNetworkError(t);
+            }
+        });
+    }
+
+    private MultipartBody.Part prepareFilePart() {
         if (selectedFileUri != null) {
             try {
                 String fileName = getFilePathFromUri(selectedFileUri);
@@ -243,78 +261,56 @@ public class EditMateri_Guru extends AppCompatActivity {
                         MediaType.parse(getContentResolver().getType(selectedFileUri)),
                         file
                 );
-                filePart = MultipartBody.Part.createFormData("file", fileName, requestFile);
+                return MultipartBody.Part.createFormData("file", fileName, requestFile);
             } catch (Exception e) {
                 Log.e(TAG, "Error preparing file: ", e);
                 Toast.makeText(this, "Error mempersiapkan file", Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
-                return;
             }
-        } else {
-            // Create empty file part if no file is selected
-            RequestBody emptyBody = RequestBody.create(MediaType.parse("text/plain"), "");
-            filePart = MultipartBody.Part.createFormData("file", "", emptyBody);
         }
+        // Return empty part if no file selected
+        RequestBody emptyBody = RequestBody.create(MediaType.parse("text/plain"), "");
+        return MultipartBody.Part.createFormData("file", "", emptyBody);
+    }
 
-        ApiServiceInterface apiService = ApiClient.getApiService();
-        Call<ResponseBody> call = apiService.updateMateri(
-                idMateriBody,
-                idMapelBody,
-                idKelasBody,
-                idGuruBody,
-                judulMateriBody,
-                deskripsiBody,
-                filePart
-        );
+    private void handleUpdateResponse(Response<ResponseBody> response) {
+        try {
+            if (response.isSuccessful() && response.body() != null) {
+                String responseString = response.body().string();
+                Log.d(TAG, "Server Response: " + responseString);
 
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                progressDialog.dismiss();
-                try {
-                    if (response.isSuccessful() && response.body() != null) {
-                        String responseString = response.body().string();
-                        Log.d(TAG, "Server Response: " + responseString);
-
-                        JSONObject jsonResponse = new JSONObject(responseString);
-                        if (jsonResponse.optBoolean("success", false)) {
-                            Toast.makeText(EditMateri_Guru.this,
-                                    "Materi berhasil diupdate", Toast.LENGTH_SHORT).show();
-                            setResult(RESULT_OK);
-                            finish();
-                        } else {
-                            String message = jsonResponse.optString("message", "Gagal update materi");
-                            Toast.makeText(EditMateri_Guru.this, message, Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        String errorBody = response.errorBody() != null ?
-                                response.errorBody().string() : "Unknown error";
-                        Log.e(TAG, "Error Response: " + errorBody);
-                        Toast.makeText(EditMateri_Guru.this,
-                                "Gagal update: " + response.code(), Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error parsing response", e);
-                    Toast.makeText(EditMateri_Guru.this,
-                            "Terjadi kesalahan: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                JSONObject jsonResponse = new JSONObject(responseString);
+                if (jsonResponse.optBoolean("success", false)) {
+                    Toast.makeText(this, "Materi berhasil diupdate", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    showError(jsonResponse.optString("message", "Gagal update materi"));
                 }
+            } else {
+                String errorBody = response.errorBody() != null ?
+                        response.errorBody().string() : "Unknown error";
+                Log.e(TAG, "Error Response: " + errorBody);
+                showError("Gagal update: " + response.code());
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing response", e);
+            showError("Terjadi kesalahan: " + e.getMessage());
+        }
+    }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                progressDialog.dismiss();
-                Log.e(TAG, "Network error", t);
-                Toast.makeText(EditMateri_Guru.this,
-                        "Gagal terhubung ke server", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void handleNetworkError(Throwable t) {
+        Log.e(TAG, "Network error", t);
+        showError("Gagal terhubung ke server: " + t.getMessage());
+    }
+
+    private void showError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void checkStoragePermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSION_REQUEST_STORAGE);
@@ -334,7 +330,8 @@ public class EditMateri_Guru extends AppCompatActivity {
                     REQUEST_CODE_FILE_PICKER
             );
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Tidak ada file manager yang terinstall.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Tidak ada file manager yang terinstall.",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -342,14 +339,11 @@ public class EditMateri_Guru extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_FILE_PICKER && resultCode == RESULT_OK) {
-            if (data != null) {
-                selectedFileUri = data.getData();
-
-                if (selectedFileUri != null) {
-                    String filePath = getFilePathFromUri(selectedFileUri);
-                    edtLampiran.setText(filePath);
-                }
+        if (requestCode == REQUEST_CODE_FILE_PICKER && resultCode == RESULT_OK && data != null) {
+            selectedFileUri = data.getData();
+            if (selectedFileUri != null) {
+                String filePath = getFilePathFromUri(selectedFileUri);
+                edtLampiran.setText(filePath);
             }
         }
     }
@@ -360,15 +354,15 @@ public class EditMateri_Guru extends AppCompatActivity {
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
             try {
                 if (cursor != null && cursor.moveToFirst()) {
-                    // Tambahkan pengecekan indeks kolom
                     int displayNameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                     if (displayNameIndex != -1) {
                         result = cursor.getString(displayNameIndex);
                     }
                 }
             } finally {
-                if (cursor != null)
+                if (cursor != null) {
                     cursor.close();
+                }
             }
         }
         if (result == null) {
@@ -381,18 +375,9 @@ public class EditMateri_Guru extends AppCompatActivity {
         return result;
     }
 
-    private int getCurrentLoggedInTeacherId() {
-        SharedPreferences prefs = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-        return prefs.getInt("id_guru", -1);
-    }
-
-    private String getCurrentDateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        return sdf.format(new Date());
-    }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -401,5 +386,54 @@ public class EditMateri_Guru extends AppCompatActivity {
                 Toast.makeText(this, "Permission ditolak", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private String getCurrentDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void showLoading(String message) {
+        if (!isFinishing()) {
+            progressDialog.setMessage(message);
+            if (!progressDialog.isShowing()) {
+                progressDialog.show();
+            }
+        }
+    }
+
+    private void hideLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private boolean validateInput() {
+        if (TextUtils.isEmpty(edtJudulMateri.getText())) {
+            edtJudulMateri.setError("Judul materi tidak boleh kosong");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(edtKomentar.getText())) {
+            edtKomentar.setError("Deskripsi tidak boleh kosong");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void resetForm() {
+        edtJudulMateri.setText("");
+        edtLampiran.setText("");
+        edtKomentar.setText("");
+        selectedFileUri = null;
     }
 }
