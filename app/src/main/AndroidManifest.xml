@@ -7,6 +7,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+
 
     <application
 
@@ -32,7 +39,7 @@
             android:exported="false" />
         <activity
             android:name=".GantiPasswordActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".SplashActivity"
             android:exported="true">
@@ -60,6 +67,13 @@
         <activity
             android:name=".RecycleTugasGuru.UploadTugas_guru"
             android:exported="true" />
+        <activity
+            android:name=".RecycleTugasGuru.EditTugas_Guru"
+            android:exported="true" />
+        <activity
+            android:name=".Recyclemateriguru.EditMateri_Guru"
+            android:exported="true" />
+
 
         <meta-data
             android:name="preloaded_fonts"

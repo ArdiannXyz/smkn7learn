@@ -1,7 +1,9 @@
-package com.example.smk7.Guru.Adapter;
+package com.example.smk7.Adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,46 +15,46 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.smk7.ApiDatabase.Db_Contract;
-import com.example.smk7.Guru.Model.MateriModel;
+import com.example.smk7.ApiDatabase.ApiServiceInterface;
+import com.example.smk7.Model.MateriModel;
 import com.example.smk7.R;
 import com.example.smk7.Recyclemateriguru.EditMateri_Guru;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriViewHolder> {
-
+    private static final String TAG = "MateriAdapter";
+    private Context context;
     private List<MateriModel> materiList;
     private OnItemClickListener onItemClickListener;
-    private Context context;
+    private ApiServiceInterface apiService;
 
-    // Interface for item click handling
     public interface OnItemClickListener {
         void onItemClick(MateriModel materiModel);
-
     }
 
-    // Constructor accepts the list and the listener
-    public MateriAdapter(Context context, List<MateriModel> materiList, OnItemClickListener listener) {
+    public MateriAdapter(Context context, List<MateriModel> materiList, OnItemClickListener listener, ApiServiceInterface apiService) {
         this.context = context;
         this.materiList = materiList;
         this.onItemClickListener = listener;
+        this.apiService = apiService;
     }
 
     @NonNull
     @Override
     public MateriViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate item layout for RecyclerView
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.carditem_edit_hapus_materi_guru, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.carditem_edit_hapus_materi_guru, parent, false);
         return new MateriViewHolder(itemView);
     }
 
@@ -60,100 +62,187 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
     public void onBindViewHolder(@NonNull MateriViewHolder holder, int position) {
         MateriModel materi = materiList.get(position);
 
-        // Set the text for the item view (name of materi)
-        holder.nama_materi.setText(materi.getJudulTugas());  // Assuming "getJudulTugas()" is available
+        // Set data ke views
+        holder.nama_materi.setText(materi.getJudulMateri());
+        holder.nama_kelas.setText(materi.getNamaKelas());
 
-        // Handle item click to open details page
+        // Item click listener
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(materi);
             }
         });
 
-        // Handle edit button click
+        // Edit button click
         holder.btnEdit.setOnClickListener(v -> {
-            // Pass the clicked MateriModel to EditMateri_Guru Activity
             Intent intent = new Intent(context, EditMateri_Guru.class);
-            // Assuming the correct method for ID is getIdTugas(), otherwise change accordingly
-            intent.putExtra("materi_id", materi.getIdTugas());  // Replace with the actual getter method name for idTugas
+            intent.putExtra("id_materi", materi.getIdMateri());
+            intent.putExtra("id_mapel", materi.getIdMapel());
+            intent.putExtra("id_kelas", materi.getIdKelas());
+            intent.putExtra("judul_materi", materi.getJudulMateri());
+            intent.putExtra("deskripsi", materi.getDeskripsi());
+            intent.putExtra("file_materi", materi.getFileMateri());
+            intent.putExtra("nama_kelas", materi.getNamaKelas());
             context.startActivity(intent);
         });
 
-        // Handle delete button click
+        // Delete button click
         holder.btnHps.setOnClickListener(v -> {
-            new AlertDialog.Builder(context)
-                    .setTitle("Konfirmasi Hapus")
-                    .setMessage("Apakah Anda yakin ingin menghapus materi ini?")
-                    .setPositiveButton("Hapus", (dialog, which) -> deleteMateri(materi.getIdTugas()))  // Replace with the actual getter method name for idTugas
-                    .setNegativeButton("Batal", null)
-                    .show();
+            Log.d(TAG, "Delete clicked for ID: " + materi.getIdMateri());
+            showDeleteDialog(materi.getIdMateri());
         });
+    }
+
+    // Di dalam MateriAdapter.java, ubah method getMateriById:
+    private void showDeleteDialog(int idMateri) {
+        if (idMateri <= 0) {
+            Log.e(TAG, "Invalid ID Materi: " + idMateri);
+            Toast.makeText(context, "ID Materi tidak valid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new AlertDialog.Builder(context)
+                .setTitle("Konfirmasi Hapus")
+                .setMessage("Apakah Anda yakin ingin menghapus materi ini?")
+                .setPositiveButton("Hapus", (dialog, which) -> {
+                    Log.d(TAG, "Attempting to delete materi with ID: " + idMateri);
+                    deleteMateri(idMateri);
+                })
+                .setNegativeButton("Batal", null)
+                .show();
+    }
+
+    private void deleteMateri(int idMateri) {
+        if (idMateri <= 0) {
+            Log.e(TAG, "Invalid ID Materi");
+            Toast.makeText(context, "ID Materi tidak valid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Tampilkan loading dialog
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Menghapus materi...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        JSONObject jsonParams = new JSONObject();
+        try {
+            jsonParams.put("id_materi", idMateri);
+            Log.d(TAG, "Delete request params: " + jsonParams.toString());
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating JSON", e);
+            progressDialog.dismiss();
+            Toast.makeText(context, "Terjadi kesalahan sistem", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        RequestBody requestBody = RequestBody.create(
+                MediaType.parse("application/json; charset=utf-8"),
+                jsonParams.toString()
+        );
+
+        apiService.hapusMateri(requestBody).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                progressDialog.dismiss();
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseStr = response.body().string();
+                        Log.d(TAG, "Server response: " + responseStr);
+
+                        JSONObject jsonResponse = new JSONObject(responseStr);
+                        if (jsonResponse.optBoolean("success", false)) {
+                            // Remove the item from the list and update RecyclerView
+                            int position = findMateriPositionById(idMateri);
+                            if (position != -1) {
+                                materiList.remove(position);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, materiList.size());
+                            }
+                            Toast.makeText(context, jsonResponse.optString("message", "Materi berhasil dihapus"), Toast.LENGTH_SHORT).show();
+                        } else {
+                            String message = jsonResponse.optString("message", "Gagal menghapus materi");
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        String errorBody = response.errorBody() != null ?
+                                response.errorBody().string() : "Unknown error";
+                        Log.e(TAG, "Error response: " + errorBody);
+                        Toast.makeText(context, "Gagal menghapus materi", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing response", e);
+                    Toast.makeText(context, "Terjadi kesalahan sistem", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.e(TAG, "Network error", t);
+                Toast.makeText(context, "Gagal terhubung ke server", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void handleDeleteResponse(Response<ResponseBody> response, int idMateri) {
+        try {
+            if (response.isSuccessful() && response.body() != null) {
+                String responseBody = response.body().string();
+                Log.d(TAG, "Response Body: " + responseBody);
+
+                JSONObject jsonResponse = new JSONObject(responseBody);
+                String status = jsonResponse.getString("status");
+
+                if ("success".equals(status)) {
+                    int position = findMateriPositionById(idMateri);
+                    if (position != -1) {
+                        materiList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, materiList.size());
+                        Toast.makeText(context, "Berhasil menghapus materi", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    String message = jsonResponse.optString("message", "Gagal menghapus materi");
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                Log.e(TAG, "Error Response: " + errorBody);
+                Toast.makeText(context, "Gagal menghapus materi", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing response", e);
+            Toast.makeText(context, "Terjadi kesalahan sistem", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private int findMateriPositionById(int idMateri) {
+        for (int i = 0; i < materiList.size(); i++) {
+            if (materiList.get(i).getIdMateri() == idMateri) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public int getItemCount() {
-        return materiList.size();
+        return materiList != null ? materiList.size() : 0;
     }
 
-    // ViewHolder to bind the item view
     public static class MateriViewHolder extends RecyclerView.ViewHolder {
         public TextView nama_materi;
+        public TextView nama_kelas;
         public ImageView btnEdit;
         public ImageView btnHps;
 
         public MateriViewHolder(View view) {
             super(view);
-            nama_materi = view.findViewById(R.id.txtnama_mapel);  // Assuming this is the TextView ID in your layout
-            btnEdit = view.findViewById(R.id.btn_edit);  // ImageView for the edit button
-            btnHps = view.findViewById(R.id.btn_hps);  // ImageView for the delete button
+            nama_materi = view.findViewById(R.id.txtnama_mapel);
+            nama_kelas = view.findViewById(R.id.txt_nama_kelas);
+            btnEdit = view.findViewById(R.id.btn_edit);
+            btnHps = view.findViewById(R.id.btn_hps);
         }
-    }
-
-    // Method to delete the materi from the server
-    private void deleteMateri(String idTugas) {
-        // Periksa apakah idTugas valid
-        if (idTugas == null || idTugas.isEmpty()) {
-            Toast.makeText(context, "ID Tugas tidak valid", Toast.LENGTH_SHORT).show(); // Tambahkan show()
-            return;  // Jangan lanjutkan jika idTugas tidak valid
-        }
-
-        // Menggunakan URL dari Db_Contract untuk API deleteMateri
-        String ApiCrud = Db_Contract.urlApiCrudMateri + "?action=deleteMateri";
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiCrud,
-                response -> {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        boolean success = jsonResponse.getBoolean("success");
-                        if (success) {
-                            // Hapus item dari daftar dan beri tahu adapter
-                            materiList.removeIf(materi -> materi.getIdTugas().equals(idTugas));  // Sesuaikan pengecekan ID
-                            notifyDataSetChanged();
-                            Toast.makeText(context, "Materi berhasil dihapus", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(context, "Gagal menghapus materi", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(context, "Terjadi kesalahan saat menghapus materi", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    // Log kesalahan untuk debugging
-                    error.printStackTrace();
-                    Toast.makeText(context, "Error deleting materi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("id_tugas", idTugas);  // Pastikan idTugas tidak null di sini
-                return params;
-            }
-        };
-
-        // Tambahkan permintaan ke antrean permintaan
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
     }
 }

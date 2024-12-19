@@ -41,7 +41,7 @@
                 android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/txtnama_mapel"
+                android:id="@+id/txtnama_tugas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pemograman dasar menggunakan Java"
@@ -54,16 +54,18 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/btn_editTugas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_editdoc"
-                android:layout_marginLeft="20dp"/>
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_editdoc" />
 
             <ImageView
+                android:id="@+id/btn_hapusTugas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_delete"
-                android:layout_marginLeft="20dp"/>
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_delete" />
 
 
 

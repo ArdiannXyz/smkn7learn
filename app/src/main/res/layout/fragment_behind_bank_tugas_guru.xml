@@ -95,9 +95,6 @@
 
         </LinearLayout>
 
-
-
-        <!-- Username Input -->
         <EditText
             android:id="@+id/Edt_Lampiran"
             android:layout_width="match_parent"
@@ -113,17 +110,8 @@
             android:textColorHint="#000000"
             android:textSize="15sp" />
 
-        <!-- Password Input -->
-
-
-        <!-- Confirm Password Input -->
-
-
-        <!-- Spinner for Guru/Murid -->
-
-        <!-- Email Input -->
         <EditText
-            android:id="@+id/Edt_Komentar"
+            android:id="@+id/Edt_tambahNilai"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
@@ -137,9 +125,9 @@
             android:textColorHint="#181818"
             android:textSize="15sp" />
 
-        <!-- Login Button -->
+
         <Button
-            android:id="@+id/Btn_simpan"
+            android:id="@+id/Btn_berikanNilai"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginBottom="16dp"
@@ -156,7 +144,7 @@
             android:gravity="center"
             android:orientation="horizontal" />
 
-        <!-- ConstraintLayout untuk "Sudah Punya Akun?" dan "Login" -->
+
 
     </LinearLayout>
 

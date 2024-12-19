@@ -103,6 +103,7 @@
             android:textColor="#000000"
             android:textColorHint="#000000"
             android:textSize="15sp" />
+
         <!-- Username Input -->
         <EditText
             android:id="@+id/Edt_Lampiran"
@@ -134,12 +135,7 @@
             android:textColorHint="#181818"
             android:textSize="15sp" />
 
-        <!-- Confirm Password Input -->
 
-
-        <!-- Spinner for Guru/Murid -->
-
-        <!-- Email Input -->
         <EditText
             android:id="@+id/Edt_Komentar"
             android:layout_width="match_parent"
@@ -155,9 +151,9 @@
             android:textColorHint="#181818"
             android:textSize="15sp" />
 
-        <!-- Login Button -->
+        <!--  Button uptugas -->
         <Button
-            android:id="@+id/btn_register"
+            android:id="@+id/btn_upTugas"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginBottom="16dp"
