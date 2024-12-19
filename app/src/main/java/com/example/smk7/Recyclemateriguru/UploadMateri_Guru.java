@@ -31,7 +31,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -51,6 +50,8 @@ public class UploadMateri_Guru extends AppCompatActivity {
     private Button btnSimpan;
     private ImageView backButton;
     private String idKelas;
+    private String idMapel;
+    private String idGuru;
     private String namaKelas;
     private Uri selectedFileUri;
     private BottomNavigationHandler navigationHandler;
@@ -59,53 +60,161 @@ public class UploadMateri_Guru extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_upload_materi_guru);
-
-        // Inisialisasi komponen UI
         initializeComponents();
-
-        // Menerima data dari Intent
         receiveIntentData();
     }
 
     private void initializeComponents() {
+        // Initialize views using your existing XML IDs
         backButton = findViewById(R.id.back_Button);
-        backButton.setOnClickListener(v -> onBackPressed());
-
         edtJudulMateri = findViewById(R.id.Edt_JudulMateri);
         edtLampiran = findViewById(R.id.Edt_Lampiran);
-        edtKomentar = findViewById(R.id.Edt_Komentar);
+        edtKomentar = findViewById(R.id.Edt_Komentar); // Using existing Komentar field
         tvNamaKelas = findViewById(R.id.NamaKelas);
         btnSimpan = findViewById(R.id.Btn_simpan);
 
-        // Tambahkan listener untuk membuka file picker
+        // Set up click listeners
+        backButton.setOnClickListener(v -> onBackPressed());
         edtLampiran.setOnClickListener(v -> checkStoragePermission());
-
-        // Setup listener untuk tombol Simpan
         btnSimpan.setOnClickListener(v -> uploadMateri());
     }
 
     private void receiveIntentData() {
         Intent intent = getIntent();
+
+        // Log semua extras untuk debugging
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            for (String key : extras.keySet()) {
+                Log.d(TAG, key + ": " + extras.get(key));
+            }
+        }
+
+        // Ambil data dengan nilai default
         idKelas = intent.getStringExtra("id_kelas");
+        idMapel = intent.getStringExtra("id_mapel");
+        idGuru = intent.getStringExtra("id_guru");
         namaKelas = intent.getStringExtra("nama_kelas");
 
-        Log.d(TAG, "ID Kelas diterima: " + idKelas);
-        Log.d(TAG, "Nama Kelas diterima: " + namaKelas);
+        // Validasi data
+        if (idGuru == null || idGuru.isEmpty()) {
+            Log.e(TAG, "ID Guru tidak ditemukan");
+            Toast.makeText(this, "Error: ID Guru tidak valid", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // Validasi dan set nama kelas
-        if (namaKelas != null) {
+        // Set nama kelas dengan pengecekan
+        if (namaKelas != null && !namaKelas.isEmpty()) {
             tvNamaKelas.setText(namaKelas);
         } else {
-            tvNamaKelas.setText("Nama Kelas Tidak Diketahui");
-            Log.e(TAG, "Nama kelas tidak ditemukan dalam Intent.");
+            tvNamaKelas.setText("Pilih Kelas");
+            Log.w(TAG, "Nama kelas kosong, menggunakan default");
         }
+    }
+
+    private void uploadMateri() {
+        String judulMateri = edtJudulMateri.getText().toString().trim();
+        String deskripsi = edtKomentar.getText().toString().trim(); // Using komentar as deskripsi
+
+        if (TextUtils.isEmpty(judulMateri) || TextUtils.isEmpty(deskripsi)) {
+            Toast.makeText(this, "Judul materi dan komentar harus diisi!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Mengupload materi...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        new Thread(() -> {
+            try {
+                MultipartBody.Builder builder = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM);
+
+                // Add required fields for PHP API
+                builder.addFormDataPart("judul_materi", judulMateri);
+                builder.addFormDataPart("deskripsi", deskripsi); // Send komentar as deskripsi
+                builder.addFormDataPart("id_guru", idGuru);
+                builder.addFormDataPart("id_mapel", idMapel);
+                builder.addFormDataPart("id_kelas", idKelas);
+
+                // Add file if selected
+                if (selectedFileUri != null) {
+                    File file = getFileFromUri(selectedFileUri);
+                    if (file != null) {
+                        RequestBody fileBody = RequestBody.create(
+                                MediaType.parse(getContentResolver().getType(selectedFileUri)),
+                                file
+                        );
+                        builder.addFormDataPart(
+                                "file_materi",
+                                file.getName(),
+                                fileBody
+                        );
+                    }
+                }
+
+                RequestBody requestBody = builder.build();
+                Request request = new Request.Builder()
+                        .url(Db_Contract.urlApiUploadMateri)
+                        .post(requestBody)
+                        .build();
+
+                OkHttpClient client = new OkHttpClient();
+                Response response = client.newCall(request).execute();
+
+                runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    try {
+                        String responseBody = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(responseBody);
+
+                        if (jsonResponse.has("success") && jsonResponse.getBoolean("success")) {
+                            Toast.makeText(
+                                    UploadMateri_Guru.this,
+                                    jsonResponse.getString("message"),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            finish();
+                        } else {
+                            String errorMessage = jsonResponse.has("error") ?
+                                    jsonResponse.getString("error") :
+                                    "Gagal mengupload materi";
+                            Toast.makeText(
+                                    UploadMateri_Guru.this,
+                                    errorMessage,
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing response", e);
+                        Toast.makeText(
+                                UploadMateri_Guru.this,
+                                "Terjadi kesalahan saat memproses respons",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
+
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "Upload error", e);
+                    Toast.makeText(
+                            UploadMateri_Guru.this,
+                            "Gagal mengupload: " + e.getMessage(),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                });
+            }
+        }).start();
     }
 
     private void checkStoragePermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSION_REQUEST_STORAGE);
@@ -116,9 +225,8 @@ public class UploadMateri_Guru extends AppCompatActivity {
 
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*"); // Semua tipe file
+        intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-
         try {
             startActivityForResult(
                     Intent.createChooser(intent, "Pilih File"),
@@ -147,15 +255,11 @@ public class UploadMateri_Guru extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_FILE_PICKER && resultCode == RESULT_OK) {
-            if (data != null) {
-                selectedFileUri = data.getData();
-
-                if (selectedFileUri != null) {
-                    String filePath = getFilePathFromUri(selectedFileUri);
-                    edtLampiran.setText(filePath);
-                }
+        if (requestCode == REQUEST_CODE_FILE_PICKER && resultCode == RESULT_OK && data != null) {
+            selectedFileUri = data.getData();
+            if (selectedFileUri != null) {
+                String fileName = getFilePathFromUri(selectedFileUri);
+                edtLampiran.setText(fileName);
             }
         }
     }
@@ -166,15 +270,15 @@ public class UploadMateri_Guru extends AppCompatActivity {
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
             try {
                 if (cursor != null && cursor.moveToFirst()) {
-                    // Tambahkan pengecekan indeks kolom
                     int displayNameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                     if (displayNameIndex != -1) {
                         result = cursor.getString(displayNameIndex);
                     }
                 }
             } finally {
-                if (cursor != null)
+                if (cursor != null) {
                     cursor.close();
+                }
             }
         }
         if (result == null) {
@@ -187,136 +291,18 @@ public class UploadMateri_Guru extends AppCompatActivity {
         return result;
     }
 
-    private void uploadMateri() {
-        // Validasi input
-        String judulMateri = edtJudulMateri.getText().toString().trim();
-        String jenisMateri = edtLampiran.getText().toString().trim();
-        String komentar = edtKomentar.getText().toString().trim();
-
-        if (TextUtils.isEmpty(judulMateri) ||
-                TextUtils.isEmpty(jenisMateri) ||
-                TextUtils.isEmpty(komentar)) {
-            Toast.makeText(this, "Semua field harus diisi!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Tampilkan progress dialog
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Mengupload materi...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
-        // Proses upload di background thread
-        new Thread(() -> {
-            try {
-                // Siapkan MultipartBody untuk upload file
-                MultipartBody.Builder builder = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM);
-
-                // Tambahkan parameter text
-                builder.addFormDataPart("judul_materi", judulMateri);
-                builder.addFormDataPart("komentar", komentar);
-                builder.addFormDataPart("id_guru", "1"); // ID guru hardcode
-                builder.addFormDataPart("id_kelas", idKelas);
-
-                // Tambahkan file jika ada
-                if (selectedFileUri != null) {
-                    File file = getFileFromUri(selectedFileUri);
-                    if (file != null) {
-                        RequestBody fileBody = RequestBody.create(
-                                MediaType.parse(getContentResolver().getType(selectedFileUri)),
-                                file
-                        );
-                        builder.addFormDataPart(
-                                "jenis_materi",
-                                file.getName(),
-                                fileBody
-                        );
-                    }
-                }
-
-                // Buat request body
-                RequestBody requestBody = builder.build();
-
-                // Buat request
-                Request request = new Request.Builder()
-                        .url(Db_Contract.urlApiUploadMateri)
-                        .post(requestBody)
-                        .build();
-
-                // Kirim request menggunakan OkHttp
-                OkHttpClient client = new OkHttpClient();
-                Response response = client.newCall(request).execute();
-
-                // Proses response di main thread
-                runOnUiThread(() -> {
-                    progressDialog.dismiss();
-
-                    try {
-                        String responseBody = response.body().string();
-                        JSONObject jsonResponse = new JSONObject(responseBody);
-
-                        if (jsonResponse.getString("status").equals("success")) {
-                            Toast.makeText(
-                                    UploadMateri_Guru.this,
-                                    "Materi berhasil diupload",
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                            onBackPressed();
-                        } else {
-                            Toast.makeText(
-                                    UploadMateri_Guru.this,
-                                    "Gagal upload: " + jsonResponse.getString("message"),
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error parsing response", e);
-                        Toast.makeText(
-                                UploadMateri_Guru.this,
-                                "Terjadi kesalahan",
-                                Toast.LENGTH_SHORT
-                        ).show();
-                    }
-                });
-
-            } catch (Exception e) {
-                // Tangani error upload
-                runOnUiThread(() -> {
-                    progressDialog.dismiss();
-                    Log.e(TAG, "Upload error", e);
-                    Toast.makeText(
-                            UploadMateri_Guru.this,
-                            "Gagal mengupload: " + e.getMessage(),
-                            Toast.LENGTH_SHORT
-                    ).show();
-                });
-            }
-        }).start();
-    }
-
-    // Metode untuk konversi URI ke File
     private File getFileFromUri(Uri uri) {
         try {
-            // Buat file temporary
-            File file = new File(getCacheDir(),
-                    getFilePathFromUri(uri));
-
-            // Salin file dari Uri ke file temporary
-            FileInputStream inputStream =
-                    (FileInputStream) getContentResolver().openInputStream(uri);
-
-            // Proses copy file
+            File file = new File(getCacheDir(), getFilePathFromUri(uri));
+            FileInputStream inputStream = (FileInputStream) getContentResolver().openInputStream(uri);
             org.apache.commons.io.FileUtils.copyInputStreamToFile(inputStream, file);
-
             return file;
         } catch (IOException e) {
-            Log.e(TAG, "Error membuat file", e);
+            Log.e(TAG, "Error creating file", e);
             return null;
         }
     }
 
-    // Metode lifecycle lainnya
     @Override
     public void onResume() {
         super.onResume();
