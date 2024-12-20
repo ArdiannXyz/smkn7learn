@@ -2,22 +2,19 @@ package com.example.smk7.Guru;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
-
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView; // Tambahkan import untuk TextView
+import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.GantiPasswordActivity;
 import com.example.smk7.LoginActivity;
-import com.example.smk7.LupaPasswordActivity; // Tambahkan import untuk LupaPasswordActivity
 import com.example.smk7.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 

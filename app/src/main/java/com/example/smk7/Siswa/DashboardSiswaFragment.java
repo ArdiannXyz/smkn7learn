@@ -3,7 +3,6 @@ package com.example.smk7.Siswa;
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.smk7.LoginActivity.PREF_NAME;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,9 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
-import com.example.smk7.Guru.Adapter.KelasAdapter;
-import com.example.smk7.Guru.Model.KelasModel;
-import com.example.smk7.LoginActivity;
 import com.example.smk7.R;
 import com.example.smk7.Siswa.Adapter.TugasSiswaAdapter;
 import com.example.smk7.Siswa.Model.TugasSiswaModel;

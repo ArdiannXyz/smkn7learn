@@ -297,7 +297,7 @@ public class EditTugas_Guru extends AppCompatActivity {
         String filePath = null;
         try {
             String[] projection = {android.provider.MediaStore.Images.Media.DATA};
-            android.database.Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+            Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
 
             if (cursor != null) {
                 int column_index = cursor.getColumnIndexOrThrow(android.provider.MediaStore.Images.Media.DATA);

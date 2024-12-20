@@ -2,9 +2,7 @@ package com.example.smk7.Recyclemateriguru;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.smk7.ApiDatabase.ApiHelper;
 import com.example.smk7.ApiDatabase.Db_Contract;
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.R;

@@ -5,16 +5,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.smk7.ApiDatabase.Db_Contract;
 import com.example.smk7.R;
+import com.github.kevinsawicki.http.HttpRequest;
 
 import org.json.JSONObject;
-import com.github.kevinsawicki.http.HttpRequest;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
