@@ -73,33 +73,47 @@ public class Recycle_Materi_Siswa extends Fragment {
 
                         if (materiList != null && !materiList.isEmpty()) {
                             if (isAdded() && getActivity() != null) {
-                                // Initialize the ViewPager2 from the activity
                                 viewPager = getActivity().findViewById(R.id.Viewpagersiswa);
                                 if (viewPager == null) {
                                     Log.e("Error", "ViewPager2 not found!");
+                                    return;
                                 }
 
                                 Fragment currentFragment = getParentFragment() != null ? getParentFragment() : Recycle_Materi_Siswa.this;
                                 MateriSiswaAdapter materiSiswaAdapter = new MateriSiswaAdapter(materiList, viewPager, currentFragment);
                                 recyclerView.setAdapter(materiSiswaAdapter);
+
+                                Log.d("API Response", "Successfully loaded " + materiList.size() + " materi items");
+                            } else {
+                                Log.e("Error", "Fragment not attached or activity is null");
                             }
                         } else {
-                            Log.e("API Response", "No tasks available");
-                            Toast.makeText(getContext(), "No tasks available", Toast.LENGTH_SHORT).show();
+                            Log.e("API Response", "No materi available");
+                            if (getContext() != null) {
+                                Toast.makeText(getContext(), "No materi available", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     } else {
-                        Toast.makeText(getContext(), "API error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        String errorMessage = apiResponse.getMessage() != null ? apiResponse.getMessage() : "Unknown error";
+                        Log.e("API Response", "API error: " + errorMessage);
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), "API error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 } else {
                     Log.e("API Response", "Response unsuccessful or body is null");
-                    Toast.makeText(getContext(), "Response not successful or body is null", Toast.LENGTH_SHORT).show();
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Response not successful or body is null", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
-                Log.e("API Failure", "Failed to fetch data: " + t.getMessage());
-                Toast.makeText(getContext(), "Failed to fetch data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("API Error", "API call failed", t);
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Failed to fetch data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
