@@ -52,6 +52,18 @@ public class RecyleViewMateri_Guru extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recycleview_materi_guru, container, false);
 
+
+        backButton = view.findViewById(R.id.back_Button);
+        backButton.setOnClickListener(v -> {
+            if (getActivity() instanceof DashboardGuru) {
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+
+
+                viewPager.setCurrentItem(4, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+            }
+        });
+
         // Ambil ID Guru dari SharedPreferences
         SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         idGuru = prefs.getString("id_guru", "");
@@ -59,10 +71,10 @@ public class RecyleViewMateri_Guru extends Fragment {
         // Debug log untuk memeriksa ID Guru
         Log.d(TAG, "ID Guru from SharedPreferences: " + idGuru);
 
-        if (idGuru.isEmpty()) {
-            Log.e(TAG, "ID Guru not found in SharedPreferences");
-            Toast.makeText(getContext(), "Error: ID Guru tidak ditemukan", Toast.LENGTH_SHORT).show();
-        }
+//        if (idGuru.isEmpty()) {
+//            Log.e(TAG, "ID Guru not found in SharedPreferences");
+//            Toast.makeText(getContext(), "Error: ID Guru tidak ditemukan", Toast.LENGTH_SHORT).show();
+//        }
 
         initializeViews(view);
         return view;
