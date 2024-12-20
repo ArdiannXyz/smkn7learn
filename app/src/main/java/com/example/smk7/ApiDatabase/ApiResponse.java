@@ -27,12 +27,18 @@ public class ApiResponse {
     @SerializedName("message")
     private String message;
 
-    // Model Data
-    @SerializedName("tugas_model")
-    private List<TugasModel> tugasModel;
+    @SerializedName("total_data")
+    private int totalData;
+
+    // Model Data with both old and new response formats
+    @SerializedName("data")
+    private List<KelasModel> data;  // For new API format
 
     @SerializedName("kelasModel")
-    private List<KelasModel> kelasModel;
+    private List<KelasModel> kelasModel;  // For old API format
+
+    @SerializedName("tugas_model")
+    private List<TugasModel> tugasModel;
 
     @SerializedName("mapel_model")
     private List<MapelModel> mapelModel;
@@ -49,10 +55,10 @@ public class ApiResponse {
     @SerializedName("tugas_siswa_model")
     private List<TugasSiswaModel> tugasSiswaModel;
 
-    @SerializedName("data")
+    @SerializedName("materi_siswa_model")
     private List<MateriSiswaModel> materiSiswaModel;
 
-    // Getter dan Setter status API
+    // Getter dan Setter untuk Status API
     public String getStatus() {
         return status;
     }
@@ -77,8 +83,30 @@ public class ApiResponse {
         this.message = message;
     }
 
-    // Getter dan Setter Model Data
+    public int getTotalData() {
+        return totalData;
+    }
+
+    public void setTotalData(int totalData) {
+        this.totalData = totalData;
+    }
+
+    // Getter dan Setter untuk Model Data
+    public List<KelasModel> getData() {
+        return data;
+    }
+
+    public void setData(List<KelasModel> data) {
+        this.data = data;
+        Log.d(TAG, "setData: Size = " + (data != null ? data.size() : 0));
+    }
+
     public List<KelasModel> getKelasModel() {
+        if (data != null) {
+            // If new format data is available, use it
+            return data;
+        }
+        // Fall back to old format
         if (kelasModel == null) {
             Log.w(TAG, "getKelasModel: Returning null");
         }
@@ -148,7 +176,6 @@ public class ApiResponse {
         }
     }
 
-    // Getter dan Setter untuk MapelSiswaModel
     public List<MapelSiswaModel> getMapelSiswaModel() {
         if (mapelSiswaModel == null) {
             Log.w(TAG, "getMapelSiswaModel: Returning null");
@@ -161,7 +188,6 @@ public class ApiResponse {
         Log.d(TAG, "setMapelSiswaModel: Size = " + (mapelSiswaModel != null ? mapelSiswaModel.size() : 0));
     }
 
-    // Getter dan Setter untuk TugasSiswaModel
     public List<TugasSiswaModel> getTugasSiswaModel() {
         if (tugasSiswaModel == null) {
             Log.w(TAG, "getTugasSiswaModel: Returning null");
@@ -174,7 +200,6 @@ public class ApiResponse {
         Log.d(TAG, "setTugasSiswaModel: Size = " + (tugasSiswaModel != null ? tugasSiswaModel.size() : 0));
     }
 
-    // Getter dan Setter untuk MateriSiswaModel
     public List<MateriSiswaModel> getMateriSiswaModel() {
         if (materiSiswaModel == null) {
             Log.w(TAG, "getMateriSiswaModel: Returning null");
@@ -188,8 +213,16 @@ public class ApiResponse {
     }
 
     // Method untuk memeriksa data kosong dengan logging
+    public boolean isDataEmpty() {
+        boolean isEmpty = data == null || data.isEmpty();
+        Log.d(TAG, "isDataEmpty: " + isEmpty);
+        return isEmpty;
+    }
+
     public boolean isKelasModelEmpty() {
-        boolean isEmpty = kelasModel == null || kelasModel.isEmpty();
+        boolean isNewFormatEmpty = data == null || data.isEmpty();
+        boolean isOldFormatEmpty = kelasModel == null || kelasModel.isEmpty();
+        boolean isEmpty = isNewFormatEmpty && isOldFormatEmpty;
         Log.d(TAG, "isKelasModelEmpty: " + isEmpty);
         return isEmpty;
     }
@@ -236,13 +269,15 @@ public class ApiResponse {
         return isEmpty;
     }
 
-    // ToString override untuk debugging
     @Override
     public String toString() {
         return "ApiResponse{" +
                 "status='" + status + '\'' +
                 ", success=" + success +
                 ", message='" + message + '\'' +
+                ", totalData=" + totalData +
+                ", data size=" + (data != null ? data.size() : 0) +
+                ", kelasModel size=" + (kelasModel != null ? kelasModel.size() : 0) +
                 ", bankTugasModel size=" + (bankTugasModel != null ? bankTugasModel.size() : 0) +
                 ", mapelSiswaModel size=" + (mapelSiswaModel != null ? mapelSiswaModel.size() : 0) +
                 ", tugasSiswaModel size=" + (tugasSiswaModel != null ? tugasSiswaModel.size() : 0) +

@@ -57,7 +57,7 @@ public class RecyleViewMateri_Guru extends Fragment {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
 
 
-                viewPager.setCurrentItem(4, false);  // false berarti tanpa animasi untuk perpindahan langsung
+                viewPager.setCurrentItem(8, false);  // false berarti tanpa animasi untuk perpindahan langsung
 
             }
         });

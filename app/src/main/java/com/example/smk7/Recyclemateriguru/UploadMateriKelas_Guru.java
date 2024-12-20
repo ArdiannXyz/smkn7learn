@@ -86,35 +86,32 @@ public class UploadMateriKelas_Guru extends Fragment {
                     Log.d("API Response", apiResponse.toString());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        kelasList = apiResponse.getKelasModel();  // Pastikan data kelas diambil dengan benar
+                        kelasList = apiResponse.getData();  // Changed from getKelasModel() to getData()
 
-                        // Pastikan kelasList valid dan tidak kosong
                         if (kelasList != null && !kelasList.isEmpty()) {
-                            // Ambil ViewPager2 dari activity
                             ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
 
                             if (viewPager != null) {
-                                // Pastikan currentFragment sesuai dengan kondisi ini
-                                Fragment currentFragment = UploadMateriKelas_Guru.this;  // Gunakan fragment yang aktif
+                                Fragment currentFragment = UploadMateriKelas_Guru.this;
 
-                                // Panggil adapter dengan parameter yang benar
                                 kelasAdapter = new KelasAdapter(kelasList, viewPager, true, currentFragment);
-                                recyclerView.setAdapter(kelasAdapter);  // Set adapter ke RecyclerView
+                                recyclerView.setAdapter(kelasAdapter);
 
-                                // Jika RecyclerView di-click, maka pindah ke halaman 11 di ViewPager2
                                 recyclerView.setOnClickListener(v -> {
                                     if (currentFragment instanceof UploadMateriKelas_Guru) {
                                         Log.d("FragmentA", "Pindah ke halaman 11...");
-                                        viewPager.setCurrentItem(11, true);  // Pindah ke halaman 11 untuk Fragment A
+                                        viewPager.setCurrentItem(11, true);
                                     }
                                 });
                             }
+                        } else {
+                            Toast.makeText(getContext(), "Tidak ada data kelas", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Log.e("API Error", "Error: " + apiResponse.getMessage());
+                        Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Log.e("API Error", "Response not successful or body is null");
+                    Toast.makeText(getContext(), "Gagal mengambil data", Toast.LENGTH_SHORT).show();
                 }
             }
 

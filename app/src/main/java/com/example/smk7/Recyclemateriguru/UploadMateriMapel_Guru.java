@@ -85,39 +85,46 @@ public class UploadMateriMapel_Guru extends Fragment {
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ApiResponse apiResponse = response.body();
-                    Log.d("API Response", apiResponse.toString());
+                    Log.d("API Response", "Status: " + apiResponse.getStatus());
+                    Log.d("API Response", "Message: " + apiResponse.getMessage());
+                    Log.d("API Response", "Success: " + apiResponse.isSuccess());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        mapelList = apiResponse.getMapelModel();
+                        mapelList = apiResponse.getMapelModel(); // Menggunakan getMapelModel() sesuai ApiResponse
                         if (mapelList != null && !mapelList.isEmpty()) {
-                            // Mendapatkan ViewPager2 dari activity
-                            viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-                            if (viewPager == null) {
-                                Log.e("Error", "ViewPager2 tidak ditemukan!");
+                            // Debug log untuk melihat data
+                            for (MapelModel mapel : mapelList) {
+                                Log.d("Mapel Data", "Nama Mapel: " + mapel.getNamaMapel());
                             }
 
-                            // Menyediakan fragment saat ini untuk adapter
-                            Fragment currentFragment = getParentFragment() != null ? getParentFragment() : UploadMateriMapel_Guru.this;
+                            viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
 
-                            // Menyesuaikan adapter dengan fragment yang aktif
-                            mapelAdapter = new MapelAdapter(mapelList, viewPager, currentFragment);
+                            // Inisialisasi adapter
+                            mapelAdapter = new MapelAdapter(mapelList, viewPager, UploadMateriMapel_Guru.this);
                             recyclerView.setAdapter(mapelAdapter);
-                            mapelAdapter.notifyDataSetChanged();  // Update UI
+
+                            // Pastikan recyclerView memiliki LayoutManager
+                            if (recyclerView.getLayoutManager() == null) {
+                                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                            }
+
+                            mapelAdapter.notifyDataSetChanged();
                         } else {
-                            Log.e("API Response", "mapelModel is null or empty");
-                            Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
+                            Log.e("API Response", "Data is null or empty");
+                            Toast.makeText(getContext(), "Tidak ada data mata pelajaran", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getContext(), "API error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "Response not successful or body is null", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Response tidak berhasil", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to fetch data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("API Error", "Error: " + t.getMessage());
+                Toast.makeText(getContext(), "Gagal mengambil data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

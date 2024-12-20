@@ -40,7 +40,7 @@ public class MapelAdapter extends RecyclerView.Adapter<MapelAdapter.MapelViewHol
     @Override
     public void onBindViewHolder(@NonNull MapelViewHolder holder, int position) {
         MapelModel mapel = mapelList.get(position);
-        holder.nama_mapel.setText(mapel.getNama_mapel());
+        holder.nama_mapel.setText(mapel.getNamaMapel());
 
         holder.itemView.setOnClickListener(v -> {
 

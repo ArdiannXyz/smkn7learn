@@ -3,46 +3,68 @@ package com.example.smk7.Model;
 import com.google.gson.annotations.SerializedName;
 
 public class KelasModel {
-
-    // Sesuaikan dengan nama field di JSON
-    @SerializedName("nama_kelas")
-    private String namaKelas;
-
-    @SerializedName("wali_kelas")
-    private String waliKelas;
-
     @SerializedName("id_kelas")
     private String idKelas;
 
-    // Constructor
-    public KelasModel(String idKelas, String namaKelas, String waliKelas) {
-        this.idKelas = idKelas;
-        this.namaKelas = namaKelas;
-        this.waliKelas = waliKelas;
+    @SerializedName("nama_kelas")
+    private String namaKelas;
+
+    @SerializedName("tahun_ajaran")
+    private String tahunAjaran;
+
+    @SerializedName("wali_kelas")
+    private WaliKelas waliKelas;
+
+    @SerializedName("created_at")
+    private String createdAt;
+
+    @SerializedName("updated_at")
+    private String updatedAt;
+
+    // Nested WaliKelas class
+    public static class WaliKelas {
+        @SerializedName("id")
+        private String id;
+
+        @SerializedName("nama")
+        private String nama;
+
+        @SerializedName("email")
+        private String email;
+
+        @SerializedName("nip")
+        private String nip;
+
+        // Getters and setters
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+
+        public String getNama() { return nama; }
+        public void setNama(String nama) { this.nama = nama; }
+
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+
+        public String getNip() { return nip; }
+        public void setNip(String nip) { this.nip = nip; }
     }
 
-    // Getter dan Setter
-    public String getIdKelas() {
-        return idKelas;
-    }
+    // Getters and setters for KelasModel
+    public String getIdKelas() { return idKelas; }
+    public void setIdKelas(String idKelas) { this.idKelas = idKelas; }
 
-    public void setIdKelas(String idKelas) {
-        this.idKelas = idKelas;
-    }
+    public String getNamaKelas() { return namaKelas; }
+    public void setNamaKelas(String namaKelas) { this.namaKelas = namaKelas; }
 
-    public String getNamaKelas() {
-        return namaKelas;
-    }
+    public String getTahunAjaran() { return tahunAjaran; }
+    public void setTahunAjaran(String tahunAjaran) { this.tahunAjaran = tahunAjaran; }
 
-    public void setNamaKelas(String namaKelas) {
-        this.namaKelas = namaKelas;
-    }
+    public WaliKelas getWaliKelas() { return waliKelas; }
+    public void setWaliKelas(WaliKelas waliKelas) { this.waliKelas = waliKelas; }
 
-    public String getWaliKelas() {
-        return waliKelas;
-    }
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 
-    public void setWaliKelas(String waliKelas) {
-        this.waliKelas = waliKelas;
-    }
+    public String getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 }
