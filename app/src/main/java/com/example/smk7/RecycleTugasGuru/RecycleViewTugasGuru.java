@@ -18,13 +18,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.smk7.Adapter.TugasAdapter;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Guru.Adapter.TugasAdapter;
-import com.example.smk7.Guru.Model.TugasModel;
+import com.example.smk7.Model.TugasModel;
 import com.example.smk7.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

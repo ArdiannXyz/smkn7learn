@@ -36,6 +36,7 @@ public class DashboardGuru extends AppCompatActivity implements BottomNavigation
         viewPager2.setUserInputEnabled(true);
 
 
+
         // Setup BottomNavigationView untuk navigasi antar halaman
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @SuppressLint("NonConstantResourceId")

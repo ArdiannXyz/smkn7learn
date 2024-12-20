@@ -19,6 +19,7 @@ import com.example.smk7.ApiDatabase.ApiServiceInterface;
 import com.example.smk7.Model.MateriModel;
 import com.example.smk7.R;
 import com.example.smk7.Recyclemateriguru.EditMateri_Guru;
+import com.example.smk7.Recyclemateriguru.UploadMateri_Guru;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,42 +59,8 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
         return new MateriViewHolder(itemView);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull MateriViewHolder holder, int position) {
-        MateriModel materi = materiList.get(position);
-
-        // Set data ke views
-        holder.nama_materi.setText(materi.getJudulMateri());
-        holder.nama_kelas.setText(materi.getNamaKelas());
-
-        // Item click listener
-        holder.itemView.setOnClickListener(v -> {
-            if (onItemClickListener != null) {
-                onItemClickListener.onItemClick(materi);
-            }
-        });
-
-        // Edit button click
-        holder.btnEdit.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EditMateri_Guru.class);
-            intent.putExtra("id_materi", materi.getIdMateri());
-            intent.putExtra("id_mapel", materi.getIdMapel());
-            intent.putExtra("id_kelas", materi.getIdKelas());
-            intent.putExtra("judul_materi", materi.getJudulMateri());
-            intent.putExtra("deskripsi", materi.getDeskripsi());
-            intent.putExtra("file_materi", materi.getFileMateri());
-            intent.putExtra("nama_kelas", materi.getNamaKelas());
-            context.startActivity(intent);
-        });
-
-        // Delete button click
-        holder.btnHps.setOnClickListener(v -> {
-            Log.d(TAG, "Delete clicked for ID: " + materi.getIdMateri());
-            showDeleteDialog(materi.getIdMateri());
-        });
-    }
-
     // Di dalam MateriAdapter.java, ubah method getMateriById:
+
     private void showDeleteDialog(int idMateri) {
         if (idMateri <= 0) {
             Log.e(TAG, "Invalid ID Materi: " + idMateri);
@@ -111,7 +78,6 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
                 .setNegativeButton("Batal", null)
                 .show();
     }
-
     private void deleteMateri(int idMateri) {
         if (idMateri <= 0) {
             Log.e(TAG, "Invalid ID Materi");
@@ -183,6 +149,84 @@ public class MateriAdapter extends RecyclerView.Adapter<MateriAdapter.MateriView
                 Toast.makeText(context, "Gagal terhubung ke server", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MateriViewHolder holder, int position) {
+        MateriModel materi = materiList.get(position);
+
+        // Set data ke views
+        holder.nama_materi.setText(materi.getJudulMateri());
+        holder.nama_kelas.setText(materi.getNamaKelas());
+
+        // Edit button click - langsung ke EditMateri_Guru
+        holder.btnEdit.setOnClickListener(v -> {
+            launchEditMateri(materi);
+        });
+
+        // Upload button click - langsung ke UploadMateri_Guru
+        holder.btnHps.setOnClickListener(v -> {
+            Log.d(TAG, "Delete clicked for ID: " + materi.getIdMateri());
+            showDeleteDialog(materi.getIdMateri());
+        });
+    }
+
+//    private void showEditOptionsDialog(MateriModel materi) {
+//        String[] options = {"Edit Materi", "Upload Ulang Materi"};
+//
+//        new AlertDialog.Builder(context)
+//                .setTitle("Pilih Aksi")
+//                .setItems(options, (dialog, which) -> {
+//                    switch (which) {
+//                        case 0: // Edit Materi
+//                            launchEditMateri(materi);
+//                            break;
+//                        case 1: // Upload Ulang
+//                            launchUploadMateri(materi);
+//                            break;
+//                    }
+//                })
+//                .show();
+//    }
+
+    private void launchEditMateri(MateriModel materi) {
+        Intent intent = new Intent(context, EditMateri_Guru.class);
+        intent.putExtra("id_materi", materi.getIdMateri());
+        intent.putExtra("id_mapel", materi.getIdMapel());
+        intent.putExtra("id_kelas", materi.getIdKelas());
+        intent.putExtra("id_guru", materi.getIdGuru());
+        intent.putExtra("judul_materi", materi.getJudulMateri());
+        intent.putExtra("deskripsi", materi.getDeskripsi());
+        intent.putExtra("file_materi", materi.getFileMateri());
+        intent.putExtra("nama_kelas", materi.getNamaKelas());
+
+        Log.d(TAG, "Launching EditMateri_Guru - ID: " + materi.getIdMateri() +
+                ", Judul: " + materi.getJudulMateri());
+
+        context.startActivity(intent);
+    }
+
+    private void launchUploadMateri(MateriModel materi) {
+        // Convert int to String when getting ID Guru
+        String idGuru = String.valueOf(materi.getIdGuru());
+
+        if (idGuru == null || idGuru.isEmpty()) {
+            Toast.makeText(context, "Error: ID Guru tidak tersedia", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(context, UploadMateri_Guru.class);
+        intent.putExtra("id_guru", idGuru);
+        intent.putExtra("id_kelas", String.valueOf(materi.getIdKelas()));
+        intent.putExtra("id_mapel", String.valueOf(materi.getIdMapel()));
+        intent.putExtra("nama_kelas", materi.getNamaKelas());
+        intent.putExtra("is_edit_mode", true);
+        intent.putExtra("id_materi", materi.getIdMateri());
+
+        Log.d(TAG, "Launching UploadMateri_Guru for edit - ID Guru: " + idGuru +
+                ", ID Materi: " + materi.getIdMateri());
+
+        context.startActivity(intent);
     }
 
     private void handleDeleteResponse(Response<ResponseBody> response, int idMateri) {

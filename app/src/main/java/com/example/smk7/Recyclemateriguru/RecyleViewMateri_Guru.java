@@ -2,8 +2,8 @@ package com.example.smk7.Recyclemateriguru;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,17 +18,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.smk7.Adapter.MateriAdapter;
 import com.example.smk7.ApiDatabase.ApiResponse;
 import com.example.smk7.ApiDatabase.ApiService;
 import com.example.smk7.ApiDatabase.ApiServiceInterface;
-import com.example.smk7.Guru.Adapter.MateriAdapter;
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.Guru.DashboardGuru;
-import com.example.smk7.Guru.Model.MateriModel;
+import com.example.smk7.Model.MateriModel;
 import com.example.smk7.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.smk7.SessionManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,11 +44,36 @@ public class RecyleViewMateri_Guru extends Fragment {
     private ImageView backButton;
     private FloatingActionButton fabAddMateri;
     private BottomNavigationHandler navigationHandler;
+    private String idGuru; // Variable untuk menyimpan ID Guru
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recycleview_materi_guru, container, false);
+
+
+        backButton = view.findViewById(R.id.back_Button);
+        backButton.setOnClickListener(v -> {
+            if (getActivity() instanceof DashboardGuru) {
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+
+
+                viewPager.setCurrentItem(4, false);  // false berarti tanpa animasi untuk perpindahan langsung
+
+            }
+        });
+
+        // Ambil ID Guru dari SharedPreferences
+        SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        idGuru = prefs.getString("id_guru", "");
+
+        // Debug log untuk memeriksa ID Guru
+        Log.d(TAG, "ID Guru from SharedPreferences: " + idGuru);
+
+//        if (idGuru.isEmpty()) {
+//            Log.e(TAG, "ID Guru not found in SharedPreferences");
+//            Toast.makeText(getContext(), "Error: ID Guru tidak ditemukan", Toast.LENGTH_SHORT).show();
+//        }
+
         initializeViews(view);
         return view;
     }
@@ -59,62 +83,68 @@ public class RecyleViewMateri_Guru extends Fragment {
         recyclerView = view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Initialize Back Button
-        backButton = view.findViewById(R.id.back_Button);
-        backButton.setOnClickListener(v -> {
-            if (getActivity() instanceof DashboardGuru) {
-                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
-                viewPager.setCurrentItem(8, false);
-            }
-        });
-
-        // Initialize FAB
+        // Initialize FAB dengan SessionManager
         fabAddMateri = view.findViewById(R.id.fabAddMateri);
         fabAddMateri.setOnClickListener(v -> {
-            if (getActivity() instanceof BottomNavigationHandler) {
-                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomnav);
-                if (bottomNavigationView != null) {
-                    bottomNavigationView.setVisibility(View.GONE);
-                }
+            if (getActivity() == null) return;
+
+            // Gunakan SessionManager untuk mendapatkan ID Guru
+            SessionManager sessionManager = new SessionManager(getContext());
+            int idGuru = sessionManager.getIdGuru();
+
+            if (idGuru == -1) {
+                Toast.makeText(getContext(), "Error: ID Guru tidak ditemukan", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            new Handler().postDelayed(() -> {
-                Intent intent = new Intent(getContext(), UploadMateri_Guru.class);
-                startActivity(intent);
-            }, 200);
+            Intent intent = new Intent(getContext(), UploadMateri_Guru.class);
+
+            // Convert ID Guru ke String karena UploadMateri_Guru menerima String
+            intent.putExtra("id_guru", String.valueOf(idGuru));
+
+            if (materiList != null && !materiList.isEmpty()) {
+                MateriModel firstMateri = materiList.get(0);
+                intent.putExtra("id_kelas", String.valueOf(firstMateri.getIdKelas()));
+                intent.putExtra("id_mapel", String.valueOf(firstMateri.getIdMapel()));
+                intent.putExtra("nama_kelas", firstMateri.getNamaKelas());
+            }
+
+            // Debug log
+            Log.d(TAG, "Sending ID Guru to UploadMateri_Guru: " + idGuru);
+
+            startActivity(intent);
         });
 
-        // Fetch data
         fetchMateriData();
     }
 
     private void fetchMateriData() {
+        if (getContext() == null) return;
+
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
         Call<ApiResponse> call = apiService.getMateriData();
+        Log.d(TAG, "Starting to fetch materi data");
+
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                if (getContext() == null) return;
+
                 if (response.isSuccessful() && response.body() != null) {
                     ApiResponse apiResponse = response.body();
-                    Log.d("API Response", apiResponse.toString());
+                    Log.d(TAG, "API Response received: " + apiResponse);
 
-                    // Ubah pengecekan status menjadi "success" atau cek success boolean
                     if (apiResponse.isSuccess() || "success".equals(apiResponse.getStatus())) {
                         materiList = apiResponse.getMateriModel();
                         if (materiList != null && !materiList.isEmpty()) {
                             setupRecyclerView(materiList, apiService);
-                            Log.d("API Response", "Ditemukan " + materiList.size() + " materi");
+                            Log.d(TAG, "Found " + materiList.size() + " materi items");
                         } else {
-                            Log.e("API Response", "materiModel kosong");
-                            if (getContext() != null) {
-                                Toast.makeText(getContext(), "Tidak ada data materi", Toast.LENGTH_SHORT).show();
-                            }
+                            showEmptyState();
+                            Log.w(TAG, "No materi data found");
                         }
                     } else {
-                        Log.e("API Response", "API error: " + apiResponse.getMessage());
-                        if (getContext() != null) {
-                            Toast.makeText(getContext(), "Error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                        handleError("API error: " + apiResponse.getMessage());
                     }
                 } else {
                     String errorBody = "";
@@ -123,35 +153,34 @@ public class RecyleViewMateri_Guru extends Fragment {
                             errorBody = response.errorBody().string();
                         }
                     } catch (IOException e) {
-                        Log.e("API Error", "Error reading error body: " + e.getMessage());
+                        Log.e(TAG, "Error reading error body: " + e.getMessage());
                     }
-                    Log.e("API Error", "Response gagal dengan kode: " + response.code() +
-                            ", pesan: " + response.message() +
+                    handleError("Response failed with code: " + response.code() +
+                            ", message: " + response.message() +
                             ", errorBody: " + errorBody);
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Log.e("API Error", "Network error: " + t.getMessage());
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                if (getContext() == null) return;
+                handleError("Network error: " + t.getMessage());
             }
         });
     }
 
     private void setupRecyclerView(List<MateriModel> materiList, ApiServiceInterface apiService) {
         if (getContext() == null) return;
-        materiAdapter = new MateriAdapter(getContext(), materiList,
-                new MateriAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(MateriModel materiModel) {
-                        Log.d(TAG, "Item diklik: " + materiModel.getJudulMateri());
-                        // Tambahkan logika handling klik di sini
-                    }
+
+        materiAdapter = new MateriAdapter(
+                getContext(),
+                materiList,
+                materiModel -> {
+                    Log.d(TAG, "Materi clicked: " + materiModel.getJudulMateri());
+                    // Handle item click if needed
                 },
-                apiService);  // Tambahkan parameter keempat
+                apiService
+        );
 
         recyclerView.setAdapter(materiAdapter);
     }
@@ -175,8 +204,7 @@ public class RecyleViewMateri_Guru extends Fragment {
         try {
             navigationHandler = (BottomNavigationHandler) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement BottomNavigationHandler");
+            throw new ClassCastException(context.toString() + " must implement BottomNavigationHandler");
         }
     }
 
@@ -185,10 +213,12 @@ public class RecyleViewMateri_Guru extends Fragment {
         super.onResume();
         if (navigationHandler != null) {
             navigationHandler.hideBottomNav();
-            if (getActivity() != null) {
-                ((DashboardGuru) getActivity()).setSwipeEnabled(false);
-            }
         }
+        if (getActivity() != null) {
+            ((DashboardGuru) getActivity()).setSwipeEnabled(false);
+        }
+        // Refresh data when resuming
+        fetchMateriData();
     }
 
     @Override

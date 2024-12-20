@@ -43,7 +43,7 @@ public class MateriSiswaAdapter extends RecyclerView.Adapter<MateriSiswaAdapter.
         MateriSiswaModel materi = materiList.get(position);
 
         // Set judul tugas ke TextView
-        holder.judul_tugas.setText(materi.getJudulTugas());  // Pastikan getJudulTugas() ada di MateriSiswaModel
+        holder.judul_tugas.setText(materi.getJudulMateri());  // Pastikan getJudulTugas() ada di MateriSiswaModel
         holder.itemView.setOnClickListener(v -> {
             if (currentFragment != null && viewPager != null) {
                 Log.d("Fragment Check", "Current Fragment: " + currentFragment.getClass().getSimpleName());

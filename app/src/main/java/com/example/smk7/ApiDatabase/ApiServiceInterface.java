@@ -1,8 +1,5 @@
 package com.example.smk7.ApiDatabase;
 
-import com.example.smk7.Model.MateriModel;
-
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -10,15 +7,12 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Part;
-import retrofit2.http.PartMap;
 import retrofit2.http.Query;
 
 public interface ApiServiceInterface {
@@ -38,6 +32,19 @@ public interface ApiServiceInterface {
 
     @GET("api_banktugasguru.php")
     Call<ApiResponse> getBankTugasData();
+
+    //API Untuk Siswa
+    @GET("api_mapelsiswa.php")
+    Call<ApiResponse> getMapelData2();
+
+    @GET("api_materisiswa.php")
+    Call<ApiResponse> getMateriData2();
+
+    @GET("api_tugassiswa.php")
+    Call<ApiResponse> getTugasData2();
+
+    @GET("api_siswa.php")
+    Call<ApiResponse> getSiswa();
 
 
     //API untuk Materi Guru

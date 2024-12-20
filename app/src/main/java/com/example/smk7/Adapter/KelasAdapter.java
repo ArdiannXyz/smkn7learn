@@ -1,4 +1,4 @@
-package com.example.smk7.Guru.Adapter;
+package com.example.smk7.Adapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.smk7.Guru.Model.KelasModel;
+import com.example.smk7.Model.KelasModel;
 import com.example.smk7.R;
 import com.example.smk7.RecycleBankTugas.BankTugasKelas_Guru;
 import com.example.smk7.RecycleTugasGuru.UploadTugasKelas_Guru;
