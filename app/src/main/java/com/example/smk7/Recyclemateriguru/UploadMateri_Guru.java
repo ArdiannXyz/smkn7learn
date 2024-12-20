@@ -2,7 +2,9 @@ package com.example.smk7.Recyclemateriguru;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,6 +27,7 @@ import com.example.smk7.ApiDatabase.ApiHelper;
 import com.example.smk7.ApiDatabase.Db_Contract;
 import com.example.smk7.BottomNavigationHandler;
 import com.example.smk7.R;
+import com.example.smk7.SessionManager;
 
 import org.json.JSONObject;
 
@@ -55,6 +58,8 @@ public class UploadMateri_Guru extends AppCompatActivity {
     private String namaKelas;
     private Uri selectedFileUri;
     private BottomNavigationHandler navigationHandler;
+    private boolean isEditMode = false;
+    private int idMateri = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +74,21 @@ public class UploadMateri_Guru extends AppCompatActivity {
         backButton = findViewById(R.id.back_Button);
         edtJudulMateri = findViewById(R.id.Edt_JudulMateri);
         edtLampiran = findViewById(R.id.Edt_Lampiran);
-        edtKomentar = findViewById(R.id.Edt_Komentar); // Using existing Komentar field
+        edtKomentar = findViewById(R.id.Edt_Komentar);
         tvNamaKelas = findViewById(R.id.NamaKelas);
         btnSimpan = findViewById(R.id.Btn_simpan);
+
+        // Check if in edit mode
+        isEditMode = getIntent().getBooleanExtra("is_edit_mode", false);
+        if (isEditMode) {
+            // Set judul form
+            setTitle("Edit Materi");
+            // Ambil ID materi yang sedang diedit
+            idMateri = getIntent().getIntExtra("id_materi", -1);
+            if (idMateri != -1) {
+                loadExistingMateri(idMateri);
+            }
+        }
 
         // Set up click listeners
         backButton.setOnClickListener(v -> onBackPressed());
@@ -79,43 +96,114 @@ public class UploadMateri_Guru extends AppCompatActivity {
         btnSimpan.setOnClickListener(v -> uploadMateri());
     }
 
+    private void loadExistingMateri(int idMateri) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Memuat data materi...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        new Thread(() -> {
+            try {
+                // Build request to get existing materi data
+                Request request = new Request.Builder()
+                        .url(Db_Contract.urlApiTambahMateri + "?id_materi=" + idMateri)
+                        .get()
+                        .build();
+
+                OkHttpClient client = new OkHttpClient();
+                Response response = client.newCall(request).execute();
+                String responseBody = response.body().string();
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    try {
+                        if (jsonResponse.has("success") && jsonResponse.getBoolean("success")) {
+                            JSONObject data = jsonResponse.getJSONObject("data");
+
+                            // Populate fields with existing data
+                            edtJudulMateri.setText(data.getString("judul_materi"));
+                            edtKomentar.setText(data.getString("deskripsi"));
+                            edtLampiran.setText(data.getString("file_name"));
+
+                            // Store existing file info if needed
+                            String existingFilePath = data.getString("file_path");
+                            // You might want to store this for later use
+
+                        } else {
+                            String errorMessage = jsonResponse.has("error") ?
+                                    jsonResponse.getString("error") :
+                                    "Gagal memuat data materi";
+                            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing materi data", e);
+                        Toast.makeText(this, "Terjadi kesalahan saat memuat data", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "Error loading materi", e);
+                    Toast.makeText(this, "Gagal memuat data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        }).start();
+    }
+
     private void receiveIntentData() {
         Intent intent = getIntent();
 
-        // Log semua extras untuk debugging
+        // Debug log semua extras
         Bundle extras = intent.getExtras();
         if (extras != null) {
             for (String key : extras.keySet()) {
-                Log.d(TAG, key + ": " + extras.get(key));
+                Object value = extras.get(key);
+                Log.d(TAG, "Extra data - Key: " + key + ", Value: " + value);
             }
         }
 
-        // Ambil data dengan nilai default
-        idKelas = intent.getStringExtra("id_kelas");
-        idMapel = intent.getStringExtra("id_mapel");
+        // Ambil ID Guru dari Intent
         idGuru = intent.getStringExtra("id_guru");
-        namaKelas = intent.getStringExtra("nama_kelas");
 
-        // Validasi data
+        // Jika tidak ada di Intent, coba ambil dari SessionManager
+        if (idGuru == null || idGuru.isEmpty()) {
+            SessionManager sessionManager = new SessionManager(this);
+            int idGuruInt = sessionManager.getIdGuru();
+            if (idGuruInt != -1) {
+                idGuru = String.valueOf(idGuruInt);
+                Log.d(TAG, "Got ID Guru from SessionManager: " + idGuru);
+            }
+        }
+
+        // Final check untuk ID Guru
         if (idGuru == null || idGuru.isEmpty()) {
             Log.e(TAG, "ID Guru tidak ditemukan");
-            Toast.makeText(this, "Error: ID Guru tidak valid", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: ID Guru tidak ditemukan", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // Set nama kelas dengan pengecekan
-        if (namaKelas != null && !namaKelas.isEmpty()) {
-            tvNamaKelas.setText(namaKelas);
-        } else {
-            tvNamaKelas.setText("Pilih Kelas");
-            Log.w(TAG, "Nama kelas kosong, menggunakan default");
-        }
+        // Ambil data lainnya
+        idKelas = intent.getStringExtra("id_kelas");
+        idMapel = intent.getStringExtra("id_mapel");
+        namaKelas = intent.getStringExtra("nama_kelas");
+
+        if (namaKelas == null) namaKelas = "Pilih Kelas";
+
+        // Set nama kelas
+        tvNamaKelas.setText(namaKelas);
+
+        // Debug log
+        Log.d(TAG, "Data received - ID Guru: " + idGuru +
+                ", ID Kelas: " + idKelas +
+                ", ID Mapel: " + idMapel +
+                ", Nama Kelas: " + namaKelas);
     }
 
     private void uploadMateri() {
         String judulMateri = edtJudulMateri.getText().toString().trim();
-        String deskripsi = edtKomentar.getText().toString().trim(); // Using komentar as deskripsi
+        String deskripsi = edtKomentar.getText().toString().trim();
 
         if (TextUtils.isEmpty(judulMateri) || TextUtils.isEmpty(deskripsi)) {
             Toast.makeText(this, "Judul materi dan komentar harus diisi!", Toast.LENGTH_SHORT).show();
@@ -123,7 +211,7 @@ public class UploadMateri_Guru extends AppCompatActivity {
         }
 
         ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Mengupload materi...");
+        progressDialog.setMessage(isEditMode ? "Mengupdate materi..." : "Mengupload materi...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
@@ -132,19 +220,28 @@ public class UploadMateri_Guru extends AppCompatActivity {
                 MultipartBody.Builder builder = new MultipartBody.Builder()
                         .setType(MultipartBody.FORM);
 
-                // Add required fields for PHP API
+                // Add required fields
                 builder.addFormDataPart("judul_materi", judulMateri);
-                builder.addFormDataPart("deskripsi", deskripsi); // Send komentar as deskripsi
+                builder.addFormDataPart("deskripsi", deskripsi);
                 builder.addFormDataPart("id_guru", idGuru);
                 builder.addFormDataPart("id_mapel", idMapel);
                 builder.addFormDataPart("id_kelas", idKelas);
+
+                if (isEditMode) {
+                    builder.addFormDataPart("id_materi", String.valueOf(idMateri));
+                }
 
                 // Add file if selected
                 if (selectedFileUri != null) {
                     File file = getFileFromUri(selectedFileUri);
                     if (file != null) {
+                        String mimeType = getContentResolver().getType(selectedFileUri);
+                        if (mimeType == null) {
+                            mimeType = "application/octet-stream";
+                        }
+
                         RequestBody fileBody = RequestBody.create(
-                                MediaType.parse(getContentResolver().getType(selectedFileUri)),
+                                MediaType.parse(mimeType),
                                 file
                         );
                         builder.addFormDataPart(
@@ -156,19 +253,37 @@ public class UploadMateri_Guru extends AppCompatActivity {
                 }
 
                 RequestBody requestBody = builder.build();
+                String url = isEditMode ? Db_Contract.urlApiEditMateri : Db_Contract.urlApiTambahMateri;
+
                 Request request = new Request.Builder()
-                        .url(Db_Contract.urlApiUploadMateri)
+                        .url(url)
                         .post(requestBody)
                         .build();
 
                 OkHttpClient client = new OkHttpClient();
                 Response response = client.newCall(request).execute();
 
+                // Get response body
+                String responseBody = "";
+                if (response.body() != null) {
+                    responseBody = response.body().string();
+                }
+
+                // Log raw response for debugging
+                Log.d(TAG, "Raw response: " + responseBody);
+
+                // Final response body for UI thread
+                final String finalResponseBody = responseBody;
+
                 runOnUiThread(() -> {
                     progressDialog.dismiss();
                     try {
-                        String responseBody = response.body().string();
-                        JSONObject jsonResponse = new JSONObject(responseBody);
+                        // Check if response starts with <!DOCTYPE
+                        if (finalResponseBody.trim().startsWith("<!DOCTYPE")) {
+                            throw new Exception("Server returned HTML instead of JSON");
+                        }
+
+                        JSONObject jsonResponse = new JSONObject(finalResponseBody);
 
                         if (jsonResponse.has("success") && jsonResponse.getBoolean("success")) {
                             Toast.makeText(
@@ -180,7 +295,7 @@ public class UploadMateri_Guru extends AppCompatActivity {
                         } else {
                             String errorMessage = jsonResponse.has("error") ?
                                     jsonResponse.getString("error") :
-                                    "Gagal mengupload materi";
+                                    "Gagal " + (isEditMode ? "mengupdate" : "mengupload") + " materi";
                             Toast.makeText(
                                     UploadMateri_Guru.this,
                                     errorMessage,
@@ -188,10 +303,10 @@ public class UploadMateri_Guru extends AppCompatActivity {
                             ).show();
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, "Error parsing response", e);
+                        Log.e(TAG, "Error parsing response: " + finalResponseBody, e);
                         Toast.makeText(
                                 UploadMateri_Guru.this,
-                                "Terjadi kesalahan saat memproses respons",
+                                "Terjadi kesalahan pada server. Silakan coba lagi.",
                                 Toast.LENGTH_SHORT
                         ).show();
                     }
@@ -203,7 +318,7 @@ public class UploadMateri_Guru extends AppCompatActivity {
                     Log.e(TAG, "Upload error", e);
                     Toast.makeText(
                             UploadMateri_Guru.this,
-                            "Gagal mengupload: " + e.getMessage(),
+                            "Gagal " + (isEditMode ? "mengupdate: " : "mengupload: ") + e.getMessage(),
                             Toast.LENGTH_SHORT
                     ).show();
                 });
@@ -317,5 +432,11 @@ public class UploadMateri_Guru extends AppCompatActivity {
         if (navigationHandler != null) {
             navigationHandler.hideBottomNav();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Clean up any resources if needed
     }
 }
