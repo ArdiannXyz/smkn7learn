@@ -37,7 +37,7 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
 
     public interface OnItemClickListener {
         void onItemClick(String judulTugas, int idTugas);
-        void onDeleteSuccess(); // Tambahkan callback untuk refresh setelah hapus
+        void onDeleteSuccess();
     }
 
     public TugasAdapter(Context context, List<TugasModel> tugasList, OnItemClickListener listener) {
@@ -49,7 +49,8 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
     @NonNull
     @Override
     public TugasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.carditem_tugas_guru, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.carditem_tugas_guru, parent, false);
         return new TugasViewHolder(itemView);
     }
 
@@ -57,26 +58,30 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
     public void onBindViewHolder(@NonNull TugasViewHolder holder, int position) {
         TugasModel tugas = tugasList.get(position);
 
-        holder.tugas.setText(tugas.getJudulTugas());
+        // Set judul tugas
+        holder.txtnamaTugas.setText(tugas.getJudulTugas());
 
-        // Handle klik item
+        // Handle item click
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(tugas.getJudulTugas(), tugas.getIdTugas());
             }
         });
 
-        // Handle klik edit
-        holder.btn_editTugas.setOnClickListener(v -> {
+        // Handle edit click
+        holder.btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(context, EditTugas_Guru.class);
             intent.putExtra("id_tugas", tugas.getIdTugas());
             intent.putExtra("judul_tugas", tugas.getJudulTugas());
             intent.putExtra("nama_kelas", tugas.getNamaKelas());
+            intent.putExtra("deskripsi", tugas.getDeskripsi());
+            intent.putExtra("deadline", tugas.getDeadline());
+            intent.putExtra("file_tugas", tugas.getFileTugas());
             context.startActivity(intent);
         });
 
-        // Handle klik hapus
-        holder.btn_hapusTugas.setOnClickListener(v -> {
+        // Handle delete click
+        holder.btnHapus.setOnClickListener(v -> {
             showDeleteConfirmation(tugas.getIdTugas(), position);
         });
     }
@@ -94,29 +99,27 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
 
     private void deleteTugas(int idTugas, int position) {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
-
-        // Membuat Map untuk request body JSON
         Map<String, Integer> requestBody = new HashMap<>();
         requestBody.put("id_tugas", idTugas);
 
-        // Memanggil API dengan body JSON
         Call<ApiResponse> call = apiService.hapusTugas(requestBody);
-
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if ("success".equals(response.body().getStatus())) {
+                    if ("sukses".equals(response.body().getStatus())) {
                         tugasList.remove(position);
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, tugasList.size());
+                        if (onItemClickListener != null) {
+                            onItemClickListener.onDeleteSuccess();
+                        }
                         Toast.makeText(context, "Tugas berhasil dihapus", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(context, "Gagal menghapus tugas", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    // Tambahan handling untuk response error
-                    Toast.makeText(context, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -133,15 +136,14 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
     }
 
     public static class TugasViewHolder extends RecyclerView.ViewHolder {
-        public TextView tugas;
-        public ImageView btn_editTugas;
-        public ImageView btn_hapusTugas;
+        TextView txtnamaTugas;
+        ImageView btnEdit, btnHapus;
 
         public TugasViewHolder(View view) {
             super(view);
-            tugas = view.findViewById(R.id.txtnama_tugas);
-            btn_editTugas = view.findViewById(R.id.btn_editTugas);
-            btn_hapusTugas = view.findViewById(R.id.btn_hapusTugas);
+            txtnamaTugas = view.findViewById(R.id.txtnama_tugas);
+            btnEdit = view.findViewById(R.id.btn_editTugas);
+            btnHapus = view.findViewById(R.id.btn_hapusTugas);
         }
     }
 }

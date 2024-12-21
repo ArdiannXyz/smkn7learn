@@ -37,7 +37,7 @@
         android:id="@+id/recycleView"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/headerLayout"
         android:padding="5dp" />
 

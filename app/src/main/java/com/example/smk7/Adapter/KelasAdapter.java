@@ -47,51 +47,68 @@ public class KelasAdapter extends RecyclerView.Adapter<KelasAdapter.KelasViewHol
         KelasModel kelas = kelasList.get(position);
 
         // Set nama kelas
-        holder.namaKelas.setText(kelas.getNamaKelas());
+        if (kelas.getNamaKelas() != null) {
+            holder.namaKelas.setText(kelas.getNamaKelas() +
+                    (kelas.getTahunAjaran() != null ? " (" + kelas.getTahunAjaran() + ")" : ""));
+        } else {
+            holder.namaKelas.setText("Nama Kelas Tidak Tersedia");
+        }
 
         // Handle wali kelas display
         KelasModel.WaliKelas waliKelas = kelas.getWaliKelas();
-        if (waliKelas != null && waliKelas.getNama() != null) {
-            String waliKelasText = waliKelas.getNama();
-            if (waliKelas.getNip() != null && !waliKelas.getNip().isEmpty()) {
-                waliKelasText += " (" + waliKelas.getNip() + ")";
+        if (waliKelas != null) {
+            StringBuilder waliKelasText = new StringBuilder();
+
+            if (waliKelas.getNama() != null && !waliKelas.getNama().isEmpty()) {
+                waliKelasText.append(waliKelas.getNama());
+
+                if (waliKelas.getNip() != null && !waliKelas.getNip().isEmpty()) {
+                    waliKelasText.append(" (").append(waliKelas.getNip()).append(")");
+                }
+
+                holder.waliKelas.setText(waliKelasText.toString());
+                Log.d(TAG, "Wali Kelas: " + waliKelasText);
+            } else {
+                holder.waliKelas.setText("Wali Kelas Tidak Tersedia");
             }
-            holder.waliKelas.setText(waliKelasText);
-            Log.d(TAG, "Setting wali kelas: " + waliKelasText);
         } else {
-            holder.waliKelas.setText("Belum ada wali kelas");
-            Log.d(TAG, "No wali kelas data available");
+            holder.waliKelas.setText("Belum Ada Wali Kelas");
+            Log.d(TAG, "Data wali kelas kosong");
         }
 
         holder.itemView.setOnClickListener(v -> {
-            if (isViewPagerRequired && viewPager != null) {
-                if (currentFragment != null) {
-                    Log.d(TAG, "Current Fragment: " + currentFragment.getClass().getSimpleName());
+            if (isViewPagerRequired && viewPager != null && currentFragment != null) {
+                try {
+                    String idKelas = kelas.getIdKelas();
+                    if (idKelas != null) {
+                        Log.d(TAG, "Kelas terpilih - ID: " + idKelas);
+                        // Simpan ID kelas ke preferences atau bundle jika diperlukan
 
-                    // Simpan ID Kelas untuk digunakan di fragment berikutnya
-                    if (kelas.getIdKelas() != null) {
-                        Log.d(TAG, "Selected Kelas ID: " + kelas.getIdKelas());
-                    }
-
-                    if (currentFragment instanceof UploadMateriKelas_Guru) {
-                        Log.d(TAG, "Navigating to Upload Materi page");
-                        viewPager.setCurrentItem(11, false);
-                    } else if (currentFragment instanceof UploadTugasKelas_Guru) {
-                        Log.d(TAG, "Navigating to Upload Tugas page");
-                        viewPager.setCurrentItem(12, false);
-                    } else if (currentFragment instanceof BankTugasKelas_Guru) {
-                        Log.d(TAG, "Navigating to Bank Tugas page");
-                        viewPager.setCurrentItem(13, false);
+                        navigateBasedOnFragment(currentFragment);
                     } else {
-                        Log.e(TAG, "Unknown fragment type: " + currentFragment.getClass().getSimpleName());
-                        Toast.makeText(v.getContext(), "Fragment tidak dikenali", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "ID Kelas tidak valid");
+                        Toast.makeText(v.getContext(), "Data kelas tidak valid",
+                                Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Log.e(TAG, "Current fragment is null!");
-                    Toast.makeText(v.getContext(), "Fragment aktif tidak ditemukan", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error saat navigasi: " + e.getMessage());
+                    Toast.makeText(v.getContext(), "Terjadi kesalahan",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private void navigateBasedOnFragment(Fragment fragment) {
+        if (fragment instanceof UploadMateriKelas_Guru) {
+            viewPager.setCurrentItem(11, false);
+        } else if (fragment instanceof UploadTugasKelas_Guru) {
+            viewPager.setCurrentItem(12, false);
+        } else if (fragment instanceof BankTugasKelas_Guru) {
+            viewPager.setCurrentItem(13, false);
+        } else {
+            Log.e(TAG, "Tipe fragment tidak dikenali: " + fragment.getClass().getSimpleName());
+        }
     }
 
     @Override

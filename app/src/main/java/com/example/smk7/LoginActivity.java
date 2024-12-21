@@ -113,7 +113,13 @@ public class LoginActivity extends AppCompatActivity {
                 // Simpan data user
                 sessionManager.saveUserLoginData(userId, role, nama, email);
 
+                // Menampilkan pesan selamat datang dengan nama pengguna
+                Toast.makeText(getApplicationContext(),
+                        "Selamat Datang " + nama, Toast.LENGTH_SHORT).show();
+
+                // Toast untuk message dari server
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
                 redirectBasedOnRole(role);
                 finish();
             } else {

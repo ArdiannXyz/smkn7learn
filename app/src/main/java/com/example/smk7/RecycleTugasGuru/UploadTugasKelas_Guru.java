@@ -79,43 +79,46 @@ public class UploadTugasKelas_Guru extends Fragment {
                     Log.d("API Response", apiResponse.toString());
 
                     if ("success".equals(apiResponse.getStatus())) {
-                        kelasList = apiResponse.getKelasModel();  // Pastikan data kelas diambil dengan benar
+                        // Menggunakan getData() karena API mengembalikan dalam format "data"
+                        kelasList = apiResponse.getData();
 
-                        // Pastikan kelasList valid dan tidak kosong
                         if (kelasList != null && !kelasList.isEmpty()) {
-                            // Ambil ViewPager2 dari activity
+                            Log.d("API Success", "Jumlah data kelas: " + kelasList.size());
+
                             ViewPager2 viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-
                             if (viewPager != null) {
-                                // Pastikan currentFragment sesuai dengan kondisi ini
-                                Fragment currentFragment = UploadTugasKelas_Guru.this;  // Gunakan fragment yang aktif
+                                Fragment currentFragment = UploadTugasKelas_Guru.this;
 
-                                // Panggil adapter dengan parameter yang benar
                                 kelasAdapter = new KelasAdapter(kelasList, viewPager, true, currentFragment);
-                                recyclerView.setAdapter(kelasAdapter);  // Set adapter ke RecyclerView
-
-                                // Jika RecyclerView di-click, maka pindah ke halaman 12 di ViewPager2
-                                recyclerView.setOnClickListener(v -> {
-                                    if (currentFragment instanceof UploadTugasKelas_Guru) {
-                                        Log.d("FragmentB", "Pindah ke halaman 12...");
-                                        viewPager.setCurrentItem(12, true);  // Pindah ke halaman 12 untuk Fragment B
-                                    }
-                                });
+                                recyclerView.setAdapter(kelasAdapter);
+                                kelasAdapter.notifyDataSetChanged();
+                            } else {
+                                Log.e("ViewPager Error", "ViewPager tidak ditemukan");
                             }
+                        } else {
+                            String message = apiResponse.getMessage() != null ?
+                                    apiResponse.getMessage() : "Tidak ada data kelas";
+                            Log.w("API Warning", message);
+                            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Log.e("API Error", "Error: " + apiResponse.getMessage());
+                        String errorMessage = apiResponse.getMessage() != null ?
+                                apiResponse.getMessage() : "Gagal mengambil data kelas";
+                        Log.e("API Error", errorMessage);
+                        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Log.e("API Error", "Response not successful or body is null");
+                    String errorMessage = "Gagal mengambil data dari server";
+                    Log.e("API Error", errorMessage);
+                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
 
-
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Request failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("API Error", "Request failed: " + t.getMessage(), t);
+                String errorMessage = "Gagal terhubung ke server: " + t.getMessage();
+                Log.e("API Error", errorMessage, t);
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }

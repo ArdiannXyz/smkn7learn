@@ -37,40 +37,38 @@ public class MapelAdapter extends RecyclerView.Adapter<MapelAdapter.MapelViewHol
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.carditem_mapel, parent, false);
         return new MapelViewHolder(itemView);
     }
+
+
     @Override
     public void onBindViewHolder(@NonNull MapelViewHolder holder, int position) {
         MapelModel mapel = mapelList.get(position);
-        holder.nama_mapel.setText(mapel.getNamaMapel());
+        if (mapel != null && mapel.getNamaMapel() != null) {
+            holder.nama_mapel.setText(mapel.getNamaMapel());
+        } else {
+            holder.nama_mapel.setText("Nama mapel tidak tersedia");
+        }
 
         holder.itemView.setOnClickListener(v -> {
-
-
-
-            // Pastikan currentFragment dan viewPager tidak null
             if (currentFragment != null && viewPager != null) {
-                Log.d("Fragment Check", "Current Fragment: " + currentFragment.getClass().getSimpleName());
+                Log.d("Fragment Check", "Current Fragment: " +
+                        currentFragment.getClass().getSimpleName());
 
-
-
-                // Pindahkan langsung ke halaman yang sesuai berdasarkan fragment aktif
-                if (currentFragment instanceof UploadMateriMapel_Guru) {
-                    Log.d("FragmentA", "Pindah ke halaman 8...");
-                    viewPager.setCurrentItem(8, false);  // false berarti tanpa animasi
-            } else if (currentFragment instanceof UploadTugasMapelGuru) {
-                    Log.d("FragmentB", "Pindah ke halaman 9...");
-                    viewPager.setCurrentItem(9, false);  // false berarti tanpa animasi
-                } else if (currentFragment instanceof BankTugasMapel_Guru) {
-                    Log.d("FragmentC", "Pindah ke halaman 10...");
-                    viewPager.setCurrentItem(10, false);  // false berarti tanpa animasi
-                } else {
-                    Log.e("Fragment Error", "Fragment tidak dikenali!");
+                try {
+                    if (currentFragment instanceof UploadMateriMapel_Guru) {
+                        viewPager.setCurrentItem(8, false);
+                    } else if (currentFragment instanceof UploadTugasMapelGuru) {
+                        viewPager.setCurrentItem(9, false);
+                    } else if (currentFragment instanceof BankTugasMapel_Guru) {
+                        viewPager.setCurrentItem(10, false);
+                    } else {
+                        Log.e("Fragment Error", "Fragment tidak dikenali");
+                    }
+                } catch (Exception e) {
+                    Log.e("ViewPager Error", "Error saat navigasi: " + e.getMessage());
                 }
-
-
             } else {
                 Log.e("Fragment Error", "currentFragment atau viewPager null!");
             }
-
         });
     }
 

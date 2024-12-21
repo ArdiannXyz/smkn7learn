@@ -78,37 +78,61 @@ public class UploadTugasMapelGuru extends Fragment {
                     ApiResponse apiResponse = response.body();
                     Log.d("API Response", apiResponse.toString());
 
-                    if ("success".equals(apiResponse.getStatus())) {
+                    if (apiResponse.isSuccess() && !apiResponse.isMapelModelEmpty()) {
                         mapelList = apiResponse.getMapelModel();
-                        if (mapelList != null && !mapelList.isEmpty()) {
-                            // Mendapatkan ViewPager2 dari activity
-                            viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
-                            if (viewPager == null) {
-                                Log.e("Error", "ViewPager2 tidak ditemukan!");
-                            }
 
-                            // Menyediakan fragment saat ini untuk adapter
-                            Fragment currentFragment = getParentFragment() != null ? getParentFragment() : UploadTugasMapelGuru.this;
-
-                            // Menyesuaikan adapter dengan fragment yang aktif
-                            mapelAdapter = new MapelAdapter(mapelList, viewPager, currentFragment);
-                            recyclerView.setAdapter(mapelAdapter);
-                            mapelAdapter.notifyDataSetChanged();  // Update UI
-                        } else {
-                            Log.e("API Response", "mapelModel is null or empty");
-                            Toast.makeText(getContext(), "No data available", Toast.LENGTH_SHORT).show();
+                        // Mendapatkan ViewPager2 dari activity
+                        viewPager = requireActivity().findViewById(R.id.Viewpagerguru);
+                        if (viewPager == null) {
+                            Log.e("Error", "ViewPager2 tidak ditemukan!");
+                            return;
                         }
+
+                        // Menyediakan fragment saat ini untuk adapter
+                        Fragment currentFragment = getParentFragment() != null ?
+                                getParentFragment() : UploadTugasMapelGuru.this;
+
+                        // Menyesuaikan adapter dengan fragment yang aktif
+                        mapelAdapter = new MapelAdapter(mapelList, viewPager, currentFragment);
+                        recyclerView.setAdapter(mapelAdapter);
+                        mapelAdapter.notifyDataSetChanged();
+
+                        // Log sukses
+                        Log.d("API Success", "Data mapel berhasil dimuat: " +
+                                mapelList.size() + " items");
+
                     } else {
-                        Toast.makeText(getContext(), "API error: " + apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        String errorMessage = apiResponse.getMessage() != null ?
+                                apiResponse.getMessage() : "Data mapel tidak tersedia";
+                        Log.e("API Response", "Error: " + errorMessage);
+
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), errorMessage,
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                 } else {
-                    Toast.makeText(getContext(), "Response not successful or body is null", Toast.LENGTH_SHORT).show();
+                    String errorMessage = "Gagal mengambil data dari server";
+                    Log.e("API Error", errorMessage +
+                            (response.errorBody() != null ? ": " + response.errorBody().toString() : ""));
+
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), errorMessage,
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to fetch data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                String errorMessage = "Gagal terhubung ke server: " + t.getMessage();
+                Log.e("API Error", errorMessage);
+                t.printStackTrace(); // untuk logging stack trace
+
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), errorMessage,
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
