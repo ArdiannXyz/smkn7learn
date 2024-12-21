@@ -114,7 +114,7 @@ public interface ApiServiceInterface {
             @Part("id_tugas") RequestBody idTugas,
             @Part("id_guru") RequestBody idGuru,
             @Part("judul_tugas") RequestBody judulTugas,
-            @Part("deskripsi") RequestBody deskripsi,  // Gunakan deskripsi
+            @Part("deskripsi") RequestBody deskripsi,
             @Part("id_kelas") RequestBody idKelas,
             @Part("deadline") RequestBody deadline,
             @Part MultipartBody.Part file

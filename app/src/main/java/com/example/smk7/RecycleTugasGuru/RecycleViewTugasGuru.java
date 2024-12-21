@@ -32,6 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -102,23 +103,47 @@ public class RecycleViewTugasGuru extends Fragment {
                     Log.d(TAG, "Raw Response: " + new Gson().toJson(apiResponse));
 
                     if ("sukses".equals(apiResponse.getStatus())) {
-                        List<TugasModel> tugasList = apiResponse.getData() != null ?
-                                new Gson().fromJson(
-                                        new Gson().toJsonTree(apiResponse.getData()),
-                                        new TypeToken<List<TugasModel>>(){}.getType()
-                                ) : null;
-
-                        // Log data yang diterima
-                        Log.d(TAG, "Received data: " + new Gson().toJson(tugasList));
+                        List<TugasModel> tugasList = apiResponse.getTugasData();
 
                         if (tugasList != null && !tugasList.isEmpty()) {
-                            Log.d(TAG, "Tugas list size: " + tugasList.size());
+                            Log.d(TAG, "Jumlah tugas: " + tugasList.size());
+                            for (TugasModel tugas : tugasList) {
+                                Log.d(TAG, "Tugas: " + tugas.getJudulTugas() +
+                                        ", ID: " + tugas.getIdTugas());
+                            }
                             setupRecyclerView(tugasList);
                         } else {
-                            Log.e(TAG, "Tugas list is null or empty");
+                            Log.e(TAG, "Data tugas kosong atau null");
                             if (getContext() != null) {
-                                Toast.makeText(getContext(), "Tidak ada data tugas", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(),
+                                        "Tidak ada data tugas yang tersedia",
+                                        Toast.LENGTH_SHORT).show();
                             }
+                        }
+                    } else {
+                        Log.e(TAG, "Status response bukan sukses: " + apiResponse.getStatus());
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(),
+                                    "Gagal mengambil data tugas",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ?
+                                response.errorBody().string() : "Unknown error";
+                        Log.e(TAG, "Response tidak berhasil: " + errorBody);
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(),
+                                    "Error: " + errorBody,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error membaca error response", e);
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(),
+                                    "Terjadi kesalahan saat membaca response",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -128,13 +153,18 @@ public class RecycleViewTugasGuru extends Fragment {
             public void onFailure(Call<ApiResponse> call, Throwable t) {
                 Log.e(TAG, "Network Error: " + t.getMessage(), t);
                 if (getContext() != null) {
-                    Toast.makeText(getContext(), "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),
+                            "Gagal terhubung ke server: " + t.getMessage(),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
     private void setupRecyclerView(List<TugasModel> tugasList) {
+        for (TugasModel tugas : tugasList) {
+            Log.d(TAG, "Tugas: " + tugas.getJudulTugas() + " ID: " + tugas.getIdTugas());
+        }
         if (tugasList == null) {
             Log.e(TAG, "tugasList is null");
             return;

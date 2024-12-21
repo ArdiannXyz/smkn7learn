@@ -267,37 +267,36 @@ public class EditTugas_Guru extends AppCompatActivity {
                 showError("Error mempersiapkan file: " + e.getMessage());
                 return;
             }
+
+            // Make API call with file
+            ApiServiceInterface apiService = ApiClient.getApiService();
+            Call<ResponseBody> call = apiService.updateTugasWithFile(
+                    idTugasBody,
+                    idGuruBody,
+                    judulTugasBody,
+                    deskripsiBody,
+                    idKelasBody,
+                    deadlineBody,
+                    filePart
+            );
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    hideLoading();
+                    handleUpdateResponse(response);
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    hideLoading();
+                    handleNetworkError(t);
+                }
+            });
         } else {
-            // Create empty part if no file selected
-            RequestBody emptyBody = RequestBody.create(MediaType.parse("text/plain"), "");
-            filePart = MultipartBody.Part.createFormData("file_tugas", "", emptyBody);
+            showError("Pilih file terlebih dahulu");
+            hideLoading();
         }
-
-        // Make API call
-        ApiServiceInterface apiService = ApiClient.getApiService();
-        Call<ResponseBody> call = apiService.updateTugas(
-                idTugasBody,
-                idGuruBody,
-                judulTugasBody,
-                deskripsiBody,
-                idKelasBody,
-                deadlineBody,
-                filePart
-        );
-
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                hideLoading();
-                handleUpdateResponse(response);
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                hideLoading();
-                handleNetworkError(t);
-            }
-        });
     }
 
     private void handleUpdateResponse(Response<ResponseBody> response) {

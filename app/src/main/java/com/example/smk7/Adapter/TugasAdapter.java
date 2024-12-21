@@ -3,6 +3,7 @@ package com.example.smk7.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,7 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
     @Override
     public void onBindViewHolder(@NonNull TugasViewHolder holder, int position) {
         TugasModel tugas = tugasList.get(position);
+        Log.d("TugasAdapter", "Binding position " + position + ": " + tugas.getJudulTugas());
 
         // Set judul tugas
         holder.txtnamaTugas.setText(tugas.getJudulTugas());
