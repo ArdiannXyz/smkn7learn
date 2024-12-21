@@ -41,9 +41,6 @@ public class UploadTugas_Siswa extends Fragment {
     private ArrayList<View> fileViews = new ArrayList<>();
     private BottomNavigationHandler navigationHandler;
 
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

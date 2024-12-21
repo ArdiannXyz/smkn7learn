@@ -66,8 +66,17 @@ public class DashboardSiswaFragment extends Fragment {
         LinearLayout linearLayoutMateriSiswa = view.findViewById(R.id.materisiswa);
         LinearLayout linearLayoutTugasSiswa = view.findViewById(R.id.tugassiswa);
 
-        linearLayoutMateriSiswa.setOnClickListener(v -> openFragment(3));
-        linearLayoutTugasSiswa.setOnClickListener(v -> openFragment(6));
+        linearLayoutMateriSiswa.setOnClickListener(v -> {
+            if (getActivity() instanceof DashboardSiswa) {
+                ((DashboardSiswa) getActivity()).viewPager2.setCurrentItem(3,false);
+            }
+        });
+
+        linearLayoutTugasSiswa.setOnClickListener(v -> {
+            if (getActivity() instanceof DashboardSiswa) {
+                ((DashboardSiswa) getActivity()).viewPager2.setCurrentItem(8,false);
+            }
+        });
     }
 
     private void fetchTugasData() {
@@ -79,27 +88,22 @@ public class DashboardSiswaFragment extends Fragment {
             public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ApiResponse apiResponse = response.body();
-                    Log.d("API Response", "Full Response: " + apiResponse.toString());
+                    Log.d("API Status", "Status: " + apiResponse.getStatus());
 
-                    if ("success".equals(apiResponse.getStatus())) {
-                        List<TugasSiswaModel> tugasList = apiResponse.getTugasSiswaModel();
-
-                        if (tugasList != null && !tugasList.isEmpty()) {
-                            Log.d("Tugas List", "Jumlah Tugas: " + tugasList.size());
-                            setupRecyclerView(tugasList);
-                        } else {
-                            Log.e("API Response", "Tugas data is empty");
-                            showToast("No data available");
+                    List<TugasSiswaModel> tugasList = apiResponse.getTugasSiswaModel();
+                    if (tugasList != null && !tugasList.isEmpty()) {
+                        for (TugasSiswaModel tugas : tugasList) {
+                            Log.d("Tugas", "Judul: " + tugas.getJudulTugas());
                         }
+                        setupRecyclerView(tugasList);
                     } else {
-                        Log.e("API Response", "API status is not success");
-                        showToast("API error: " + apiResponse.getMessage());
+                        Log.e("Data Error", "Tugas list is null or empty");
                     }
                 } else {
-                    Log.e("API Error", "Response failed: " + response.code());
-                    showToast("API error: " + response.message());
+                    Log.e("API Error", "Response failed with code: " + response.code());
                 }
             }
+
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
@@ -117,14 +121,14 @@ public class DashboardSiswaFragment extends Fragment {
 
     private int getUserIdFromPreferences() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        return sharedPreferences.getInt("user_id", -1);
+        return sharedPreferences.getInt("id", 7);
     }
 
-    private void fetchDataSiswaFromServer(int userId) {
+    private void fetchDataSiswaFromServer(int Id) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                String apiSiswaUrl = "http://192.168.100.48/api-mobile-php/api_siswa.php?user_id=" + userId;
+                String apiSiswaUrl = "http://192.168.118.49/WebNewbieTeam/api_siswa.php?id=" + Id;
                 Log.d("URL_Siswa", apiSiswaUrl);
 
                 HttpRequest request = HttpRequest.get(apiSiswaUrl);

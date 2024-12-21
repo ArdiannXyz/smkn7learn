@@ -40,13 +40,13 @@ public class Profil_Siswa extends Fragment {
         // Set up button click listeners
         ViewButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardSiswa) {
-                ((DashboardSiswa) getActivity()).viewPager2.setCurrentItem(5);
+                ((DashboardSiswa) getActivity()).viewPager2.setCurrentItem(5,false);
             }
         });
 
         EditButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardSiswa) {
-                ((DashboardSiswa) getActivity()).viewPager2.setCurrentItem(6);
+                ((DashboardSiswa) getActivity()).viewPager2.setCurrentItem(6,false);
             }
         });
 
@@ -81,7 +81,7 @@ public class Profil_Siswa extends Fragment {
     public void onResume() {
         super.onResume();
         if (navigationHandler != null) {
-            navigationHandler.hideBottomNav();
+            navigationHandler.showBottomNav();
         }
     }
 
@@ -89,7 +89,7 @@ public class Profil_Siswa extends Fragment {
     public void onPause() {
         super.onPause();
         if (navigationHandler != null) {
-            navigationHandler.hideBottomNav();
+            navigationHandler.showBottomNav();
         }
     }
 

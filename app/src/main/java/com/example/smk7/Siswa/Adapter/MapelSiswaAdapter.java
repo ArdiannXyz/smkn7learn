@@ -15,6 +15,7 @@ import com.example.smk7.R;
 import com.example.smk7.Siswa.Model.MapelSiswaModel;
 import com.example.smk7.Siswa.Mapel_Siswa;
 import com.example.smk7.Siswa.RecycleViewMapelSiswa;
+import com.example.smk7.Siswa.ReycleMapelTugasSiswa;
 
 import java.util.List;
 
@@ -48,19 +49,23 @@ public class MapelSiswaAdapter extends RecyclerView.Adapter<MapelSiswaAdapter.Ma
         holder.itemView.setOnClickListener(v -> {
             if (currentFragment != null && viewPager != null) {
                 Log.d("Fragment Check", "Current Fragment: " + currentFragment.getClass().getSimpleName());
-                // Pindah langsung ke halaman yang sesuai berdasarkan fragment aktif
+
+                // Pindah halaman berdasarkan fragment aktif
                 if (currentFragment instanceof RecycleViewMapelSiswa) {
-                    Log.d("FragmentA", "Pindah ke halaman 8...");
-                    viewPager.setCurrentItem(7, false);  // false berarti tanpa animasi
+                    Log.d("FragmentA", "Pindah ke halaman 7...");
+                    viewPager.setCurrentItem(7, false);
+                } else if (currentFragment instanceof ReycleMapelTugasSiswa) { // Ganti dengan nama kelas fragment B
+                    Log.d("FragmentB", "Pindah ke halaman 6...");
+                    viewPager.setCurrentItem(6, false);
                 } else {
-                    // Jangan pindah halaman jika berada di Fragment lain
-                    Log.d("FragmentB", "Tidak pindah halaman karena berada di Fragment B.");
+                    Log.d("Unknown Fragment", "Tidak pindah halaman karena berada di fragment yang tidak dikenali.");
                 }
             } else {
                 Log.e("Fragment Error", "Fragment atau ViewPager tidak valid!");
             }
         });
     }
+
     @Override
     public int getItemCount() {
         // Return jumlah item dalam list mapel

@@ -30,10 +30,12 @@ public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
             case 7:
                 return new Recycle_Materi_Siswa();
             case 8:
-                return new DetailMateri_Siswa();
+                return new ReycleMapelTugasSiswa();
             case 9:
-                return new UploadTugas_Siswa();
+                return new DetailMateri_Siswa();
             case 10:
+                return new UploadTugas_Siswa();
+            case 11:
                 return new DetailMateri_Siswa();
             default:
                 return new DashboardSiswaFragment();
@@ -42,6 +44,6 @@ public class ViewPagerAdaptersiswa extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 11;
+        return 12;
     }
 }

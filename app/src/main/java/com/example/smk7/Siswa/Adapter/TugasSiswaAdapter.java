@@ -48,7 +48,7 @@ public class TugasSiswaAdapter extends RecyclerView.Adapter<TugasSiswaAdapter.Tu
         TugasSiswaModel tugas = tugasList.get(position);
 
         // Set teks untuk item view (nama tugas atau deskripsi tugas)
-        holder.tugas.setText(tugas.getDeskripsi());  // Pastikan getDeskripsi() ada dalam TugasSiswaModel
+        holder.tugas.setText(tugas.getJudulTugas());  // Pastikan getDeskripsi() ada dalam TugasSiswaModel
 
         holder.itemView.setOnClickListener(v -> {
             // Hanya melakukan perpindahan halaman jika fragment adalah Tugas_Siswa dan viewPager ada
@@ -58,7 +58,7 @@ public class TugasSiswaAdapter extends RecyclerView.Adapter<TugasSiswaAdapter.Tu
                 // Hanya melakukan perpindahan halaman jika fragment adalah Tugas_Siswa
                 if (currentFragment instanceof Recycle_Tugas_Siswa) {
                     Log.d("FragmentA", "Pindah ke halaman 10...");
-                    viewPager.setCurrentItem(9, false);  // false berarti tanpa animasi
+                    viewPager.setCurrentItem(10, false);  // false berarti tanpa animasi
                 } else {
                     // Tidak melakukan apapun jika fragment yang aktif bukan Tugas_Siswa
                     Log.d("FragmentB", "Tidak pindah halaman karena berada di fragment lain.");

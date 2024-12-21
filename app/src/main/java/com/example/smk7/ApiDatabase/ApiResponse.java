@@ -34,6 +34,9 @@ public class ApiResponse {
     @SerializedName("data")
     private List<KelasModel> data;  // For new API format
 
+    @SerializedName("tugas_data")
+    private List<TugasModel> tugasDataList;
+
     @SerializedName("kelasModel")
     private List<KelasModel> kelasModel;  // For old API format
 
@@ -49,13 +52,13 @@ public class ApiResponse {
     @SerializedName("bank_tugas_model")
     private List<BankTugasModel> bankTugasModel;
 
-    @SerializedName("mapel_siswa_model")
+    @SerializedName("mapel_siswa")
     private List<MapelSiswaModel> mapelSiswaModel;
 
-    @SerializedName("tugas_siswa_model")
+    @SerializedName("judul_tugas")
     private List<TugasSiswaModel> tugasSiswaModel;
 
-    @SerializedName("materi_siswa_model")
+    @SerializedName("materi_siswa")
     private List<MateriSiswaModel> materiSiswaModel;
 
     // Getter dan Setter untuk Status API
@@ -89,6 +92,27 @@ public class ApiResponse {
 
     public void setTotalData(int totalData) {
         this.totalData = totalData;
+    }
+
+
+
+    // Tambahkan method getter dan setter untuk tugasDataList
+    public List<TugasModel> getTugasData() {
+        if (tugasDataList == null) {
+            Log.w(TAG, "getTugasData: Returning null");
+        }
+        return tugasDataList;
+    }
+
+    public void setTugasData(List<TugasModel> tugasDataList) {
+        this.tugasDataList = tugasDataList;
+        Log.d(TAG, "setTugasData: Size = " + (tugasDataList != null ? tugasDataList.size() : 0));
+    }
+
+    public boolean isTugasDataEmpty() {
+        boolean isEmpty = tugasDataList == null || tugasDataList.isEmpty();
+        Log.d(TAG, "isTugasDataEmpty: " + isEmpty);
+        return isEmpty;
     }
 
     // Getter dan Setter untuk Model Data
@@ -282,6 +306,7 @@ public class ApiResponse {
                 ", mapelSiswaModel size=" + (mapelSiswaModel != null ? mapelSiswaModel.size() : 0) +
                 ", tugasSiswaModel size=" + (tugasSiswaModel != null ? tugasSiswaModel.size() : 0) +
                 ", materiSiswaModel size=" + (materiSiswaModel != null ? materiSiswaModel.size() : 0) +
+                ", tugasData size=" + (tugasDataList != null ? tugasDataList.size() : 0) + // Tambahkan baris ini
                 '}';
     }
 }

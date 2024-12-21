@@ -50,7 +50,7 @@ public class MateriSiswaAdapter extends RecyclerView.Adapter<MateriSiswaAdapter.
                 // Pindah langsung ke halaman yang sesuai berdasarkan fragment aktif
                 if (currentFragment instanceof Recycle_Materi_Siswa) {
                     Log.d("FragmentA", "Pindah ke halaman 10...");
-                    viewPager.setCurrentItem(10, false);  // false berarti tanpa animasi
+                    viewPager.setCurrentItem(11, false);  // false berarti tanpa animasi
                 } else {
                     // Jangan pindah halaman jika berada di Fragment lain
                     Log.d("FragmentB", "Tidak pindah halaman karena berada di Fragment lain.");
