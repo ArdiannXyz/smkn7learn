@@ -233,8 +233,8 @@ public class ApiResponse {
             Log.d(TAG, "setBankTugasModel: Size = " + bankTugasModel.size());
             for (int i = 0; i < bankTugasModel.size(); i++) {
                 BankTugasModel model = bankTugasModel.get(i);
-                Log.d(TAG, "BankTugas[" + i + "]: nama=" + model.getNama()
-                        + ", status=" + model.getStatus()
+                Log.d(TAG, "BankTugas[" + i + "]: nama=" + model.getNamaSiswa()
+                        + ", status=" + model.getStatusPengumpulan()
                         + ", file_tugas=" + model.getFileTugas());
             }
         } else {

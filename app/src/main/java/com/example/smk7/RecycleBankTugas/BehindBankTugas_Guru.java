@@ -97,21 +97,30 @@ public class BehindBankTugas_Guru extends Fragment {
     private void setupDataFromArguments() {
         Bundle args = getArguments();
         if (args != null) {
-            // Set data dasar
-            String nama = args.getString("nama", "");
-            String status = args.getString("status", "Belum dinilai");
+            // Set data dasar menggunakan key yang baru sesuai model
+            String nama = args.getString("nama_siswa", ""); // ganti dari "nama" ke "nama_siswa"
+            String status = args.getString("status_pengumpulan", "Belum dinilai"); // ganti ke "status_pengumpulan"
             String fileTugas = args.getString("file_tugas", "");
             int idPengumpulan = args.getInt("id_pengumpulan", 0);
+            String nilai = args.getString("nilai", "Belum dinilai");
 
             // Debug log
             Log.d("Fragment Debug", String.format(
-                    "Received data: nama=%s, status=%s, file_tugas=%s, id_pengumpulan=%d",
-                    nama, status, fileTugas, idPengumpulan
+                    "Received data: nama_siswa=%s, status=%s, file_tugas=%s, id_pengumpulan=%d, nilai=%s",
+                    nama, status, fileTugas, idPengumpulan, nilai
             ));
 
             // Set text untuk textview
             tvNamaSiswa.setText(nama.isEmpty() ? "Tidak ada nama" : nama);
             tvStatus.setText(status.isEmpty() ? "Belum dinilai" : status);
+
+            // Set nilai jika sudah ada
+            if (!nilai.equals("Belum dinilai")) {
+                edtTambahNilai.setText(nilai);
+                edtTambahNilai.setEnabled(false);
+                btnBerikaNilai.setEnabled(false);
+                edtLampiran.setEnabled(false);
+            }
 
             // Disable tombol jika id tidak valid
             if (idPengumpulan == 0) {
@@ -126,7 +135,7 @@ public class BehindBankTugas_Guru extends Fragment {
         backButton.setOnClickListener(v -> {
             if (getActivity() instanceof DashboardGuru) {
                 ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
-                viewPager.setCurrentItem(10, false);
+                viewPager.setCurrentItem(13, false);
             }
         });
 

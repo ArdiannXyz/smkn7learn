@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".RecycleBankTugas.RecyleViewBankTugas_Guru"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/headerLayout"
@@ -13,27 +14,25 @@
         android:layout_height="wrap_content"
         android:background="@color/birulivin"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="8dp">
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/back_Button"
             android:layout_width="40dp"
-            android:layout_height="40dp">
-
-            <ImageView
-                android:id="@+id/back_Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/backlay" />
-        </FrameLayout>
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:src="@drawable/backlay" />
 
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleView"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/headerLayout"
-        android:padding="5dp" />
+        android:clipToPadding="false"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="8dp" />
 
 </RelativeLayout>
