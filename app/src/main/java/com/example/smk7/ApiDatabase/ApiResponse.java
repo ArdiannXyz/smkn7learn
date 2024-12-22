@@ -61,6 +61,52 @@ public class ApiResponse {
     @SerializedName("materi_siswa_model")
     private List<MateriSiswaModel> materiSiswaModel;
 
+    // Bank Tugas Response
+    public static class BankTugasResponse {
+        @SerializedName("status")
+        private String status;
+
+        @SerializedName("pesan")
+        private String pesan;
+
+        @SerializedName("data")
+        private WrapperResponse data;
+
+        public String getStatus() { return status; }
+        public String getPesan() { return pesan; }
+        public WrapperResponse getData() { return data; }
+    }
+
+    public static class WrapperResponse {
+        @SerializedName("statistik")
+        private Statistik statistik;
+
+        @SerializedName("data")
+        private List<BankTugasModel> data;
+
+        public Statistik getStatistik() { return statistik; }
+        public List<BankTugasModel> getData() { return data; }
+    }
+
+    public static class Statistik {
+        @SerializedName("total_siswa")
+        private int totalSiswa;
+
+        @SerializedName("sudah_mengumpulkan")
+        private int sudahMengumpulkan;
+
+        @SerializedName("terlambat")
+        private int terlambat;
+
+        @SerializedName("tepat_waktu")
+        private int tepatWaktu;
+
+        public int getTotalSiswa() { return totalSiswa; }
+        public int getSudahMengumpulkan() { return sudahMengumpulkan; }
+        public int getTerlambat() { return terlambat; }
+        public int getTepatWaktu() { return tepatWaktu; }
+    }
+
     // Getter dan Setter untuk Status API
     public String getStatus() {
         return status;
@@ -94,8 +140,6 @@ public class ApiResponse {
         this.totalData = totalData;
     }
 
-
-
     // Tambahkan method getter dan setter untuk tugasDataList
     public List<TugasModel> getTugasData() {
         if (tugasDataList == null) {
@@ -127,10 +171,8 @@ public class ApiResponse {
 
     public List<KelasModel> getKelasModel() {
         if (data != null) {
-            // If new format data is available, use it
             return data;
         }
-        // Fall back to old format
         if (kelasModel == null) {
             Log.w(TAG, "getKelasModel: Returning null");
         }
@@ -306,7 +348,7 @@ public class ApiResponse {
                 ", mapelSiswaModel size=" + (mapelSiswaModel != null ? mapelSiswaModel.size() : 0) +
                 ", tugasSiswaModel size=" + (tugasSiswaModel != null ? tugasSiswaModel.size() : 0) +
                 ", materiSiswaModel size=" + (materiSiswaModel != null ? materiSiswaModel.size() : 0) +
-                ", tugasData size=" + (tugasDataList != null ? tugasDataList.size() : 0) + // Tambahkan baris ini
+                ", tugasData size=" + (tugasDataList != null ? tugasDataList.size() : 0) +
                 '}';
     }
 }

@@ -19,22 +19,21 @@ import com.example.smk7.Model.BankTugasModel;
 import com.example.smk7.R;
 import com.example.smk7.RecycleBankTugas.BehindBankTugas_Guru;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BankTugasAdapter extends RecyclerView.Adapter<BankTugasAdapter.BanktugasViewHolder> {
-
+    private static final String TAG = "BankTugasAdapter";
     private List<BankTugasModel> banktugasList;
     private ViewPager2 viewPager;
-    private MateriAdapter.OnItemClickListener listener;
     private Context context;
 
     // Constructor
     public BankTugasAdapter(List<BankTugasModel> tugasList, ViewPager2 viewPager, Context context) {
-        this.banktugasList = tugasList;
+        this.banktugasList = tugasList != null ? tugasList : new ArrayList<>();
         this.viewPager = viewPager;
         this.context = context;
     }
-
 
     @NonNull
     @Override
@@ -46,45 +45,82 @@ public class BankTugasAdapter extends RecyclerView.Adapter<BankTugasAdapter.Bank
 
     @Override
     public void onBindViewHolder(@NonNull BanktugasViewHolder holder, int position) {
-        BankTugasModel tugas = banktugasList.get(position);
-        holder.tvNama.setText(tugas.getNama());
-        holder.tvStatus.setText(tugas.getStatus());
+        try {
+            BankTugasModel tugas = banktugasList.get(position);
 
-        holder.itemView.setOnClickListener(v -> {
-            viewPager.setUserInputEnabled(false);
-            new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);
+            // Set teks dengan format yang lebih informatif
+            String nama = tugas.getNama() != null ? tugas.getNama() : "Tidak ada nama";
+            String status = tugas.getStatus() != null ? tugas.getStatus() : "Belum dinilai";
 
-            if (v.getContext() instanceof DashboardGuru) {
-                DashboardGuru activity = (DashboardGuru) v.getContext();
+            // Tambahkan info tambahan jika ada
+            if (tugas.getInfoTambahan() != null) {
+                String judulTugas = tugas.getInfoTambahan().getJudulTugas();
+                String statusPengumpulan = tugas.getInfoTambahan().getStatusPengumpulan();
 
-                // Debug log sebelum mengirim data
-                Log.d("Adapter Debug", String.format(
-                        "Sending data: nama=%s, status=%s, file_tugas=%s, id_pengumpulan=%s",
-                        tugas.getNama(), tugas.getStatus(), tugas.getFileTugas(), tugas.getIdPengumpulan()
-                ));
-
-                Bundle bundle = new Bundle();
-                bundle.putString("nama", tugas.getNama());
-                bundle.putString("status", tugas.getStatus());
-                bundle.putString("file_tugas", tugas.getFileTugas());
-                bundle.putString("id_pengumpulan", tugas.getIdPengumpulan());
-
-                Fragment behindFragment = new BehindBankTugas_Guru();
-                behindFragment.setArguments(bundle);
-
-                activity.getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(android.R.id.content, behindFragment)
-                        .commit();
-
-                viewPager.setCurrentItem(14, false);
+                holder.tvNama.setText(String.format("%s - %s", nama, judulTugas));
+                holder.tvStatus.setText(String.format("%s (%s)", status, statusPengumpulan));
+            } else {
+                holder.tvNama.setText(nama);
+                holder.tvStatus.setText(status);
             }
-        });
+
+            // Log untuk debugging
+            Log.d(TAG, String.format("Data pada posisi %d: nama='%s', status='%s'",
+                    position, nama, status));
+
+            holder.itemView.setOnClickListener(v -> {
+                if (viewPager != null) {
+                    viewPager.setUserInputEnabled(false);
+                    new Handler().postDelayed(() -> viewPager.setUserInputEnabled(true), 300);
+                }
+
+                if (v.getContext() instanceof DashboardGuru) {
+                    DashboardGuru activity = (DashboardGuru) v.getContext();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("nama", tugas.getNama());
+                    bundle.putString("status", tugas.getStatus());
+                    bundle.putString("file_tugas", tugas.getFileTugas());
+                    bundle.putInt("id_pengumpulan", tugas.getIdPengumpulan());
+
+                    // Tambahkan info tambahan ke bundle
+                    if (tugas.getInfoTambahan() != null) {
+                        bundle.putString("judul_tugas", tugas.getInfoTambahan().getJudulTugas());
+                        bundle.putString("deadline", tugas.getInfoTambahan().getDeadline());
+                        bundle.putString("kelas", tugas.getInfoTambahan().getKelas());
+                        bundle.putString("mapel", tugas.getInfoTambahan().getMapel());
+                        bundle.putString("status_pengumpulan", tugas.getInfoTambahan().getStatusPengumpulan());
+                    }
+
+                    Fragment behindFragment = new BehindBankTugas_Guru();
+                    behindFragment.setArguments(bundle);
+
+                    activity.getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(android.R.id.content, behindFragment)
+                            .addToBackStack(null)
+                            .commit();
+
+                    if (viewPager != null) {
+                        viewPager.setCurrentItem(14, false);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error di onBindViewHolder: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
     public int getItemCount() {
-        return banktugasList.size();
+        return banktugasList != null ? banktugasList.size() : 0;
+    }
+
+    // Method untuk update data
+    public void updateData(List<BankTugasModel> newData) {
+        this.banktugasList = newData != null ? newData : new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     public static class BanktugasViewHolder extends RecyclerView.ViewHolder {

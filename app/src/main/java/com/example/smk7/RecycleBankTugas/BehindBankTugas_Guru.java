@@ -97,22 +97,25 @@ public class BehindBankTugas_Guru extends Fragment {
     private void setupDataFromArguments() {
         Bundle args = getArguments();
         if (args != null) {
+            // Set data dasar
             String nama = args.getString("nama", "");
             String status = args.getString("status", "Belum dinilai");
             String fileTugas = args.getString("file_tugas", "");
-            String idPengumpulan = args.getString("id_pengumpulan", "");
+            int idPengumpulan = args.getInt("id_pengumpulan", 0);
 
             // Debug log
             Log.d("Fragment Debug", String.format(
-                    "Received data: nama=%s, status=%s, file_tugas=%s, id_pengumpulan=%s",
+                    "Received data: nama=%s, status=%s, file_tugas=%s, id_pengumpulan=%d",
                     nama, status, fileTugas, idPengumpulan
             ));
 
-            tvNamaSiswa.setText(nama);
-            tvStatus.setText(status);
+            // Set text untuk textview
+            tvNamaSiswa.setText(nama.isEmpty() ? "Tidak ada nama" : nama);
+            tvStatus.setText(status.isEmpty() ? "Belum dinilai" : status);
 
-            if (idPengumpulan.isEmpty()) {
-                Log.e("Fragment Debug", "ID Pengumpulan is empty!");
+            // Disable tombol jika id tidak valid
+            if (idPengumpulan == 0) {
+                Log.e("Fragment Debug", "ID Pengumpulan is invalid!");
                 Toast.makeText(getContext(), "Data pengumpulan tidak lengkap", Toast.LENGTH_SHORT).show();
                 btnBerikaNilai.setEnabled(false);
             }
@@ -235,12 +238,12 @@ public class BehindBankTugas_Guru extends Fragment {
         try {
             // Get id_pengumpulan from arguments
             Bundle args = getArguments();
-            String idPengumpulan = "";
+            int idPengumpulan = 0; // nilai default untuk integer
             if (args != null) {
-                idPengumpulan = args.getString("id_pengumpulan", "");
+                idPengumpulan = args.getInt("id_pengumpulan", 0);
             }
 
-            if (idPengumpulan.isEmpty()) {
+            if (idPengumpulan == 0) {  // cek nilai default
                 Toast.makeText(getContext(), "ID Pengumpulan tidak valid", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -261,7 +264,7 @@ public class BehindBankTugas_Guru extends Fragment {
             // Create id_pengumpulan part
             RequestBody idPengumpulanPart = RequestBody.create(
                     MediaType.parse("text/plain"),
-                    idPengumpulan
+                    String.valueOf(idPengumpulan)    // Konversi ke String
             );
 
             // Create nilai part
@@ -377,6 +380,24 @@ public class BehindBankTugas_Guru extends Fragment {
                 ", message: " + response.message() +
                 ", errorBody: " + errorBody);
         Toast.makeText(getContext(), "Gagal mengirim, silakan coba lagi", Toast.LENGTH_SHORT).show();
+    }
+
+    private void handleSuccessResponse() {
+        Toast.makeText(getContext(), "Berhasil memberikan nilai", Toast.LENGTH_SHORT).show();
+
+        // Update UI
+        tvStatus.setText("Sudah dinilai");
+        edtTambahNilai.setEnabled(false);
+        btnBerikaNilai.setEnabled(false);
+        edtLampiran.setEnabled(false);
+
+        // Navigate back after delay
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (getActivity() instanceof DashboardGuru) {
+                ViewPager2 viewPager = ((DashboardGuru) getActivity()).viewPager2;
+                viewPager.setCurrentItem(10, false);
+            }
+        }, 1000);
     }
 
     @Override

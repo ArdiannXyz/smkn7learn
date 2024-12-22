@@ -1,5 +1,7 @@
 package com.example.smk7.RecycleBankTugas;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -74,74 +76,53 @@ public class RecyleViewBankTugas_Guru extends Fragment {
 
     private void fetchBankTugasData() {
         ApiServiceInterface apiService = ApiService.getRetrofitInstance().create(ApiServiceInterface.class);
-        Call<ApiResponse> call = apiService.getBankTugasData();
-        call.enqueue(new Callback<ApiResponse>() {
+        Call<ApiResponse> call = apiService.getBankTugasData(); // Perhatikan perubahan tipe ke ApiResponse
+        call.enqueue(new Callback<ApiResponse>() { // Perubahan tipe callback
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse apiResponse = response.body();
-                    Log.d("API Response", apiResponse.toString());
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        ApiResponse apiResponse = response.body();
 
-                    if ("success".equals(apiResponse.getStatus())) {
-                        try {
-                            String rawJson = new Gson().toJson(response.body());
-                            JSONObject jsonObject = new JSONObject(rawJson);
-                            JSONArray bankTugasArray = jsonObject.getJSONArray("bank_tugas_model");
-                            List<BankTugasModel> parsedList = new ArrayList<>();
+                        if ("sukses".equals(apiResponse.getStatus())) {
+                            List<BankTugasModel> bankTugasList = apiResponse.getBankTugasModel();
 
-                            for (int i = 0; i < bankTugasArray.length(); i++) {
-                                JSONObject obj = bankTugasArray.getJSONObject(i);
-                                String nama = obj.getString("nama");
-                                String status = obj.getString("status");
-                                String fileTugas = obj.optString("file_tugas", "");
-                                String idPengumpulan = obj.optString("id_pengumpulan", "");
-
-                                // Debug log untuk setiap item
-                                Log.d("API Debug", String.format(
-                                        "Item %d: nama=%s, status=%s, file_tugas=%s, id_pengumpulan=%s",
-                                        i, nama, status, fileTugas, idPengumpulan
-                                ));
-
-                                BankTugasModel model = new BankTugasModel(nama, status, fileTugas, idPengumpulan);
-                                parsedList.add(model);
-                            }
-
-                            bankTugasList = parsedList;
-                            if (!bankTugasList.isEmpty()) {
+                            if (bankTugasList != null && !bankTugasList.isEmpty()) {
                                 setupRecyclerView(bankTugasList);
                             } else {
-                                Log.e("API Response", "bankTugasList is empty after parsing");
+                                Log.e(TAG, "Daftar bank tugas kosong");
                             }
-                        } catch (JSONException e) {
-                            Log.e("API Debug", "Error parsing JSON: " + e.getMessage());
+                        } else {
+                            Log.e(TAG, "API error: " + apiResponse.getMessage());
                         }
                     } else {
-                        Log.e("API Response", "API error: " + apiResponse.getMessage());
+                        handleErrorResponse(response);
                     }
-                } else {
-                    handleErrorResponse(response);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error saat memproses response: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Log.e("API Error", "Request failed: " + t.getMessage(), t);
+                Log.e(TAG, "Request gagal: " + t.getMessage());
+                t.printStackTrace();
             }
         });
     }
 
     private void handleErrorResponse(Response<ApiResponse> response) {
-        String errorBody = "";
         try {
             if (response.errorBody() != null) {
-                errorBody = response.errorBody().string();
+                String errorBody = response.errorBody().string();
+                Log.e(TAG, "Error response body: " + errorBody);
             }
+            Log.e(TAG, "Error code: " + response.code());
         } catch (IOException e) {
-            Log.e("API Error", "Error reading error body: " + e.getMessage());
+            Log.e(TAG, "Error reading error body: " + e.getMessage());
+            e.printStackTrace();
         }
-        Log.e("API Error", "Response failed with code: " + response.code() +
-                ", message: " + response.message() +
-                ", errorBody: " + errorBody);
     }
 
     private void setupRecyclerView(List<BankTugasModel> banktugasList) {
