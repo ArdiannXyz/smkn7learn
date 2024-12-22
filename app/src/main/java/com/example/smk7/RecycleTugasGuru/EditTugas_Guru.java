@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -83,12 +84,13 @@ public class EditTugas_Guru extends AppCompatActivity {
 
     private void initializeComponents() {
         backButton = findViewById(R.id.back_Button);
-        tvNamaKelas = findViewById(R.id.NamaKelas);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.NamaKelasLayout);
+        tvNamaKelas = findViewById(R.id.tv_nama_kelas);  // Tambahkan ini
         edtJudulTugas = findViewById(R.id.Edt_JudulTugas);
         edtLampiran = findViewById(R.id.Edt_Lampiran);
         edtTanggal = findViewById(R.id.Edt_Tanggal);
         edtKomentar = findViewById(R.id.Edt_Komentar);
-        btnSimpan = findViewById(R.id.Btn_simpan);
+        btnSimpan = findViewById(R.id.btn_simpanTugas);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
@@ -110,14 +112,38 @@ public class EditTugas_Guru extends AppCompatActivity {
             idKelas = String.valueOf(intent.getIntExtra("id_kelas", -1));
             namaKelas = intent.getStringExtra("nama_kelas");
 
-            if (tvNamaKelas != null && namaKelas != null) {
-                tvNamaKelas.setText(namaKelas);
+            // Debug log
+            Log.d(TAG, "Received idTugas: " + idTugas);
+            Log.d(TAG, "Received idKelas: " + idKelas);
+            Log.d(TAG, "Received namaKelas: " + namaKelas);
+
+            // Periksa TextView dan nama kelas
+            if (tvNamaKelas != null) {
+                if (namaKelas != null && !namaKelas.isEmpty()) {
+                    tvNamaKelas.setText(namaKelas);
+                } else {
+                    Log.e(TAG, "Nama kelas kosong atau null");
+                    tvNamaKelas.setText("Nama Kelas tidak tersedia");
+                }
+            } else {
+                Log.e(TAG, "TextView nama kelas tidak ditemukan!");
             }
 
-            if (idTugas.equals("-1") || idKelas.equals("-1")) {
-                showError("Data tugas tidak valid");
+            // Validasi ID
+            if (idTugas.equals("-1")) {
+                showError("ID Tugas tidak valid");
                 finish();
+                return;
             }
+
+            if (idKelas.equals("-1")) {
+                showError("ID Kelas tidak valid");
+                finish();
+                return;
+            }
+        } else {
+            showError("Tidak ada data yang diterima");
+            finish();
         }
     }
 
@@ -174,6 +200,17 @@ public class EditTugas_Guru extends AppCompatActivity {
         edtKomentar.setText(tugasData.optString("deskripsi", ""));
         edtTanggal.setText(tugasData.optString("deadline", ""));
         edtLampiran.setText(tugasData.optString("file_tugas", ""));
+
+        // Update nama kelas jika kosong
+        if (namaKelas == null || namaKelas.isEmpty()) {
+            namaKelas = tugasData.optString("nama_kelas", "Nama Kelas tidak tersedia");
+            tvNamaKelas.setText(namaKelas);
+        }
+
+        // Update idKelas jika tidak valid
+        if (idKelas.equals("-1")) {
+            idKelas = String.valueOf(tugasData.optInt("id_kelas", -1));
+        }
     }
 
     private void showDateTimePicker() {
@@ -243,60 +280,71 @@ public class EditTugas_Guru extends AppCompatActivity {
         String tanggal = edtTanggal.getText().toString();
         String deskripsi = edtKomentar.getText().toString();
         int idGuru = sessionManager.getIdGuru();
+        int idTugasInt = Integer.parseInt(idTugas);
+        int idKelasInt = Integer.parseInt(idKelas);
 
-        // Prepare request bodies
-        RequestBody idTugasBody = RequestBody.create(MediaType.parse("text/plain"), idTugas);
-        RequestBody idGuruBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(idGuru));
-        RequestBody judulTugasBody = RequestBody.create(MediaType.parse("text/plain"), judulTugas);
-        RequestBody deskripsiBody = RequestBody.create(MediaType.parse("text/plain"), deskripsi);
-        RequestBody idKelasBody = RequestBody.create(MediaType.parse("text/plain"), idKelas);
-        RequestBody deadlineBody = RequestBody.create(MediaType.parse("text/plain"), tanggal);
+        ApiServiceInterface apiService = ApiClient.getApiService();
+        Call<ResponseBody> call;
 
-        // Prepare file part
-        MultipartBody.Part filePart = null;
+        // Cek apakah ada file baru yang dipilih
         if (selectedFileUri != null) {
             try {
+                // Prepare request bodies untuk multipart
+                RequestBody idTugasBody = RequestBody.create(MediaType.parse("text/plain"), idTugas);
+                RequestBody idGuruBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(idGuru));
+                RequestBody judulTugasBody = RequestBody.create(MediaType.parse("text/plain"), judulTugas);
+                RequestBody deskripsiBody = RequestBody.create(MediaType.parse("text/plain"), deskripsi);
+                RequestBody idKelasBody = RequestBody.create(MediaType.parse("text/plain"), idKelas);
+                RequestBody deadlineBody = RequestBody.create(MediaType.parse("text/plain"), tanggal);
+
+                // Prepare file
                 File file = new File(getFilePathFromUri(selectedFileUri));
                 RequestBody requestFile = RequestBody.create(
                         MediaType.parse(getContentResolver().getType(selectedFileUri)),
                         file
                 );
-                filePart = MultipartBody.Part.createFormData("file_tugas", file.getName(), requestFile);
+                MultipartBody.Part filePart = MultipartBody.Part.createFormData("file_tugas", file.getName(), requestFile);
+
+                // Panggil API dengan file
+                call = apiService.updateTugasWithFile(
+                        idTugasBody,
+                        idGuruBody,
+                        judulTugasBody,
+                        deskripsiBody,
+                        idKelasBody,
+                        deadlineBody,
+                        filePart
+                );
             } catch (Exception e) {
                 hideLoading();
                 showError("Error mempersiapkan file: " + e.getMessage());
                 return;
             }
-
-            // Make API call with file
-            ApiServiceInterface apiService = ApiClient.getApiService();
-            Call<ResponseBody> call = apiService.updateTugasWithFile(
-                    idTugasBody,
-                    idGuruBody,
-                    judulTugasBody,
-                    deskripsiBody,
-                    idKelasBody,
-                    deadlineBody,
-                    filePart
-            );
-
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    hideLoading();
-                    handleUpdateResponse(response);
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    hideLoading();
-                    handleNetworkError(t);
-                }
-            });
         } else {
-            showError("Pilih file terlebih dahulu");
-            hideLoading();
+            // Panggil API tanpa file
+            call = apiService.updateTugas(
+                    idTugasInt,
+                    idGuru,
+                    judulTugas,
+                    deskripsi,
+                    idKelasInt,
+                    tanggal
+            );
         }
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                hideLoading();
+                handleUpdateResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                hideLoading();
+                handleNetworkError(t);
+            }
+        });
     }
 
     private void handleUpdateResponse(Response<ResponseBody> response) {
@@ -305,12 +353,20 @@ public class EditTugas_Guru extends AppCompatActivity {
                 String responseString = response.body().string();
                 JSONObject jsonResponse = new JSONObject(responseString);
 
-                if (jsonResponse.optBoolean("success", false)) {
+                if ("sukses".equals(jsonResponse.optString("status"))) {
                     Toast.makeText(this, "Tugas berhasil diperbarui", Toast.LENGTH_SHORT).show();
-                    setResult(RESULT_OK);
+
+                    // Siapkan data untuk dikembalikan ke activity sebelumnya
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("id_tugas", idTugas);
+                    resultIntent.putExtra("judul_tugas", edtJudulTugas.getText().toString());
+                    resultIntent.putExtra("deskripsi", edtKomentar.getText().toString());
+                    resultIntent.putExtra("deadline", edtTanggal.getText().toString());
+
+                    setResult(RESULT_OK, resultIntent);
                     finish();
                 } else {
-                    showError(jsonResponse.optString("message", "Gagal memperbarui tugas"));
+                    showError(jsonResponse.optString("pesan", "Gagal memperbarui tugas"));
                 }
             } else {
                 showError("Gagal memperbarui tugas: " + response.code());

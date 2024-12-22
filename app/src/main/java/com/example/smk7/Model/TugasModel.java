@@ -3,8 +3,12 @@ package com.example.smk7.Model;
 import com.google.gson.annotations.SerializedName;
 
 public class TugasModel {
+
     @SerializedName("id_tugas")
     private int idTugas;
+
+    @SerializedName("id_kelas")  // Tambahkan ini
+    private int idKelas;         // Tambahkan ini
 
     @SerializedName("judul_tugas")
     private String judulTugas;
@@ -67,6 +71,7 @@ public class TugasModel {
 
     // Getters
     public int getIdTugas() { return idTugas; }
+    public int getIdKelas() { return idKelas; }  // Tambahkan ini
     public String getJudulTugas() { return judulTugas; }
     public String getDeskripsi() { return deskripsi; }
     public String getFileTugas() { return fileTugas; }

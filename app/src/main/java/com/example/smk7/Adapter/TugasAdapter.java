@@ -1,5 +1,6 @@
 package com.example.smk7.Adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import retrofit2.Response;
 
 public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHolder> {
 
+    private static final int EDIT_TUGAS_REQUEST_CODE = 1001;
     private List<TugasModel> tugasList;
     private OnItemClickListener onItemClickListener;
     private Context context;
@@ -74,12 +76,20 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
         holder.btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(context, EditTugas_Guru.class);
             intent.putExtra("id_tugas", tugas.getIdTugas());
+            intent.putExtra("id_kelas", tugas.getIdKelas());
             intent.putExtra("judul_tugas", tugas.getJudulTugas());
             intent.putExtra("nama_kelas", tugas.getNamaKelas());
             intent.putExtra("deskripsi", tugas.getDeskripsi());
             intent.putExtra("deadline", tugas.getDeadline());
             intent.putExtra("file_tugas", tugas.getFileTugas());
-            context.startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            if (context instanceof Activity) {
+                ((Activity) context).startActivityForResult(intent, EDIT_TUGAS_REQUEST_CODE);
+            } else {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
         });
 
         // Handle delete click
