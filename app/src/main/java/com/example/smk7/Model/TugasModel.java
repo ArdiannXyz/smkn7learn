@@ -7,8 +7,11 @@ public class TugasModel {
     @SerializedName("id_tugas")
     private int idTugas;
 
-    @SerializedName("id_kelas")  // Tambahkan ini
-    private int idKelas;         // Tambahkan ini
+    @SerializedName("id_kelas")
+    private int idKelas;
+
+    @SerializedName("id_mapel")
+    private int idMapel;
 
     @SerializedName("judul_tugas")
     private String judulTugas;
@@ -71,7 +74,8 @@ public class TugasModel {
 
     // Getters
     public int getIdTugas() { return idTugas; }
-    public int getIdKelas() { return idKelas; }  // Tambahkan ini
+    public int getIdKelas() { return idKelas; }
+    public int getIdMapel() { return idMapel; }
     public String getJudulTugas() { return judulTugas; }
     public String getDeskripsi() { return deskripsi; }
     public String getFileTugas() { return fileTugas; }

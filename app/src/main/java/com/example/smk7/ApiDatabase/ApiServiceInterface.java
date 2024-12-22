@@ -102,8 +102,9 @@ public interface ApiServiceInterface {
             @Field("id_tugas") int idTugas,
             @Field("id_guru") int idGuru,
             @Field("judul_tugas") String judulTugas,
-            @Field("keterangan") String keterangan,
+            @Field("deskripsi") String deskripsi,
             @Field("id_kelas") int idKelas,
+            @Field("id_mapel") int idMapel,
             @Field("deadline") String deadline
     );
 
@@ -116,6 +117,7 @@ public interface ApiServiceInterface {
             @Part("judul_tugas") RequestBody judulTugas,
             @Part("deskripsi") RequestBody deskripsi,
             @Part("id_kelas") RequestBody idKelas,
+            @Part("id_mapel") RequestBody idMapel,
             @Part("deadline") RequestBody deadline,
             @Part MultipartBody.Part file
     );

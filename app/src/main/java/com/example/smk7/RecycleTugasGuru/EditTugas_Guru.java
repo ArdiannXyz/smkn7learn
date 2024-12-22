@@ -60,9 +60,8 @@ public class EditTugas_Guru extends AppCompatActivity {
     private TextView tvNamaKelas;
     private Button btnSimpan;
     private ImageView backButton;
-    private String idKelas, namaKelas, idTugas;
+    private String idKelas, namaKelas, idTugas, idMapel;
     private Uri selectedFileUri;
-    private File selectedFile;
     private ProgressDialog progressDialog;
     private SessionManager sessionManager;
 
@@ -110,11 +109,13 @@ public class EditTugas_Guru extends AppCompatActivity {
         if (intent != null) {
             idTugas = String.valueOf(intent.getIntExtra("id_tugas", -1));
             idKelas = String.valueOf(intent.getIntExtra("id_kelas", -1));
+            idMapel = String.valueOf(intent.getIntExtra("id_mapel", -1)); // Tambahkan ini
             namaKelas = intent.getStringExtra("nama_kelas");
 
             // Debug log
             Log.d(TAG, "Received idTugas: " + idTugas);
             Log.d(TAG, "Received idKelas: " + idKelas);
+            Log.d(TAG, "Received idMapel: " + idMapel);
             Log.d(TAG, "Received namaKelas: " + namaKelas);
 
             // Periksa TextView dan nama kelas
@@ -129,17 +130,15 @@ public class EditTugas_Guru extends AppCompatActivity {
                 Log.e(TAG, "TextView nama kelas tidak ditemukan!");
             }
 
-            // Validasi ID
-            if (idTugas.equals("-1")) {
-                showError("ID Tugas tidak valid");
-                finish();
+            // Validasi data
+            if (idTugas.equals("-1") || idKelas.equals("-1") || idMapel.equals("-1")) {
+                // Jika ada data yang tidak valid, coba ambil dari API
+                loadTugasData();
                 return;
             }
-
-            if (idKelas.equals("-1")) {
-                showError("ID Kelas tidak valid");
-                finish();
-                return;
+            // Set nama kelas jika tersedia
+            if (tvNamaKelas != null && namaKelas != null && !namaKelas.isEmpty()) {
+                tvNamaKelas.setText(namaKelas);
             }
         } else {
             showError("Tidak ada data yang diterima");
@@ -196,20 +195,35 @@ public class EditTugas_Guru extends AppCompatActivity {
     }
 
     private void updateUIWithTugasData(JSONObject tugasData) {
-        edtJudulTugas.setText(tugasData.optString("judul_tugas", ""));
-        edtKomentar.setText(tugasData.optString("deskripsi", ""));
-        edtTanggal.setText(tugasData.optString("deadline", ""));
-        edtLampiran.setText(tugasData.optString("file_tugas", ""));
+        try {
+            edtJudulTugas.setText(tugasData.optString("judul_tugas", ""));
+            edtKomentar.setText(tugasData.optString("deskripsi", ""));
+            edtTanggal.setText(tugasData.optString("deadline", ""));
+            edtLampiran.setText(tugasData.optString("file_tugas", ""));
 
-        // Update nama kelas jika kosong
-        if (namaKelas == null || namaKelas.isEmpty()) {
-            namaKelas = tugasData.optString("nama_kelas", "Nama Kelas tidak tersedia");
-            tvNamaKelas.setText(namaKelas);
-        }
+            // Update data yang hilang
+            if (idKelas.equals("-1")) {
+                idKelas = String.valueOf(tugasData.optInt("id_kelas", -1));
+            }
+            if (idMapel.equals("-1")) {
+                idMapel = String.valueOf(tugasData.optInt("id_mapel", -1));
+            }
+            if (namaKelas == null || namaKelas.isEmpty()) {
+                namaKelas = tugasData.optString("nama_kelas", "Nama Kelas tidak tersedia");
+                if (tvNamaKelas != null) {
+                    tvNamaKelas.setText(namaKelas);
+                }
+            }
 
-        // Update idKelas jika tidak valid
-        if (idKelas.equals("-1")) {
-            idKelas = String.valueOf(tugasData.optInt("id_kelas", -1));
+            // Validasi final
+            if (idKelas.equals("-1") || idMapel.equals("-1")) {
+                showError("Data kelas atau mapel tidak tersedia");
+                finish();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating UI", e);
+            showError("Terjadi kesalahan saat memuat data");
+            finish();
         }
     }
 
@@ -282,6 +296,7 @@ public class EditTugas_Guru extends AppCompatActivity {
         int idGuru = sessionManager.getIdGuru();
         int idTugasInt = Integer.parseInt(idTugas);
         int idKelasInt = Integer.parseInt(idKelas);
+        int idMapelInt = Integer.parseInt(idMapel);
 
         ApiServiceInterface apiService = ApiClient.getApiService();
         Call<ResponseBody> call;
@@ -295,6 +310,7 @@ public class EditTugas_Guru extends AppCompatActivity {
                 RequestBody judulTugasBody = RequestBody.create(MediaType.parse("text/plain"), judulTugas);
                 RequestBody deskripsiBody = RequestBody.create(MediaType.parse("text/plain"), deskripsi);
                 RequestBody idKelasBody = RequestBody.create(MediaType.parse("text/plain"), idKelas);
+                RequestBody idMapelBody = RequestBody.create(MediaType.parse("text/plain"), idMapel); // Tambahkan ini
                 RequestBody deadlineBody = RequestBody.create(MediaType.parse("text/plain"), tanggal);
 
                 // Prepare file
@@ -312,6 +328,7 @@ public class EditTugas_Guru extends AppCompatActivity {
                         judulTugasBody,
                         deskripsiBody,
                         idKelasBody,
+                        idMapelBody, // Tambahkan ini
                         deadlineBody,
                         filePart
                 );
@@ -328,6 +345,7 @@ public class EditTugas_Guru extends AppCompatActivity {
                     judulTugas,
                     deskripsi,
                     idKelasInt,
+                    idMapelInt, // Tambahkan ini
                     tanggal
             );
         }
@@ -349,27 +367,31 @@ public class EditTugas_Guru extends AppCompatActivity {
 
     private void handleUpdateResponse(Response<ResponseBody> response) {
         try {
-            if (response.isSuccessful() && response.body() != null) {
-                String responseString = response.body().string();
-                JSONObject jsonResponse = new JSONObject(responseString);
+            String responseString = response.body() != null ? response.body().string() : "";
+            JSONObject jsonResponse = new JSONObject(responseString);
 
-                if ("sukses".equals(jsonResponse.optString("status"))) {
-                    Toast.makeText(this, "Tugas berhasil diperbarui", Toast.LENGTH_SHORT).show();
+            // Ambil status dan pesan dari response
+            String status = jsonResponse.optString("status");
+            String pesan = jsonResponse.optString("pesan");
 
-                    // Siapkan data untuk dikembalikan ke activity sebelumnya
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("id_tugas", idTugas);
-                    resultIntent.putExtra("judul_tugas", edtJudulTugas.getText().toString());
-                    resultIntent.putExtra("deskripsi", edtKomentar.getText().toString());
-                    resultIntent.putExtra("deadline", edtTanggal.getText().toString());
+            if ("sukses".equals(status)) {
+                Toast.makeText(this, "Tugas berhasil diperbarui", Toast.LENGTH_SHORT).show();
 
-                    setResult(RESULT_OK, resultIntent);
-                    finish();
-                } else {
-                    showError(jsonResponse.optString("pesan", "Gagal memperbarui tugas"));
-                }
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("id_tugas", idTugas);
+                resultIntent.putExtra("judul_tugas", edtJudulTugas.getText().toString());
+                resultIntent.putExtra("deskripsi", edtKomentar.getText().toString());
+                resultIntent.putExtra("deadline", edtTanggal.getText().toString());
+
+                setResult(RESULT_OK, resultIntent);
+                finish();
             } else {
-                showError("Gagal memperbarui tugas: " + response.code());
+                // Tampilkan pesan error dari server menggunakan AlertDialog
+                new AlertDialog.Builder(this)
+                        .setTitle("Gagal Memperbarui Tugas")
+                        .setMessage(pesan)
+                        .setPositiveButton("OK", null)
+                        .show();
             }
         } catch (Exception e) {
             Log.e(TAG, "Error parsing response", e);

@@ -73,8 +73,27 @@ public class RecycleViewTugasGuru extends Fragment {
                     bottomNavigationView.setVisibility(View.GONE);
                 }
             }
+
+            // Ambil data dari item yang terakhir di-click (jika ada)
+            TugasModel currentTugas = tugasAdapter != null && !tugasAdapter.getTugasList().isEmpty()
+                    ? tugasAdapter.getTugasList().get(0)
+                    : null;
+
             new Handler().postDelayed(() -> {
                 Intent intent = new Intent(getContext(), UploadTugas_guru.class);
+
+                // Kirim data yang diperlukan
+                if (currentTugas != null) {
+                    intent.putExtra("id_kelas", String.valueOf(currentTugas.getIdKelas()));
+                    intent.putExtra("id_mapel", String.valueOf(currentTugas.getIdMapel()));
+                    intent.putExtra("nama_kelas", currentTugas.getNamaKelas());
+                }
+
+                Log.d(TAG, "Mengirim data ke UploadTugas_guru - " +
+                        "ID Kelas: " + intent.getStringExtra("id_kelas") +
+                        ", ID Mapel: " + intent.getStringExtra("id_mapel") +
+                        ", Nama Kelas: " + intent.getStringExtra("nama_kelas"));
+
                 startActivity(intent);
             }, 200);
         });

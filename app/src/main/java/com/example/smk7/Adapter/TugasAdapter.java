@@ -60,8 +60,7 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
     @Override
     public void onBindViewHolder(@NonNull TugasViewHolder holder, int position) {
         TugasModel tugas = tugasList.get(position);
-        Log.d("TugasAdapter", "Binding position " + position + ": " + tugas.getJudulTugas());
-
+        Log.d("TugasAdapter", "Binding position " + (position + 1) + ": " + tugas.getJudulTugas());
         // Set judul tugas
         holder.txtnamaTugas.setText(tugas.getJudulTugas());
 
@@ -77,12 +76,19 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
             Intent intent = new Intent(context, EditTugas_Guru.class);
             intent.putExtra("id_tugas", tugas.getIdTugas());
             intent.putExtra("id_kelas", tugas.getIdKelas());
+            intent.putExtra("id_mapel", tugas.getIdMapel()); // Tambahkan ini
             intent.putExtra("judul_tugas", tugas.getJudulTugas());
             intent.putExtra("nama_kelas", tugas.getNamaKelas());
             intent.putExtra("deskripsi", tugas.getDeskripsi());
             intent.putExtra("deadline", tugas.getDeadline());
             intent.putExtra("file_tugas", tugas.getFileTugas());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Tambahkan log untuk debugging
+            Log.d("TugasAdapter", "Sending to EditTugas_Guru:");
+            Log.d("TugasAdapter", "id_tugas: " + tugas.getIdTugas());
+            Log.d("TugasAdapter", "id_kelas: " + tugas.getIdKelas());
+            Log.d("TugasAdapter", "id_mapel: " + tugas.getIdMapel());
+            Log.d("TugasAdapter", "nama_kelas: " + tugas.getNamaKelas());
 
             if (context instanceof Activity) {
                 ((Activity) context).startActivityForResult(intent, EDIT_TUGAS_REQUEST_CODE);
@@ -91,7 +97,6 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
                 context.startActivity(intent);
             }
         });
-
         // Handle delete click
         holder.btnHapus.setOnClickListener(v -> {
             showDeleteConfirmation(tugas.getIdTugas(), position);
@@ -145,6 +150,10 @@ public class TugasAdapter extends RecyclerView.Adapter<TugasAdapter.TugasViewHol
     @Override
     public int getItemCount() {
         return tugasList.size();
+    }
+
+    public List<TugasModel> getTugasList() {
+        return tugasList;
     }
 
     public static class TugasViewHolder extends RecyclerView.ViewHolder {

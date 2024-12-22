@@ -53,8 +53,8 @@ public class UploadTugas_guru extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_STORAGE = 2001;
 
     private EditText edtJudulTugas, edtLampiran, edtTanggal, edtKomentar;
-    private TextView tvNamaKelas;
-    private Button btnSimpan;
+    private TextView textBuatTugas; // Tambahkan ini
+    private Button btnUpTugas; // Ubah nama sesuai ID di layout
     private ImageView backButton;
     private String idKelas, idMapel, idGuru, namaKelas;
     private Uri selectedFileUri;
@@ -79,32 +79,48 @@ public class UploadTugas_guru extends AppCompatActivity {
     }
 
     private void initializeComponents() {
+        // Initialize views dengan ID yang sesuai layout
         backButton = findViewById(R.id.back_Button);
-        tvNamaKelas = findViewById(R.id.NamaKelas);
+        textBuatTugas = findViewById(R.id.Textbuattugas);
         edtJudulTugas = findViewById(R.id.Edt_JudulTugas);
         edtLampiran = findViewById(R.id.Edt_Lampiran);
         edtTanggal = findViewById(R.id.Edt_Tanggal);
         edtKomentar = findViewById(R.id.Edt_Komentar);
-        btnSimpan = findViewById(R.id.Btn_simpan);
+        btnUpTugas = findViewById(R.id.btn_upTugas); // Sesuaikan dengan ID di layout
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         calendar = Calendar.getInstance();
 
+        // Log untuk debugging
+        Log.d(TAG, "Components initialization completed");
+
         setupListeners();
     }
 
     private void setupListeners() {
-        backButton.setOnClickListener(v -> finish());
-        edtLampiran.setOnClickListener(v -> checkStoragePermission());
-        edtTanggal.setOnClickListener(v -> showDateTimePicker());
-        btnSimpan.setOnClickListener(v -> validateAndUploadTugas());
+        if (backButton != null) {
+            backButton.setOnClickListener(v -> finish());
+        }
+
+        if (edtLampiran != null) {
+            edtLampiran.setOnClickListener(v -> checkStoragePermission());
+        }
+
+        if (edtTanggal != null) {
+            edtTanggal.setOnClickListener(v -> showDateTimePicker());
+        }
+
+        if (btnUpTugas != null) { // Gunakan btnUpTugas
+            btnUpTugas.setOnClickListener(v -> validateAndUploadTugas());
+        } else {
+            Log.e(TAG, "btnUpTugas is null");
+        }
     }
 
     private void receiveIntentData() {
         Intent intent = getIntent();
 
-        // Get ID Guru from SessionManager
         idGuru = String.valueOf(sessionManager.getIdGuru());
         if (idGuru.equals("-1")) {
             Log.e(TAG, "ID Guru tidak ditemukan");
@@ -113,13 +129,20 @@ public class UploadTugas_guru extends AppCompatActivity {
             return;
         }
 
-        // Get other data from intent
         idKelas = intent.getStringExtra("id_kelas");
         idMapel = intent.getStringExtra("id_mapel");
         namaKelas = intent.getStringExtra("nama_kelas");
 
-        if (namaKelas == null) namaKelas = "Pilih Kelas";
-        tvNamaKelas.setText(namaKelas);
+        // Set judul di TextView
+        if (textBuatTugas != null) {
+            textBuatTugas.setText("Buat Tugas"); // Text sudah sesuai dengan layout
+        }
+
+        // Set nama kelas di TextView
+        TextView namaKelasView = findViewById(R.id.nama_kelas);
+        if (namaKelasView != null && namaKelas != null) {
+            namaKelasView.setText(namaKelas);
+        }
 
         Log.d(TAG, "Data received - ID Guru: " + idGuru +
                 ", ID Kelas: " + idKelas +
@@ -158,6 +181,12 @@ public class UploadTugas_guru extends AppCompatActivity {
     }
 
     private void validateAndUploadTugas() {
+        if (edtJudulTugas == null || edtTanggal == null || edtKomentar == null) {
+            Log.e(TAG, "One or more EditText views are null");
+            Toast.makeText(this, "Error: Komponen form tidak lengkap", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String judulTugas = edtJudulTugas.getText().toString().trim();
         String tanggal = edtTanggal.getText().toString().trim();
         String deskripsi = edtKomentar.getText().toString().trim();

@@ -50,12 +50,13 @@
         app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
         <TextView
+            android:id="@+id/nama_kelas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
             android:text="Nama Kelas"
-            android:textStyle="bold"
-            android:textColor="@color/birulivin"/>
+            android:textColor="@color/birulivin"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
 
     </LinearLayout>
